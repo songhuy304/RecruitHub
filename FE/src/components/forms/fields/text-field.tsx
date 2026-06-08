@@ -11,9 +11,18 @@ import {
   createFormField,
 } from "@/components/ui/form-context";
 import { Spinner } from "@/components/ui/spinner";
+<<<<<<< HEAD
 
 interface TextFieldProps
   extends Omit<React.ComponentProps<"input">, "value" | "onChange" | "onBlur"> {
+=======
+import { InputPassword } from "@/components/ui/input-password";
+
+interface TextFieldProps extends Omit<
+  React.ComponentProps<"input">,
+  "value" | "onChange" | "onBlur"
+> {
+>>>>>>> ca1e4a38686b7d81bd014af40a48eeed98f8987c
   label: string;
   description?: string;
   required?: boolean;
@@ -34,6 +43,9 @@ export function TextField({
   const isValidating = useStore(field.store, (s) => s.meta.isValidating);
   const value = useStore(field.store, (s) => s.value) as string | number;
 
+  const isPassword = type === "password";
+  const Component = isPassword ? InputPassword : Input;
+
   return (
     <FormFieldSet>
       <FormField>
@@ -42,7 +54,11 @@ export function TextField({
           {required && " *"}
         </FieldLabel>
         <div className="relative">
+<<<<<<< HEAD
           <Input
+=======
+          <Component
+>>>>>>> ca1e4a38686b7d81bd014af40a48eeed98f8987c
             id={field.name}
             type={type}
             value={value ?? ""}
