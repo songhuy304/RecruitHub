@@ -11,18 +11,10 @@ import {
   createFormField,
 } from "@/components/ui/form-context";
 import { Spinner } from "@/components/ui/spinner";
-<<<<<<< HEAD
+import { InputPassword } from "@/components/ui/input-password";
 
 interface TextFieldProps
   extends Omit<React.ComponentProps<"input">, "value" | "onChange" | "onBlur"> {
-=======
-import { InputPassword } from "@/components/ui/input-password";
-
-interface TextFieldProps extends Omit<
-  React.ComponentProps<"input">,
-  "value" | "onChange" | "onBlur"
-> {
->>>>>>> ca1e4a38686b7d81bd014af40a48eeed98f8987c
   label: string;
   description?: string;
   required?: boolean;
@@ -54,11 +46,7 @@ export function TextField({
           {required && " *"}
         </FieldLabel>
         <div className="relative">
-<<<<<<< HEAD
-          <Input
-=======
           <Component
->>>>>>> ca1e4a38686b7d81bd014af40a48eeed98f8987c
             id={field.name}
             type={type}
             value={value ?? ""}

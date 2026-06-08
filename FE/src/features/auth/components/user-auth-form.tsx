@@ -2,14 +2,18 @@
 
 import { useAppForm, useFormFields } from "@/components/ui/tanstack-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import GithubSignInButton from "./github-auth-button";
 import GoogleSignInButton from "@/features/auth/components/google-auth-button";
 import { signUpFormSchema, SignUpFormValues } from "@/features/auth/shemas";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { useSignup } from "@/features/auth/hooks";
+import { useRouter } from "next/navigation";
+import { AUTH_PATHS } from "@/config/paths.config";
 
 export default function UserAuthForm() {
+  const { mutate: signupMutation, isPending } = useSignup();
+  const router = useRouter();
+
   const form = useAppForm({
     defaultValues: {
       userName: "",
@@ -20,8 +24,17 @@ export default function UserAuthForm() {
     validators: {
       onSubmit: signUpFormSchema,
     },
-    onSubmit: () => {
-      toast.success("Account created successfully!");
+    onSubmit: ({ value }) => {
+      console.log(value);
+      signupMutation(value, {
+        onSuccess: () => {
+          toast.success("Account created successfully!");
+          router.push(AUTH_PATHS.SIGN_IN);
+        },
+        onError: () => {
+          toast.error("Failed to create account");
+        },
+      });
     },
   });
 
@@ -61,7 +74,7 @@ export default function UserAuthForm() {
             placeholder="Min 8 characters"
             autoComplete="new-password"
           />
-          <form.SubmitButton className="mt-2 w-full">
+          <form.SubmitButton className="mt-2 w-full" isLoading={isPending}>
             Create account
           </form.SubmitButton>
         </form.Form>
