@@ -32,6 +32,7 @@ import {
   fieldVariants,
 } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "motion/react";
 
 // ---------------------------------------------------------------------------
 // 1. Contexts
@@ -131,17 +132,49 @@ function Field({
 function FieldError({ className, ...props }: React.ComponentProps<"p">) {
   const { errors, formMessageId, store } = useFieldContext();
   const form = useFormContext();
+
   const isTouched = useStore(store, (state) => state.meta.isTouched);
   const hasSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
-  if (!errors.length || (!isTouched && !hasSubmitted)) return null;
+
+  const visible = !!errors.length && (isTouched || hasSubmitted);
+
   return (
-    <DefaultFieldError
-      data-slot="form-message"
-      id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
-      {...props}
-      errors={errors}
-    />
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: -4,
+            height: 0,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            height: "auto",
+          }}
+          exit={{
+            opacity: 0,
+            y: -4,
+            height: 0,
+          }}
+          transition={{
+            duration: 0.2,
+          }}
+          className="overflow-hidden"
+        >
+          <DefaultFieldError
+            data-slot="form-message"
+            id={formMessageId}
+            className={cn(
+              "text-destructive text-sm",
+              className
+            )}
+            {...props}
+            errors={errors}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
