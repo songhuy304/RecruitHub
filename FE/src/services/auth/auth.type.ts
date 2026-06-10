@@ -4,7 +4,7 @@ export interface ITokenResponse {
 }
 
 export interface ISignInRequest {
-  username: string;
+  userName: string;
   password: string;
 }
 

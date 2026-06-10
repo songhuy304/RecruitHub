@@ -18,3 +18,9 @@ export interface IPaginatedResponse<T> extends IApiBaseResponse {
   data: T[];
   meta: IPaginationMetadata;
 }
+
+export interface ApiError {
+  statusCode: number;
+  message: string;
+  error?: string;
+}

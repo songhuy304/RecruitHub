@@ -1,5 +1,6 @@
 import { API_URL } from "@/config/app.config";
 import { tokenStorage } from "@/lib/auth";
+import { ApiError } from "@/types/api.type";
 import axios from "axios";
 
 export const apiClient = axios.create({
@@ -22,6 +23,12 @@ apiClient.interceptors.response.use(
       tokenStorage.clearTokens();
       window.location.href = "/auth/sign-in";
     }
-    return Promise.reject(err);
-  }
+
+    return Promise.reject<ApiError>(
+      err.response?.data ?? {
+        statusCode: 500,
+        message: "internal server error",
+      },
+    );
+  },
 );

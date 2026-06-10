@@ -7,7 +7,7 @@ import {
 import { IResponse } from "@/types/api.type";
 
 export const authService = {
-  login: (payload: ISignInRequest): Promise<IResponse<ITokenResponse>> =>
+  signIn: (payload: ISignInRequest): Promise<IResponse<ITokenResponse>> =>
     apiClient.post("/auth/login", payload),
 
   signUp: (payload: ISignUpRequest): Promise<void> =>
