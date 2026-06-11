@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import GoogleSignInButton from "@/features/auth/components/google-auth-button";
 import { signUpFormSchema, SignUpFormValues } from "@/features/auth/shemas";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import GithubSignInButton from "../components/github-auth-button";
 import { AUTH_PATHS } from "@/config/paths.config";
+import { useLoginSocial } from "../hooks/useLoginSocial";
 
 interface SignUpFormProps {
   onSubmit: (values: SignUpFormValues) => void;
@@ -15,6 +15,8 @@ interface SignUpFormProps {
 }
 
 export default function SignUpForm({ onSubmit, isPending }: SignUpFormProps) {
+  const { loginWithGoogle, loginWithGithub } = useLoginSocial();
+
   const form = useAppForm({
     defaultValues: {
       userName: "",
@@ -86,12 +88,12 @@ export default function SignUpForm({ onSubmit, isPending }: SignUpFormProps) {
       <div className="flex flex-col gap-2">
         <GoogleSignInButton
           onClick={() => {
-            toast.info("Google sign up is not configured yet.");
+            loginWithGoogle();
           }}
         />
         <GithubSignInButton
           onClick={() => {
-            toast.info("GitHub sign up is not configured yet.");
+            loginWithGithub();
           }}
         />
         <p className="text-sm text-center">

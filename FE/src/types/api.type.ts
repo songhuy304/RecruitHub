@@ -11,7 +11,7 @@ export interface IPaginationMetadata {
 }
 
 export interface IResponse<T> extends IApiBaseResponse {
-  data: T | null;
+  data: T;
 }
 
 export interface IPaginatedResponse<T> extends IApiBaseResponse {

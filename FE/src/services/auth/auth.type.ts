@@ -4,7 +4,7 @@ export interface ITokenResponse {
 }
 
 export interface ISignInRequest {
-  userName: string;
+  identifier: string;
   password: string;
 }
 
@@ -13,4 +13,8 @@ export interface ISignUpRequest {
   fullName: string;
   email: string;
   password: string;
+}
+
+export interface IVerifyTokenRequest {
+  token: string;
 }

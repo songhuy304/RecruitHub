@@ -6,6 +6,7 @@ import { SignInFormValues } from "../shemas";
 import GoogleSignInButton from "../components/google-auth-button";
 import GithubSignInButton from "../components/github-auth-button";
 import { AUTH_PATHS } from "@/config/paths.config";
+import { useLoginSocial } from "../hooks/useLoginSocial";
 
 interface SignInFormProps {
   onSubmit: (values: SignInFormValues) => void;
@@ -13,6 +14,8 @@ interface SignInFormProps {
 }
 
 export default function SignInForm({ onSubmit, isPending }: SignInFormProps) {
+  const { loginWithGoogle, loginWithGithub } = useLoginSocial();
+
   const form = useAppForm({
     defaultValues: {
       userName: "",
@@ -52,16 +55,35 @@ export default function SignInForm({ onSubmit, isPending }: SignInFormProps) {
         </form.Form>
       </form.AppForm>
 
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background text-muted-foreground px-2">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-2">
-        <GoogleSignInButton onClick={() => {}} />
-        <GithubSignInButton onClick={() => {}} />
-        <p className="text-center text-sm">
-          Don't have an account?{" "}
+        <GoogleSignInButton
+          onClick={() => {
+            loginWithGoogle();
+          }}
+        />
+        <GithubSignInButton
+          onClick={() => {
+            loginWithGithub();
+          }}
+        />
+        <p className="text-sm text-center">
+          Already have an account?{" "}
           <Link
-            href={AUTH_PATHS.SIGN_UP}
-            className="text-primary underline font-medium"
+            className={"text-primary underline font-medium"}
+            href={AUTH_PATHS.SIGN_IN}
           >
-            Sign up
+            Sign in
           </Link>
         </p>
       </div>

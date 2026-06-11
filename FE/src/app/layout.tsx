@@ -10,6 +10,7 @@ import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "../styles/globals.css";
 import ReduxProvider from "@/components/layout/redux-provider";
+import Script from "next/script";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
