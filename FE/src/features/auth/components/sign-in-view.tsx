@@ -1,18 +1,21 @@
 "use client";
 import SignInForm from "@/features/auth/forms/sign-in.form";
-import { Metadata } from "next";
+import { setTokens } from "@/store";
 import { useRouter } from "next/navigation";
-import { useSignIn } from "../hooks";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { useSignIn } from "../hooks";
 import { SignInFormValues } from "../shemas";
 
 export default function SignInViewPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { mutate: signIn, isPending } = useSignIn();
 
   const handleSignIn = (values: SignInFormValues) => {
     signIn(values, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        dispatch(setTokens(data.data));
         router.push("/");
       },
       onError: (error) => {

@@ -21,11 +21,11 @@ export function InputPassword({ className, ...props }: InputPasswordProps) {
   return (
     <div className="relative">
       <Input
+        {...props}
         className="bg-background"
         id="password-toggle"
         placeholder="Enter your password"
         type={showPassword ? "text" : "password"}
-        {...props}
       />
       <Button
         className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
