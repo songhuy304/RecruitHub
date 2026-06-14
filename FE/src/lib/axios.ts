@@ -16,12 +16,22 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+const AUTH_ENDPOINTS_WITHOUT_REDIRECT = ["/auth/login", "/auth/signup"];
+
 apiClient.interceptors.response.use(
   (res) => res.data,
   (err) => {
     if (err.response?.status === 401) {
+      const requestUrl = err.config?.url ?? "";
+      const isAuthRequest = AUTH_ENDPOINTS_WITHOUT_REDIRECT.some((path) =>
+        requestUrl.includes(path),
+      );
+
       tokenStorage.clearTokens();
-      window.location.href = "/auth/sign-in";
+
+      if (!isAuthRequest) {
+        window.location.href = "/auth/sign-in";
+      }
     }
 
     return Promise.reject<ApiError>(

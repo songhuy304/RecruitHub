@@ -6,11 +6,6 @@ import { useSignIn } from "../hooks";
 import { toast } from "sonner";
 import { SignInFormValues } from "../shemas";
 
-export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
-};
-
 export default function SignInViewPage() {
   const router = useRouter();
   const { mutate: signIn, isPending } = useSignIn();

@@ -7,6 +7,7 @@ import GoogleSignInButton from "../components/google-auth-button";
 import GithubSignInButton from "../components/github-auth-button";
 import { AUTH_PATHS } from "@/config/paths.config";
 import { useLoginSocial } from "../hooks/useLoginSocial";
+import { Typography } from "@/components/ui/typography";
 
 interface SignInFormProps {
   onSubmit: (values: SignInFormValues) => void;
@@ -18,7 +19,7 @@ export default function SignInForm({ onSubmit, isPending }: SignInFormProps) {
 
   const form = useAppForm({
     defaultValues: {
-      userName: "",
+      identifier: "",
       password: "",
     } satisfies SignInFormValues,
     onSubmit: ({ value }) => {
@@ -33,7 +34,7 @@ export default function SignInForm({ onSubmit, isPending }: SignInFormProps) {
       <form.AppForm>
         <form.Form className="w-full space-y-2 p-0">
           <FormTextField
-            name="userName"
+            name="identifier"
             label="Email or Username"
             required
             placeholder="Enter your email or username"
@@ -77,15 +78,15 @@ export default function SignInForm({ onSubmit, isPending }: SignInFormProps) {
             loginWithGithub();
           }}
         />
-        <p className="text-sm text-center">
-          Already have an account?{" "}
+        <Typography variant="paragraph-sm" className="text-center">
+          Create an account?{" "}
           <Link
             className={"text-primary underline font-medium"}
-            href={AUTH_PATHS.SIGN_IN}
+            href={AUTH_PATHS.SIGN_UP}
           >
-            Sign in
+            Sign up
           </Link>
-        </p>
+        </Typography>
       </div>
     </div>
   );
