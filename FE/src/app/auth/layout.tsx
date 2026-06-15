@@ -1,4 +1,5 @@
 import { Logo } from "@/components/logo";
+import Quote from "@/components/quote";
 import { buttonVariants } from "@/components/ui/button";
 import { InteractiveGridPattern } from "@/features/auth/components/interactive-grid";
 import { cn } from "@/lib/utils";
@@ -38,16 +39,7 @@ export default function AuthLayout({
           )}
         />
         <div className="text-sidebar-foreground relative z-20 mt-auto">
-          <blockquote className="space-y-2">
-            <p className="text-lg">
-              &ldquo;This starter template has saved me countless hours of work
-              and helped me deliver projects to my clients faster than ever
-              before.&rdquo;
-            </p>
-            <footer className="text-sidebar-foreground/70 text-sm">
-              Random Dude
-            </footer>
-          </blockquote>
+          <Quote />
         </div>
       </div>
       <div className="flex h-full items-center justify-center p-4 lg:p-8">
