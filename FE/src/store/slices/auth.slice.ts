@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ITokenResponse } from "@/services/auth/auth.type";
 import { tokenStorage } from "@/lib/auth";
 import { RootState } from "..";
+import { ITeam } from "@/features/teams/types";
 
 interface AuthState {
   accessToken?: string | null;
@@ -9,6 +10,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  teamInfo?: ITeam | null;
 }
 
 const initialState: AuthState = {
@@ -17,6 +19,7 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  teamInfo: null,
 };
 
 export const authSlice = createSlice({
@@ -44,6 +47,10 @@ export const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+
+    setTeamInfo: (state, action: PayloadAction<ITeam>) => {
+      state.teamInfo = action.payload;
+    },
   },
   initialState,
 });
@@ -64,5 +71,10 @@ export const selectUser = (state: RootState) => {
   return state.auth.user;
 };
 
-export const { setTokens, logout, setLoading, setUser } = authSlice.actions;
+export const selectTeamInfo = (state: RootState) => {
+  return state.auth.teamInfo;
+};
+
+export const { setTokens, logout, setLoading, setUser, setTeamInfo } =
+  authSlice.actions;
 export default authSlice.reducer;

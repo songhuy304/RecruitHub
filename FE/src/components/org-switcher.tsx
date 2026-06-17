@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth, useOrganizationList } from "@clerk/nextjs";
 import { Icons } from "@/components/icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -20,16 +19,42 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useEffect } from "react";
 import { useUser } from "@/hooks/useUser";
 import { TEAM_PATHS } from "@/config/paths.config";
+import { useGetInfoTeam } from "@/features/teams/hooks/useGetInfoTeam";
+import { Skeleton } from "./ui/skeleton";
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
   const router = useRouter();
-  const user = useUser();
 
-  if (!user || !user.teamId) {
+  const user = useUser();
+  const { data, isPending: loading } = useGetInfoTeam();
+
+  const teamInfo = data?.data;
+
+  if (loading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg">
+            <Skeleton className="size-8 rounded-lg" />
+
+            <div
+              className={`grid flex-1 gap-1 ${
+                state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
+              }`}
+            >
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
+  if (!user?.teamId || !teamInfo) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
@@ -41,6 +66,7 @@ export function OrgSwitcher() {
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
               <Icons.add className="size-4" />
             </div>
+
             <div
               className={`grid flex-1 text-left text-sm leading-tight transition-all duration-200 ease-in-out ${
                 state === "collapsed"
@@ -49,15 +75,15 @@ export function OrgSwitcher() {
               }`}
             >
               <span className="truncate font-medium">Create your team</span>
+
               <span className="text-muted-foreground truncate text-xs">
                 Get started
               </span>
             </div>
+
             <Icons.chevronsUpDown
-              className={`ml-auto transition-all duration-200 ease-in-out ${
-                state === "collapsed"
-                  ? "invisible max-w-0 opacity-0"
-                  : "visible max-w-full opacity-100"
+              className={`ml-auto ${
+                state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
               }`}
             />
           </SidebarMenuButton>
@@ -66,112 +92,67 @@ export function OrgSwitcher() {
     );
   }
 
-  // return (
-  //   <SidebarMenu>
-  //     <SidebarMenuItem>
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <SidebarMenuButton
-  //             size="lg"
-  //             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-  //           >
-  //             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
-  //               {displayOrganization.hasImage &&
-  //               displayOrganization.imageUrl ? (
-  //                 <Image
-  //                   src={displayOrganization.imageUrl}
-  //                   alt={displayOrganization.name}
-  //                   width={32}
-  //                   height={32}
-  //                   className="size-full object-cover"
-  //                 />
-  //               ) : (
-  //                 <Icons.galleryVerticalEnd className="size-4" />
-  //               )}
-  //             </div>
-  //             <div
-  //               className={`grid flex-1 text-left text-sm leading-tight transition-all duration-200 ease-in-out ${
-  //                 state === "collapsed"
-  //                   ? "invisible max-w-0 overflow-hidden opacity-0"
-  //                   : "visible max-w-full opacity-100"
-  //               }`}
-  //             >
-  //               <span className="truncate font-medium">
-  //                 {displayOrganization.name}
-  //               </span>
-  //               <span className="text-muted-foreground truncate text-xs">
-  //                 {userMemberships.data.find(
-  //                   (m) => m.organization.id === displayOrganization.id,
-  //                 )?.role || "Organization"}
-  //               </span>
-  //             </div>
-  //             <Icons.chevronsUpDown
-  //               className={`ml-auto transition-all duration-200 ease-in-out ${
-  //                 state === "collapsed"
-  //                   ? "invisible max-w-0 opacity-0"
-  //                   : "visible max-w-full opacity-100"
-  //               }`}
-  //             />
-  //           </SidebarMenuButton>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent
-  //           className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-  //           align="start"
-  //           side={isMobile ? "bottom" : "right"}
-  //           sideOffset={4}
-  //         >
-  //           <DropdownMenuLabel className="text-muted-foreground text-xs">
-  //             Organizations
-  //           </DropdownMenuLabel>
-  //           {userMemberships.data.map((membership, index) => {
-  //             const isActive = membership.organization.id === orgId;
-  //             return (
-  //               <DropdownMenuItem
-  //                 key={membership.id}
-  //                 onClick={() =>
-  //                   handleOrganizationSwitch(membership.organization.id)
-  //                 }
-  //                 className="gap-2 p-2"
-  //               >
-  //                 <div className="flex size-6 items-center justify-center overflow-hidden rounded-md border">
-  //                   {membership.organization.hasImage &&
-  //                   membership.organization.imageUrl ? (
-  //                     <Image
-  //                       src={membership.organization.imageUrl}
-  //                       alt={membership.organization.name}
-  //                       width={24}
-  //                       height={24}
-  //                       className="size-full object-cover"
-  //                     />
-  //                   ) : (
-  //                     <Icons.galleryVerticalEnd className="size-3.5 shrink-0" />
-  //                   )}
-  //                 </div>
-  //                 {membership.organization.name}
-  //                 {isActive && <Icons.check className="ml-auto size-4" />}
-  //                 {!isActive && (
-  //                   <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-  //                 )}
-  //               </DropdownMenuItem>
-  //             );
-  //           })}
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem
-  //             className="gap-2 p-2"
-  //             onClick={() => {
-  //               router.push("/dashboard/workspaces");
-  //             }}
-  //           >
-  //             <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-  //               <Icons.add className="size-4" />
-  //             </div>
-  //             <div className="text-muted-foreground font-medium">
-  //               Add organization
-  //             </div>
-  //           </DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     </SidebarMenuItem>
-  //   </SidebarMenu>
-  // );
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                <Icons.galleryVerticalEnd className="size-4" />
+              </div>
+
+              <div
+                className={`grid flex-1 text-left text-sm leading-tight transition-all duration-200 ease-in-out ${
+                  state === "collapsed"
+                    ? "invisible max-w-0 overflow-hidden opacity-0"
+                    : "visible max-w-full opacity-100"
+                }`}
+              >
+                <span className="truncate font-medium">{teamInfo.name}</span>
+
+                <span className="text-muted-foreground truncate text-xs">
+                  {teamInfo.slug}
+                </span>
+              </div>
+
+              <Icons.chevronsUpDown
+                className={`ml-auto ${
+                  state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
+                }`}
+              />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            align="start"
+            side={isMobile ? "bottom" : "right"}
+          >
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              {teamInfo?.slug}
+            </DropdownMenuLabel>
+            <DropdownMenuItem className="gap-2 p-2">
+              <Icons.galleryVerticalEnd className="size-4" />
+              {teamInfo?.name}
+              <DropdownMenuShortcut>#{teamInfo?.id}</DropdownMenuShortcut>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onClick={() => router.push(TEAM_PATHS.TEAMS)}
+              className="gap-2 p-2"
+            >
+              <Icons.add className="size-4" />
+              Switch team
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
 }
