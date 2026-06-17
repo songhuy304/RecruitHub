@@ -1,13 +1,13 @@
 "use client";
 
-import { LoadingPage } from "@/components/loading-page";
-import { useVerifyToken } from "../hooks/useVerifyToken";
-import { useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import { AUTH_PATHS } from "@/config/paths.config";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setTokens } from "@/store";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { toast } from "sonner";
-import { AUTH_PATHS } from "@/config/paths.config";
+import { useVerifyToken } from "../hooks/useVerifyToken";
 
 interface IVerifyTokenViewProps {
   token: string;
@@ -31,6 +31,7 @@ const VerifyTokenView = ({ token }: IVerifyTokenViewProps) => {
                 refreshToken: refreshToken ?? "",
               }),
             );
+            route.push("/");
           },
           onError(error) {
             toast.error(error.message || "Failed to verify token");
@@ -42,10 +43,8 @@ const VerifyTokenView = ({ token }: IVerifyTokenViewProps) => {
   }, [token, mutate]);
 
   if (isPending) {
-    return <LoadingPage />;
+    return <Spinner />;
   }
-
-  return <div>asdasd</div>;
 };
 
 export { VerifyTokenView };

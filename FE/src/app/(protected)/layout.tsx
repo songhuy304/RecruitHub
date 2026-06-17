@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 import { createMetadata } from "@/lib/metadata";
 
-export const metadata = createMetadata("", "", {
+export const metadata = createMetadata("Home", "", {
   robots: {
     index: false,
     follow: false,
