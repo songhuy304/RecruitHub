@@ -10,6 +10,7 @@ import type {
   CreateTeamFormValues,
   JoinTeamFormValues,
 } from "../schemas/team.schema";
+import { AnimatePresence, motion } from "motion/react";
 
 function TeamSetupFlow() {
   const router = useRouter();
@@ -46,30 +47,45 @@ function TeamSetupFlow() {
     }
   };
 
+  const groups: Record<TeamSetupView, React.ReactNode> = {
+    choose: (
+      <AccountChooserCard
+        onSelectView={setView}
+        onPersonalAccount={handlePersonalAccount}
+      />
+    ),
+    create: (
+      <CreateTeamForm
+        onCancel={() => setView("choose")}
+        onSubmit={handleCreateTeam}
+        isPending={isPending}
+      />
+    ),
+    join: (
+      <JoinTeamForm
+        onCancel={() => setView("choose")}
+        onSubmit={handleJoinTeam}
+        isPending={isPending}
+      />
+    ),
+  };
+
+  const page = groups[view];
+
   return (
     <div className="flex">
-      {view === "choose" && (
-        <AccountChooserCard
-          onSelectView={setView}
-          onPersonalAccount={handlePersonalAccount}
-        />
-      )}
-
-      {view === "create" && (
-        <CreateTeamForm
-          onCancel={() => setView("choose")}
-          onSubmit={handleCreateTeam}
-          isPending={isPending}
-        />
-      )}
-
-      {view === "join" && (
-        <JoinTeamForm
-          onCancel={() => setView("choose")}
-          onSubmit={handleJoinTeam}
-          isPending={isPending}
-        />
-      )}
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={view}
+          initial={{ opacity: 0, x: 15 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -15 }}
+          transition={{ duration: 0.4, type: "spring" }}
+          className="flex flex-1"
+        >
+          {page}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
