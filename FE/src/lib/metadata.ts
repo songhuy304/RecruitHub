@@ -8,7 +8,7 @@ export function createMetadata(
   meta?: Metadata,
 ): Metadata {
   return {
-    title: `${title} | ${APP_NAME}`,
+    title: `${title ? `${title} | ` : ""}${APP_NAME}`,
     description,
     ...meta,
   };

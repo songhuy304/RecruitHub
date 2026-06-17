@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatarProfile } from "@/components/user-avatar-profile";
 import { useUser } from "@/hooks/useUser";
-import { SignOutButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 export function UserNav() {
   const user = useUser();
@@ -50,9 +49,6 @@ export function UserNav() {
             <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <SignOutButton redirectUrl="/auth/sign-in" />
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );

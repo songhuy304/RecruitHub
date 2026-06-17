@@ -85,7 +85,7 @@ function Button({
       data-slot="button"
       className={cn(
         buttonVariants({ variant, size }),
-        "relative inline-flex items-center justify-center",
+        "relative inline-flex items-center justify-center gap-2",
         className,
       )}
       disabled={disabled || isLoading}
@@ -94,19 +94,25 @@ function Button({
     >
       <span className="inline-flex items-center gap-2">{children}</span>
 
-      <motion.span
-        initial={false}
-        animate={{
-          opacity: isLoading ? 1 : 0,
-        }}
-        transition={{
-          duration: 0.2,
-          ease: "easeOut",
-        }}
-        className="absolute left-[calc(50%+2rem)] flex items-center justify-center"
-      >
-        <Spinner />
-      </motion.span>
+      {isLoading && (
+        <motion.span
+          initial={{
+            opacity: 0,
+            x: -7,
+            scale: 0.9,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            scale: 1,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
+        >
+          <Spinner />
+        </motion.span>
+      )}
     </button>
   );
 }

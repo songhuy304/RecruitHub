@@ -4,23 +4,20 @@ import { fontVariables } from "@/components/themes/font.config";
 import { DEFAULT_THEME, THEMES } from "@/components/themes/theme.config";
 import ThemeProvider from "@/components/themes/theme-provider";
 import { cn } from "@/lib/utils";
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import { cookies } from "next/headers";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "../styles/globals.css";
 import ReduxProvider from "@/components/layout/redux-provider";
-import Script from "next/script";
+import { createMetadata } from "@/lib/metadata";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
 };
 
-export const metadata: Metadata = {
-  title: "Next Shadcn",
-  description: "Basic dashboard with Next.js and Shadcn",
-};
+export const metadata = createMetadata("", "");
 
 export const viewport: Viewport = {
   themeColor: META_THEME_COLORS.light,
