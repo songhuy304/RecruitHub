@@ -3,21 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { AccountChooserCard, type TeamSetupView } from "./account-chooser-card";
+import { AnimatePresence, motion } from "motion/react";
+import { Card } from "@/components/ui/card";
+import { TeamSidebar } from "./team-sidebar";
+import { TeamMainPanel } from "./team-main-panel";
 import { CreateTeamForm } from "../forms/create-team-form";
 import { JoinTeamForm } from "../forms/join-team-form";
 import type {
   CreateTeamFormValues,
   JoinTeamFormValues,
 } from "../schemas/team.schema";
-import { AnimatePresence, motion } from "motion/react";
-import { useCreateTeam } from "../hooks";
+import { useCreateTeam, useGetInfoTeam } from "../hooks";
+
+type TeamSetupView = "overview" | "create" | "join";
 
 function TeamSetupFlow() {
   const router = useRouter();
+  useGetInfoTeam();
   const { mutateAsync: createTeam, isPending: isCreateTeamPending } =
     useCreateTeam();
-  const [view, setView] = useState<TeamSetupView>("choose");
+  const [view, setView] = useState<TeamSetupView>("overview");
   const [isPending, setIsPending] = useState(false);
 
   const handlePersonalAccount = () => {
@@ -33,6 +38,7 @@ function TeamSetupFlow() {
       });
       form.reset();
       toast.success(`Team "${values.name}" created`);
+      setView("overview");
     } catch {
       toast.error("Failed to create team");
       throw new Error("Failed to create team");
@@ -44,7 +50,7 @@ function TeamSetupFlow() {
     try {
       // TODO: connect to team join API
       toast.success(`Joined team with code ${values.inviteCode}`);
-      setView("choose");
+      setView("overview");
     } catch {
       toast.error("Failed to join team");
     } finally {
@@ -52,46 +58,49 @@ function TeamSetupFlow() {
     }
   };
 
-  const groups: Record<TeamSetupView, React.ReactNode> = {
-    choose: (
-      <AccountChooserCard
-        onSelectView={setView}
-        onPersonalAccount={handlePersonalAccount}
-      />
-    ),
-    create: (
-      <CreateTeamForm
-        onCancel={() => setView("choose")}
-        onSubmit={handleCreateTeam}
-        isPending={isCreateTeamPending}
-      />
-    ),
-    join: (
-      <JoinTeamForm
-        onCancel={() => setView("choose")}
-        onSubmit={handleJoinTeam}
-        isPending={isPending}
-      />
-    ),
-  };
-
-  const page = groups[view];
+  const mainContent =
+    view === "create" ? (
+      <div className="flex flex-1 justify-center">
+        <CreateTeamForm
+          onCancel={() => setView("overview")}
+          onSubmit={handleCreateTeam}
+          isPending={isCreateTeamPending}
+        />
+      </div>
+    ) : view === "join" ? (
+      <div className="flex flex-1 justify-center">
+        <JoinTeamForm
+          onCancel={() => setView("overview")}
+          onSubmit={handleJoinTeam}
+          isPending={isPending}
+        />
+      </div>
+    ) : (
+      <TeamMainPanel />
+    );
 
   return (
-    <div className="flex">
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          key={view}
-          initial={{ opacity: 0, x: 15 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -15 }}
-          transition={{ duration: 0.4, type: "spring" }}
-          className="flex flex-1"
-        >
-          {page}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+    <Card className="gap-0 py-0 md:min-h-[670px]">
+      <div className="flex flex-col divide-y lg:flex-row lg:divide-x lg:divide-y-0 h-full">
+        <TeamSidebar
+          onSelectView={setView}
+          onPersonalAccount={handlePersonalAccount}
+        />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={view}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="flex min-w-0 flex-1 flex-col p-6"
+          >
+            {mainContent}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </Card>
   );
 }
 

@@ -1,6 +1,6 @@
-import PageContainer from '@/components/layout/page-container';
-import { teamInfoContent } from '@/config/infoconfig';
-import { TeamSetupFlow } from './components/team-setup-flow';
+import PageContainer from "@/components/layout/page-container";
+import { TeamSetupFlow } from "./components/team-setup-flow";
+import { teamInfoContent } from "@/config/infoconfig";
 
 function TeamViewPage() {
   return (
