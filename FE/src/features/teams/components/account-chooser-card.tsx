@@ -24,12 +24,7 @@ function AccountChooserCard({
   onSelectView,
   onPersonalAccount,
 }: AccountChooserCardProps) {
-  const user = useUser();
-  const initial = (
-    user?.fullName?.[0] ??
-    user?.userName?.[0] ??
-    "P"
-  ).toUpperCase();
+  const initial = "P".toUpperCase();
 
   return (
     <TeamSetupCard>

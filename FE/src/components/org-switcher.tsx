@@ -1,7 +1,6 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import {
@@ -13,25 +12,50 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useUser } from "@/hooks/useUser";
+
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { TEAM_PATHS } from "@/config/paths.config";
-import { useGetInfoTeam } from "@/features/teams/hooks/useGetInfoTeam";
-import { Skeleton } from "./ui/skeleton";
+import { useGetTeams, useSwitchTeam } from "@/features/teams/hooks";
+import { useUser } from "@/hooks/useUser";
+
+import { type ITeam } from "@/features/teams/types"; // sửa path theo project bạn
+import { useAppDispatch } from "@/hooks/useRedux";
+import { setTokens } from "@/store";
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const user = useUser();
-  const { data, isPending: loading } = useGetInfoTeam();
+  const { user } = useUser();
 
-  const teamInfo = data?.data;
+  const { data: teams = [], isPending: loading } = useGetTeams();
+  const { mutate: switchTeam } = useSwitchTeam();
+
+  const currentTeam = teams.find((team: ITeam) => {
+    return team.id === user?.currentTeamId;
+  });
+
+  const currentTeamRole = currentTeam
+    ? `org:${user?.currentTeam?.teamRole}` || "Get started"
+    : "Get started";
+
+  const handleSwitchTeam = (teamId: number) => {
+    switchTeam(teamId, {
+      onSuccess: (data) => {
+        dispatch(setTokens(data.data));
+        router.refresh();
+      },
+    });
+  };
 
   if (loading) {
     return (
@@ -54,44 +78,6 @@ export function OrgSwitcher() {
     );
   }
 
-  if (!user?.teamId || !teamInfo) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            size="lg"
-            onClick={() => router.push(TEAM_PATHS.TEAMS)}
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          >
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
-              <Icons.add className="size-4" />
-            </div>
-
-            <div
-              className={`grid flex-1 text-left text-sm leading-tight transition-all duration-200 ease-in-out ${
-                state === "collapsed"
-                  ? "invisible max-w-0 overflow-hidden opacity-0"
-                  : "visible max-w-full opacity-100"
-              }`}
-            >
-              <span className="truncate font-medium">Create your team</span>
-
-              <span className="text-muted-foreground truncate text-xs">
-                Get started
-              </span>
-            </div>
-
-            <Icons.chevronsUpDown
-              className={`ml-auto ${
-                state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
-              }`}
-            />
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
-  }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -99,56 +85,85 @@ export function OrgSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="
+              data-[state=open]:bg-sidebar-accent
+              data-[state=open]:text-sidebar-accent-foreground
+              "
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+              <div
+                className="
+                bg-sidebar-primary
+                text-sidebar-primary-foreground
+                flex size-8 items-center justify-center
+                rounded-lg
+              "
+              >
                 <Icons.galleryVerticalEnd className="size-4" />
               </div>
 
               <div
-                className={`grid flex-1 text-left text-sm leading-tight transition-all duration-200 ease-in-out ${
+                className={`grid flex-1 text-left text-sm ${
                   state === "collapsed"
                     ? "invisible max-w-0 overflow-hidden opacity-0"
-                    : "visible max-w-full opacity-100"
+                    : ""
                 }`}
               >
-                <span className="truncate font-medium">{teamInfo.name}</span>
+                <span className="truncate font-medium">
+                  {currentTeam?.name || "Create your team"}
+                </span>
 
                 <span className="text-muted-foreground truncate text-xs">
-                  {teamInfo.slug}
+                  {currentTeamRole}
                 </span>
               </div>
 
-              <Icons.chevronsUpDown
-                className={`ml-auto ${
-                  state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
-                }`}
-              />
+              <Icons.chevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="
+            w-[--radix-dropdown-menu-trigger-width]
+            min-w-56 rounded-lg
+            "
             align="start"
             side={isMobile ? "bottom" : "right"}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              {teamInfo?.slug}
+              Teams
             </DropdownMenuLabel>
-            <DropdownMenuItem className="gap-2 p-2">
-              <Icons.galleryVerticalEnd className="size-4" />
-              {teamInfo?.name}
-              <DropdownMenuShortcut>#{teamInfo?.id}</DropdownMenuShortcut>
-            </DropdownMenuItem>
+
+            {teams.map((team: ITeam) => {
+              const isActive = team.id === user?.currentTeamId;
+
+              return (
+                <DropdownMenuItem
+                  key={team.id}
+                  className="gap-2 p-2"
+                  onClick={() => {
+                    handleSwitchTeam(team.id);
+                  }}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <Icons.galleryVerticalEnd className="size-3.5" />
+                  </div>
+                  <span>{team.name}</span>
+                  {isActive && <Icons.check className="ml-auto size-4" />}
+                  {!isActive && (
+                    <DropdownMenuShortcut>#{team.id}</DropdownMenuShortcut>
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
 
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              onClick={() => router.push(TEAM_PATHS.TEAMS)}
               className="gap-2 p-2"
+              onClick={() => router.push(TEAM_PATHS.TEAMS)}
             >
               <Icons.add className="size-4" />
-              Switch team
+              Add new team
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,6 +1,18 @@
+export enum ETEAM_TYPE {
+  PERSONAL = "personal",
+  ORGANIZATION = "organization",
+}
+
 export interface ITeam {
   id: number;
   name: string;
   inviteCode: string;
   slug: string;
+  type: ETEAM_TYPE;
+}
+
+export interface ICreateTeamPayload {
+  name: string;
+  slug: string;
+  logoUrl: string | null;
 }

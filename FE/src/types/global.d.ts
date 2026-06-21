@@ -1,6 +1,11 @@
+import { ITeam } from "@/features/teams/types";
+
 export {};
 
 declare global {
+  interface CurrentTeam extends ITeam {
+    teamRole: string;
+  }
   interface User {
     id: number;
     userName: string;
@@ -9,7 +14,7 @@ declare global {
     avatar: string;
     role: string;
     isVerified: boolean;
-    teamId: number;
-    teamRole: string;
+    currentTeamId: number;
+    currentTeam: CurrentTeam;
   }
 }

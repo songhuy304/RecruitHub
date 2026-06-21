@@ -11,9 +11,12 @@ import type {
   JoinTeamFormValues,
 } from "../schemas/team.schema";
 import { AnimatePresence, motion } from "motion/react";
+import { useCreateTeam } from "../hooks";
 
 function TeamSetupFlow() {
   const router = useRouter();
+  const { mutate: createTeam, isPending: isCreateTeamPending } =
+    useCreateTeam();
   const [view, setView] = useState<TeamSetupView>("choose");
   const [isPending, setIsPending] = useState(false);
 
@@ -22,15 +25,15 @@ function TeamSetupFlow() {
   };
 
   const handleCreateTeam = async (values: CreateTeamFormValues) => {
-    setIsPending(true);
     try {
-      // TODO: connect to team create API
+      createTeam({
+        logoUrl: "",
+        name: values.name,
+        slug: values.slug,
+      });
       toast.success(`Team "${values.name}" created`);
-      setView("choose");
     } catch {
       toast.error("Failed to create team");
-    } finally {
-      setIsPending(false);
     }
   };
 
@@ -58,7 +61,7 @@ function TeamSetupFlow() {
       <CreateTeamForm
         onCancel={() => setView("choose")}
         onSubmit={handleCreateTeam}
-        isPending={isPending}
+        isPending={isCreateTeamPending}
       />
     ),
     join: (

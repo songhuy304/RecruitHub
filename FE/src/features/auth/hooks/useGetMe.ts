@@ -8,7 +8,7 @@ const useGetMe = () => {
   const token = useAppSelector(selectAccessToken);
 
   return useQuery({
-    queryKey: QUERY_KEY.AUTH.ME,
+    queryKey: [QUERY_KEY.USER.ROOT],
     queryFn: () => userService.getMe(),
     enabled: !!token,
     retry: 1,
