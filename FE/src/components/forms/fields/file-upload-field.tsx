@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { useStore } from "@tanstack/react-form";
+
 import { FileUploader } from "@/components/file-uploader";
 import { FieldDescription, FieldLabel } from "@/components/ui/field";
+
 import {
   useFieldContext,
   FormFieldSet,
@@ -11,6 +14,8 @@ import {
   createFormField,
 } from "@/components/ui/form-context";
 
+import { useUploadFile } from "@/hooks/use-upload-file";
+
 interface FileUploadFieldProps {
   label: string;
   description?: string;
@@ -18,6 +23,7 @@ interface FileUploadFieldProps {
   maxSize?: number;
   maxFiles?: number;
   className?: string;
+  folderPath?: string;
 }
 
 export function FileUploadField({
@@ -25,11 +31,48 @@ export function FileUploadField({
   description,
   required,
   maxSize,
-  maxFiles,
+  maxFiles = 1,
   className,
+  folderPath,
 }: FileUploadFieldProps) {
   const field = useFieldContext();
-  const value = useStore(field.store, (s) => s.value) as File[] | undefined;
+  const value = useStore(field.store, (s) => s.value) as string | undefined;
+  const { mutateAsync: uploadFile, isPending } = useUploadFile();
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleValueChange: Dispatch<SetStateAction<File[]>> = (nextValue) => {
+    setFiles((prev) => {
+      const next =
+        typeof nextValue === "function" ? nextValue(prev) : nextValue;
+
+      if (!next.length && !value) {
+        field.handleChange("");
+      }
+
+      return next;
+    });
+  };
+
+  const handleUpload = async (uploadFiles: File[]) => {
+    if (!uploadFiles.length) {
+      field.handleChange("");
+      return;
+    }
+
+    try {
+      const res = await uploadFile({
+        file: uploadFiles[0],
+        folderPath,
+      });
+
+      field.handleChange(res.data.url);
+    } catch (error) {
+      console.error(error);
+
+      field.handleChange("");
+      throw error;
+    }
+  };
 
   return (
     <FormFieldSet>
@@ -38,17 +81,24 @@ export function FileUploadField({
           {label}
           {required && <span className="text-red-500"> *</span>}
         </FieldLabel>
+
         <div onBlur={field.handleBlur}>
           <FileUploader
-            value={value}
-            onValueChange={field.handleChange}
+            value={files}
+            onValueChange={handleValueChange}
+            onUpload={handleUpload}
             maxSize={maxSize}
             maxFiles={maxFiles}
             className={className}
+            disabled={isPending}
           />
         </div>
+
+        {value && <input type="hidden" value={value} readOnly />}
+
         {description && <FieldDescription>{description}</FieldDescription>}
       </FormField>
+
       <FormFieldError />
     </FormFieldSet>
   );
