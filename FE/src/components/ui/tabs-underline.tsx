@@ -145,7 +145,7 @@ function TabsUnderline({
 
       <div
         className={cn(
-          "relative mt-6 w-full min-h-0 overflow-hidden",
+          "relative w-full min-h-0 overflow-hidden",
           contentClassName
         )}
       >

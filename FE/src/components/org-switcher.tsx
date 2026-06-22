@@ -29,6 +29,7 @@ import { useUser } from "@/hooks/useUser";
 import { type ITeam } from "@/features/teams/types"; // sửa path theo project bạn
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setTokens } from "@/store";
+import { TeamAvatar } from "./team-avatar";
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
@@ -90,16 +91,23 @@ export function OrgSwitcher() {
               data-[state=open]:text-sidebar-accent-foreground
               "
             >
-              <div
-                className="
+              {currentTeam?.logoUrl ? (
+                <TeamAvatar
+                  fallback={currentTeam?.name || "TN"}
+                  src={currentTeam?.logoUrl || ""}
+                />
+              ) : (
+                <div
+                  className="
                 bg-sidebar-primary
                 text-sidebar-primary-foreground
                 flex size-8 items-center justify-center
                 rounded-lg
               "
-              >
-                <Icons.galleryVerticalEnd className="size-4" />
-              </div>
+                >
+                  <Icons.galleryVerticalEnd className="size-4" />
+                </div>
+              )}
 
               <div
                 className={`grid flex-1 text-left text-sm ${

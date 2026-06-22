@@ -27,6 +27,7 @@ import {
   IconClock,
   IconCode,
   IconCommand,
+  IconCopy,
   IconCreditCard,
   IconDeviceLaptop,
   IconDots,
@@ -89,8 +90,8 @@ import {
   IconVideo,
   IconCrown,
   IconX,
-  IconBrandGoogle
-} from '@tabler/icons-react';
+  IconBrandGoogle,
+} from "@tabler/icons-react";
 
 export type Icon = React.ComponentType<IconProps>;
 
@@ -105,6 +106,7 @@ export const Icons = {
   close: IconX,
   clock: IconClock,
   code: IconCode,
+  copy: IconCopy,
   dots: IconDots,
   ellipsis: IconDotsVertical,
   externalLink: IconExternalLink,
@@ -223,5 +225,5 @@ export const Icons = {
   slash: IconSlash,
   calendar: IconCalendar,
   galleryVerticalEnd: IconStack2,
-  moreHorizontal: IconDots
+  moreHorizontal: IconDots,
 };

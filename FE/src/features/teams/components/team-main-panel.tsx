@@ -3,142 +3,39 @@
 import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsUnderline } from "@/components/ui/tabs-underline";
 import { Typography } from "@/components/ui/typography";
-import { useAppSelector } from "@/hooks/useRedux";
-import { selectTeamInfo } from "@/store";
 import { ETEAM_TYPE, type ITeam } from "../types";
-import { TeamAvatar } from "./team-avatar";
-
-const TEAM_STATS = [
-  {
-    label: "Total team members",
-    value: "24",
-    icon: Icons.teams,
-  },
-  {
-    label: "Active projects",
-    value: "8",
-    icon: Icons.workspace,
-  },
-  {
-    label: "Pending invites",
-    value: "3",
-    icon: Icons.mail,
-  },
-] as const;
-
-const RECENT_ACTIVITY = [
-  {
-    id: 1,
-    icon: Icons.user,
-    title: "A new member joined the team",
-    subtitle: "Alex Johnson joined",
-    time: "2h ago",
-  },
-  {
-    id: 2,
-    icon: Icons.workspace,
-    title: 'Project "Q2 Hiring" was created',
-    subtitle: "Created by you",
-    time: "1d ago",
-  },
-  {
-    id: 3,
-    icon: Icons.settings,
-    title: "Team settings updated",
-    subtitle: "Notification preferences changed",
-    time: "3d ago",
-  },
-] as const;
-
-function StatCard({
-  value,
-  label,
-  icon: Icon,
-}: {
-  value: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-}) {
-  return (
-    <Card className="gap-0 py-5">
-      <CardContent className="flex items-center justify-between">
-        <div>
-          <Typography as="p" variant="h3" className="font-bold">
-            {value}
-          </Typography>
-          <Typography
-            as="p"
-            variant="paragraph-sm"
-            className="text-muted-foreground mt-1"
-          >
-            {label}
-          </Typography>
-        </div>
-        <div className="bg-muted flex size-10 items-center justify-center rounded-lg">
-          <Icon className="text-muted-foreground size-5" />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function TeamOverviewContent() {
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid gap-4 sm:grid-cols-3">
-        {TEAM_STATS.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
-        ))}
-      </div>
-
-      <Card>
-        <CardHeader className="pb-4">
-          <CardTitle>Recent activity</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-0 divide-y">
-          {RECENT_ACTIVITY.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-            >
-              <div className="bg-muted flex size-9 shrink-0 items-center justify-center rounded-lg">
-                <item.icon className="text-muted-foreground size-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <Typography as="p" variant="label-sm">
-                  {item.title}
-                </Typography>
-                <Typography
-                  as="p"
-                  variant="paragraph-sm"
-                  className="text-muted-foreground mt-0.5"
-                >
-                  {item.subtitle}
-                </Typography>
-              </div>
-              <Typography
-                as="span"
-                variant="paragraph-xs"
-                className="text-muted-foreground shrink-0"
-              >
-                {item.time}
-              </Typography>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+import { TeamDetailInvite } from "./team-detail-invite";
+import { TeamDetailMember } from "./team-detail-member";
+import { TeamDetailOverview } from "./team-detail-overview";
+import { TeamDetailSetting } from "./team-detail-setting";
+import { useSwitchTeam } from "../hooks";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/hooks/useRedux";
+import { setTokens } from "@/store";
+import { TeamAvatar } from "@/components/team-avatar";
 
 interface TeamMainPanelProps {
   selectedTeam: ITeam | null;
+  user: User | null;
 }
 
-function TeamMainPanel({ selectedTeam }: TeamMainPanelProps) {
+function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
+  const isCurrentTeamId = user?.currentTeamId === selectedTeam?.id;
+  const isPersonalAccount = selectedTeam?.type === ETEAM_TYPE.PERSONAL;
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { mutate: switchTeam, isPending } = useSwitchTeam();
+
+  const handleSwitchTeam = (teamId: number) => {
+    switchTeam(teamId, {
+      onSuccess: (data) => {
+        dispatch(setTokens(data.data));
+        router.refresh();
+      },
+    });
+  };
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4 pb-4 sm:gap-6">
@@ -152,83 +49,65 @@ function TeamMainPanel({ selectedTeam }: TeamMainPanelProps) {
             <Typography as="h3" variant="h4" className="font-semibold">
               {selectedTeam?.name}
             </Typography>
-            {/* <Badge className="border-emerald-500/30 bg-emerald-500/15 text-emerald-500">
-              Active
-            </Badge> */}
+            {isCurrentTeamId && <Badge variant="success">Active</Badge>}
           </div>
+        </div>
+        {!isCurrentTeamId && (
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => handleSwitchTeam(selectedTeam?.id || 0)}
+            disabled={isPending}
+            isLoading={isPending}
+          >
+            <Icons.chevronLeft className="size-4" />
+            Switch team
+          </Button>
+        )}
+      </div>
+      {isPersonalAccount ? (
+        <div className="flex items-center justify-center gap-2 h-full">
           <Typography
             as="p"
             variant="paragraph-sm"
-            className="text-muted-foreground mt-1"
+            className="text-muted-foreground"
           >
-            You&apos;re currently working in this team
+            This workspace belongs only to you. Create or switch to a team to
+            collaborate with others.
           </Typography>
         </div>
-        <Button variant="outline" className="gap-2">
-          <Icons.settings className="size-4" />
-          Team settings
-        </Button>
-      </div>
-
-      <TabsUnderline
-        defaultValue="overview"
-        className="gap-6"
-        items={[
-          {
-            value: "overview",
-            label: "Overview",
-            content: <TeamOverviewContent />,
-          },
-          {
-            value: "members",
-            label: "Members",
-            icon: Icons.user,
-            content: (
-              <Card className="py-12 text-center">
-                <Typography
-                  as="p"
-                  variant="paragraph-sm"
-                  className="text-muted-foreground"
-                >
-                  Members management coming soon.
-                </Typography>
-              </Card>
-            ),
-          },
-          {
-            value: "invites",
-            label: "Invites",
-            icon: Icons.mail,
-            content: (
-              <Card className="py-12 text-center">
-                <Typography
-                  as="p"
-                  variant="paragraph-sm"
-                  className="text-muted-foreground"
-                >
-                  Invites management coming soon.
-                </Typography>
-              </Card>
-            ),
-          },
-          {
-            value: "settings",
-            label: "Settings",
-            icon: Icons.settings,
-            content: (
-              <Card className="py-12 text-center">
-                <Typography
-                  as="p"
-                  variant="paragraph-sm"
-                  className="text-muted-foreground"
-                >
-                  Team settings coming soon.
-                </Typography>
-              </Card>
-            ),
-          },
-        ]}
-      />
+      ) : (
+        <TabsUnderline
+          defaultValue="overview"
+          className="gap-6"
+          items={[
+            {
+              value: "overview",
+              label: "Overview",
+              icon: Icons.adjustments,
+              content: <TeamDetailOverview />,
+            },
+            {
+              value: "members",
+              label: "Members",
+              icon: Icons.user,
+              content: <TeamDetailMember />,
+            },
+            {
+              value: "invites",
+              label: "Invites",
+              icon: Icons.mail,
+              content: <TeamDetailInvite />,
+            },
+            {
+              value: "settings",
+              label: "Settings",
+              icon: Icons.settings,
+              content: <TeamDetailSetting />,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

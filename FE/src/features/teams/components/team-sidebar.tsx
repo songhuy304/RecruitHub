@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { ITeam } from "../types";
-import { TeamAvatar } from "./team-avatar";
+import { TeamAvatar } from "../../../components/team-avatar";
+import { LoadingOverlay } from "@/components/ui/loading-overlay";
 
 interface TeamSidebarProps {
   onSelectView: (view: "create" | "join") => void;
@@ -38,7 +39,7 @@ function TeamSidebarItem({
       onClick={() => onSelect(team)}
       className={cn(
         "h-auto w-full justify-start gap-3 rounded-lg px-3 py-2.5 transition-all duration-300 relative",
-        isSelected && "bg-accent",
+        isSelected && "bg-accent"
       )}
     >
       <TeamAvatar
@@ -61,19 +62,7 @@ function TeamSidebarItem({
           </Typography>
         </div>
 
-        {isCurrent && (
-          <Badge
-            className="
-              border-emerald-500/30 
-              bg-emerald-500/15 
-              px-1.5 py-0 
-              text-[10px] 
-              text-emerald-500
-              "
-          >
-            Active
-          </Badge>
-        )}
+        {isCurrent && <Badge variant="success">Active</Badge>}
       </div>
 
       <div
@@ -103,7 +92,8 @@ function TeamSidebar({
   };
 
   return (
-    <aside className="flex w-full shrink-0 flex-col lg:w-80 h-full">
+    <aside className="flex w-full shrink-0 flex-col lg:w-80 h-full relative overflow-hidden">
+      <LoadingOverlay loading={isLoading} />
       <div className="mt-4 px-5">
         <div className="mb-2 flex items-center justify-between">
           <Typography

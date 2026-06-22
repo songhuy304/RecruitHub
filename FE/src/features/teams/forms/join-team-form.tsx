@@ -14,6 +14,7 @@ import {
   type JoinTeamFormValues,
 } from "../schemas/team.schema";
 import { TeamSetupCard } from "../components/team-setup-card";
+import { Typography } from "@/components/ui/typography";
 
 interface JoinTeamFormProps {
   onCancel: () => void;
@@ -41,17 +42,15 @@ function JoinTeamForm({
   const { FormTextField } = useFormFields<JoinTeamFormValues>();
 
   return (
-    <TeamSetupCard>
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Join team</CardTitle>
-        <CardDescription>
-          Enter the invite code shared by your team admin.
-        </CardDescription>
-      </CardHeader>
+    <div>
+      <Typography variant="h4">Join team</Typography>
+      <Typography color="muted" variant="paragraph-sm" copy>
+        Enter the invite code shared by your team admin.
+      </Typography>
 
-      <CardContent>
+      <div className="p-0 mt-4 max-w-lg">
         <form.AppForm>
-          <form.Form className="p-0">
+          <form.Form className="">
             <FormTextField
               name="inviteCode"
               label="Invite code"
@@ -59,17 +58,16 @@ function JoinTeamForm({
             />
           </form.Form>
         </form.AppForm>
-      </CardContent>
-
-      <CardFooter className="justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" isLoading={isPending}>
-          Join team
-        </Button>
-      </CardFooter>
-    </TeamSetupCard>
+        <div className="justify-end gap-4 flex items-center mt-4">
+          <Button type="button" variant="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" isLoading={isPending}>
+            Join team
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 

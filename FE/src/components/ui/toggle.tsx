@@ -1,46 +1,87 @@
-'use client';
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-import * as React from 'react';
-import * as TogglePrimitive from '@radix-ui/react-toggle';
-import { cva, type VariantProps } from 'class-variance-authority';
+export const typographyVariants = cva("", {
+  variants: {
+    variant: {
+      h1: "text-5xl font-medium tracking-tight",
+      h2: "text-4xl font-medium tracking-tight",
+      h3: "text-3xl font-medium tracking-tight",
+      h4: "text-2xl font-medium",
+      h5: "text-xl font-medium",
+      h6: "text-lg font-medium",
 
-import { cn } from '@/lib/utils';
-
-const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-[color,box-shadow] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap",
-  {
-    variants: {
-      variant: {
-        default: 'bg-transparent',
-        outline:
-          'border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground'
-      },
-      size: {
-        default: 'h-9 px-2 min-w-9',
-        sm: 'h-8 px-1.5 min-w-8',
-        lg: 'h-10 px-2.5 min-w-10'
-      }
+      label: "text-sm font-medium",
+      body: "text-base",
+      small: "text-sm",
+      xs: "text-xs",
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default'
-    }
-  }
-);
 
-function Toggle({
-  className,
-  variant,
-  size,
-  ...props
-}: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) {
-  return (
-    <TogglePrimitive.Root
-      data-slot='toggle'
-      className={cn(toggleVariants({ variant, size, className }))}
-      {...props}
-    />
-  );
+    color: {
+      default: "text-foreground",
+      muted: "text-muted-foreground",
+      primary: "text-primary",
+      success: "text-green-500",
+      danger: "text-red-500",
+    },
+
+    align: {
+      left: "text-left",
+      center: "text-center",
+      right: "text-right",
+    },
+  },
+
+  defaultVariants: {
+    variant: "body",
+    color: "default",
+    align: "left",
+  },
+});
+
+type Variant = NonNullable<VariantProps<typeof typographyVariants>["variant"]>;
+
+const defaultTag: Record<Variant, React.ElementType> = {
+  h1: "h1",
+  h2: "h2",
+  h3: "h3",
+  h4: "h4",
+  h5: "h5",
+  h6: "h6",
+
+  label: "span",
+  body: "p",
+  small: "p",
+  xs: "span",
+};
+
+export interface TypographyProps
+  extends
+    React.HTMLAttributes<HTMLElement>,
+    VariantProps<typeof typographyVariants> {
+  as?: React.ElementType;
 }
 
-export { Toggle, toggleVariants };
+export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
+  ({ as, variant = "body", className, ...props }, ref) => {
+    const Component = as || defaultTag[variant];
+
+    return (
+      <Component
+        ref={ref}
+        className={cn(
+          typographyVariants({
+            variant,
+            color: props.color,
+            align: props.align,
+          }),
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+
+Typography.displayName = "Typography";

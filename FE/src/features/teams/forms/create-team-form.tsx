@@ -14,6 +14,8 @@ import {
   type CreateTeamFormValues,
 } from "../schemas/team.schema";
 import { generateSlug } from "@/lib/utils";
+import { Heading } from "@/components/ui/heading";
+import { Typography } from "@/components/ui/typography";
 
 interface CreateTeamFormProps {
   onCancel: () => void;
@@ -45,52 +47,51 @@ function CreateTeamForm({
 
   return (
     <form.AppForm>
-      <form.Form className="p-0">
-        <TeamSetupCard>
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold">Create team</CardTitle>
-          </CardHeader>
+      <form.Form className="p-0 max-w-lg">
+        <Typography variant={"h4"}>Create your team</Typography>
+        <Typography variant={"paragraph-sm"}>
+          set up your team and start collaborating
+        </Typography>
 
-          <CardContent className="flex flex-col gap-6">
-            <FormFileUploadField
-              name="logoUrl"
-              label="Logo"
-              className="m-h-24"
-              description="Recommended size 1:1, up to 10MB."
-              maxSize={10 * 1024 * 1024}
-              maxFiles={1}
-            />
+        <div className="flex flex-col gap-4 mt-4">
+          <FormFileUploadField
+            name="logoUrl"
+            label="Logo"
+            className="m-h-24"
+            description="Recommended size 1:1, up to 10MB."
+            maxSize={10 * 1024 * 1024}
+            maxFiles={1}
+          />
 
-            <FormTextField
-              name="name"
-              label="Name"
-              placeholder="Enter your team name"
-              listeners={{
-                onChange: ({ value }) => {
-                  form.setFieldValue(
-                    "slug",
-                    generateSlug((value as string) ?? "")
-                  );
-                },
-              }}
-            />
-            <FormTextField
-              name="slug"
-              label="Slug"
-              placeholder="Enter team slug"
-              disabled
-            />
-          </CardContent>
+          <FormTextField
+            name="name"
+            label="Name"
+            placeholder="Enter your team name"
+            listeners={{
+              onChange: ({ value }) => {
+                form.setFieldValue(
+                  "slug",
+                  generateSlug((value as string) ?? ""),
+                );
+              },
+            }}
+          />
+          <FormTextField
+            name="slug"
+            label="Slug"
+            placeholder="Enter team slug"
+            disabled
+          />
+        </div>
 
-          <CardFooter className="justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button type="submit" isLoading={isPending}>
-              Create team
-            </Button>
-          </CardFooter>
-        </TeamSetupCard>
+        <div className="flex items-center justify-end gap-4 mt-4">
+          <Button type="button" variant="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" isLoading={isPending}>
+            Create team
+          </Button>
+        </div>
       </form.Form>
     </form.AppForm>
   );
