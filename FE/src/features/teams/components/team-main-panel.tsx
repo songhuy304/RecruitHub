@@ -9,15 +9,7 @@ import { Typography } from "@/components/ui/typography";
 import { useAppSelector } from "@/hooks/useRedux";
 import { selectTeamInfo } from "@/store";
 import { ETEAM_TYPE, type ITeam } from "../types";
-import { TeamAvatar } from "./team-sidebar";
-
-const MOCK_ACTIVE_TEAM: ITeam = {
-  id: 1,
-  name: "RecruitHub Team",
-  inviteCode: "RH-2024",
-  slug: "recruithub-team",
-  type: ETEAM_TYPE.ORGANIZATION,
-};
+import { TeamAvatar } from "./team-avatar";
 
 const TEAM_STATS = [
   {
@@ -142,22 +134,27 @@ function TeamOverviewContent() {
   );
 }
 
-function TeamMainPanel() {
-  const activeTeam = useAppSelector(selectTeamInfo);
-  const displayTeam = activeTeam ?? MOCK_ACTIVE_TEAM;
+interface TeamMainPanelProps {
+  selectedTeam: ITeam | null;
+}
 
+function TeamMainPanel({ selectedTeam }: TeamMainPanelProps) {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4 pb-4 sm:gap-6">
-        <TeamAvatar team={displayTeam} active size="lg" />
+        <TeamAvatar
+          src={selectedTeam?.logoUrl || ""}
+          fallback={selectedTeam?.name || ""}
+          size="lg"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Typography as="h3" variant="h4" className="font-semibold">
-              {displayTeam.name}
+              {selectedTeam?.name}
             </Typography>
-            <Badge className="border-emerald-500/30 bg-emerald-500/15 text-emerald-500">
+            {/* <Badge className="border-emerald-500/30 bg-emerald-500/15 text-emerald-500">
               Active
-            </Badge>
+            </Badge> */}
           </div>
           <Typography
             as="p"

@@ -1,29 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { AnimatePresence, motion } from "motion/react";
 import { Card } from "@/components/ui/card";
-import { TeamSidebar } from "./team-sidebar";
-import { TeamMainPanel } from "./team-main-panel";
+import { AnimatePresence, motion } from "motion/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { CreateTeamForm } from "../forms/create-team-form";
 import { JoinTeamForm } from "../forms/join-team-form";
+import { useCreateTeam, useGetTeams } from "../hooks";
 import type {
   CreateTeamFormValues,
   JoinTeamFormValues,
 } from "../schemas/team.schema";
-import { useCreateTeam, useGetInfoTeam } from "../hooks";
+import { TeamMainPanel } from "./team-main-panel";
+import { TeamSidebar } from "./team-sidebar";
+import { ITeam } from "../types";
+import PageSkeleton from "@/components/page-skeleton";
+import { useUser } from "@/hooks/useUser";
 
 type TeamSetupView = "overview" | "create" | "join";
 
 function TeamSetupFlow() {
   const router = useRouter();
-  useGetInfoTeam();
-  const { mutateAsync: createTeam, isPending: isCreateTeamPending } =
-    useCreateTeam();
+  const { user } = useUser();
+  const { data: teams = [], isLoading } = useGetTeams();
+  const [selectedTeam, setSelectedTeam] = useState<ITeam | null>(null);
+  const { mutate: createTeam, isPending: isCreatePending } = useCreateTeam();
   const [view, setView] = useState<TeamSetupView>("overview");
   const [isPending, setIsPending] = useState(false);
+
+  useEffect(() => {
+    setSelectedTeam(
+      teams.find((team) => team.id === user?.currentTeamId) ?? null,
+    );
+  }, [teams, user?.currentTeamId]);
 
   const handlePersonalAccount = () => {
     router.push("/dashboard/overview");
@@ -58,33 +68,41 @@ function TeamSetupFlow() {
     }
   };
 
-  const mainContent =
-    view === "create" ? (
-      <div className="flex flex-1 justify-center">
-        <CreateTeamForm
-          onCancel={() => setView("overview")}
-          onSubmit={handleCreateTeam}
-          isPending={isCreateTeamPending}
-        />
-      </div>
-    ) : view === "join" ? (
-      <div className="flex flex-1 justify-center">
-        <JoinTeamForm
-          onCancel={() => setView("overview")}
-          onSubmit={handleJoinTeam}
-          isPending={isPending}
-        />
-      </div>
-    ) : (
-      <TeamMainPanel />
-    );
+  const viewConfig: Record<TeamSetupView, React.ReactNode> = {
+    create: (
+      <CreateTeamForm
+        onCancel={() => setView("overview")}
+        onSubmit={handleCreateTeam}
+        isPending={isCreatePending}
+      />
+    ),
+    join: (
+      <JoinTeamForm
+        onCancel={() => setView("overview")}
+        onSubmit={handleJoinTeam}
+        isPending={isPending}
+      />
+    ),
+    overview: <TeamMainPanel selectedTeam={selectedTeam} />,
+  };
+
+  const mainContent = viewConfig[view];
+
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
   return (
-    <Card className="gap-0 py-0 md:min-h-[670px]">
+    <Card className="gap-0 py-0 md:min-h-167.5">
       <div className="flex flex-col divide-y lg:flex-row lg:divide-x lg:divide-y-0 h-full">
         <TeamSidebar
           onSelectView={setView}
           onPersonalAccount={handlePersonalAccount}
+          selectedTeam={selectedTeam}
+          setSelectedTeam={setSelectedTeam}
+          user={user}
+          teams={teams}
+          isLoading={isLoading}
         />
 
         <AnimatePresence mode="wait">

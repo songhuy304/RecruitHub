@@ -13,7 +13,7 @@ import { UserAvatarProfile } from "@/components/user-avatar-profile";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 export function UserNav() {
-  const user = useUser();
+  const { user } = useUser();
   const router = useRouter();
   if (user) {
     return (

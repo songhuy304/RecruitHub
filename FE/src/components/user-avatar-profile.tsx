@@ -7,23 +7,6 @@ interface UserAvatarProfileProps {
   user: User | null;
 }
 
-export const getBadge = (value: boolean) => {
-  switch (value) {
-    case true:
-      return (
-        <Badge className="text-[9px]" variant="default">
-          Verified
-        </Badge>
-      );
-    default:
-      return (
-        <Badge className="text-[9px]" variant="destructive">
-          Unverified
-        </Badge>
-      );
-  }
-};
-
 export function UserAvatarProfile({
   className,
   showInfo = false,
@@ -44,8 +27,6 @@ export function UserAvatarProfile({
             <span className="truncate font-semibold">
               {user?.fullName || ""}
             </span>
-
-            {getBadge(user?.isVerified || false)}
           </div>
           <span className="truncate text-xs">{user?.email || ""}</span>
         </div>

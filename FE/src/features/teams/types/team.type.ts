@@ -9,6 +9,7 @@ export interface ITeam {
   inviteCode: string;
   slug: string;
   type: ETEAM_TYPE;
+  logoUrl: string | null;
 }
 
 export interface ICreateTeamPayload {
