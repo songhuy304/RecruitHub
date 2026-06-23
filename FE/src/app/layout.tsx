@@ -10,14 +10,12 @@ import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "../styles/globals.css";
 import ReduxProvider from "@/components/layout/redux-provider";
-import { createMetadata } from "@/lib/metadata";
+import { NextIntlClientProvider } from "next-intl";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
 };
-
-export const metadata = createMetadata("", "");
 
 export const viewport: Viewport = {
   themeColor: META_THEME_COLORS.light,
@@ -55,23 +53,25 @@ export default async function RootLayout({
           fontVariables,
         )}
       >
-        <NextTopLoader color="var(--primary)" showSpinner={false} />
-        <NuqsAdapter>
-          <ReduxProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-              enableColorScheme
-            >
-              <Providers activeThemeValue={themeToApply}>
-                <Toaster />
-                {children}
-              </Providers>
-            </ThemeProvider>
-          </ReduxProvider>
-        </NuqsAdapter>
+        <NextIntlClientProvider>
+          <NextTopLoader color="var(--primary)" showSpinner={false} />
+          <NuqsAdapter>
+            <ReduxProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+                enableColorScheme
+              >
+                <Providers activeThemeValue={themeToApply}>
+                  <Toaster />
+                  {children}
+                </Providers>
+              </ThemeProvider>
+            </ReduxProvider>
+          </NuqsAdapter>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

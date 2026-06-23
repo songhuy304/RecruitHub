@@ -1,0 +1,32 @@
+{
+  "Dashboard": {
+    "title": "Tổng quan",
+    "description": "Chào mừng bạn đến với bảng điều khiển của mình! Ở đây bạn có thể quản lý các nhóm của mình, xem thông tin hồ sơ, và truy cập tất cả các tính năng của RecruitHub."
+  },
+  "error": {
+    "user": {
+      "forbidden": "Bạn không có quyền thực hiện hành động này.",
+      "not-found": "Không tìm thấy người dùng.",
+      "invalid-credentials": "Email hoặc mật khẩu không đúng.",
+      "already-exists": "Người dùng đã tồn tại.",
+      "already-in-team": "Người dùng đã thuộc team này."
+    },
+    "auth": {
+      "token-invalid": "Token không hợp lệ.",
+      "token-expired": "Token đã hết hạn.",
+      "token-missing": "Thiếu token xác thực.",
+      "unauthorized": "Không có quyền truy cập."
+    },
+    "team": {
+      "exceed-limit": "Đã vượt quá số lượng thành viên cho phép.",
+      "not-found": "Không tìm thấy team.",
+      "invalid-invite-code": "Mã mời không hợp lệ.",
+      "request-exists": "Yêu cầu đã tồn tại.",
+      "request-not-found": "Không tìm thấy yêu cầu.",
+      "user-already-in-team": "Người dùng đã thuộc team này.",
+      "request-already-processed": "Yêu cầu đã được xử lý.",
+      "not-in-team": "Người dùng không thuộc team này.",
+      "same-team": "Bạn đang ở team này rồi."
+    }
+  }
+}

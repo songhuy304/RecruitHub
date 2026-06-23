@@ -1,0 +1,33 @@
+{
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Welcome to your dashboard! Here you can manage your teams, view your profile, and access all the features of RecruitHub."
+  },
+
+  "error": {
+    "user": {
+      "forbidden": "You do not have permission to perform this action.",
+      "not-found": "User not found.",
+      "invalid-credentials": "Invalid email or password.",
+      "already-exists": "User already exists.",
+      "already-in-team": "User is already in the team."
+    },
+    "auth": {
+      "token-invalid": "Invalid token.",
+      "token-expired": "Token has expired.",
+      "token-missing": "Authentication token is missing.",
+      "unauthorized": "Unauthorized."
+    },
+    "team": {
+      "exceed-limit": "Team member limit exceeded.",
+      "not-found": "Team not found.",
+      "invalid-invite-code": "Invalid invite code.",
+      "request-exists": "Request already exists.",
+      "request-not-found": "Request not found.",
+      "user-already-in-team": "User is already in the team.",
+      "request-already-processed": "Request has already been processed.",
+      "not-in-team": "User is not in the team.",
+      "same-team": "You are already using this team."
+    }
+  }
+}

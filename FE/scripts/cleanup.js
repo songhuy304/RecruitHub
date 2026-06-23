@@ -423,7 +423,7 @@ const FEATURES = {
       'src/components/org-switcher.tsx',
       'src/components/user-avatar-profile.tsx'
     ],
-    dependencies: ['@clerk/nextjs', '@clerk/themes'],
+    dependencies: [],
     envVars: [
       'NEXTAUTH_SECRET',
       'NEXTAUTH_URL',

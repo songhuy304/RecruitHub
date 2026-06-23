@@ -6,14 +6,6 @@ import { InfoSidebar } from "@/components/layout/info-sidebar";
 import { InfobarProvider } from "@/components/ui/infobar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
-import { createMetadata } from "@/lib/metadata";
-
-export const metadata = createMetadata("Home", "", {
-  robots: {
-    index: false,
-    follow: false,
-  },
-});
 
 export default async function Layout({
   children,
