@@ -4,11 +4,15 @@ import { useId, useState, type ComponentType, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { Badge } from "./badge";
+import { Spinner } from "./spinner";
 
 export interface TabsUnderlineItem {
   value: string;
-  label: string;
+  label: React.ReactNode;
   icon?: ComponentType<{ className?: string }>;
+  count?: number;
+  isLoading?: boolean;
   content: ReactNode;
 }
 
@@ -124,6 +128,11 @@ function TabsUnderline({
                 )}
                 {Icon ? <Icon className="relative z-10 size-4" /> : null}
                 <span className="relative z-10">{item.label}</span>
+                {item.count !== undefined && (
+                  <Badge variant="secondary" className="rounded-full text-xs size-5">
+                    {item.isLoading ? <Spinner /> : item.count}
+                  </Badge>
+                )}
               </span>
 
               {isActive ? (

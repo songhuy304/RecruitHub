@@ -1,3 +1,5 @@
+import { STATIC_PROPS_ID } from "next/dist/shared/lib/constants";
+
 export const QUERY_KEY = {
   AUTH: {
     ME: ["auth", "me"],
@@ -13,5 +15,6 @@ export const QUERY_KEY = {
     ROOT: "team",
     INFO: ["team", "info"],
     LIST: ["team", "list"],
+    STATISTICS: (id: number) => ["team", "statistics", id],
   },
 } as const;

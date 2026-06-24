@@ -11,11 +11,12 @@ import { TeamDetailInvite } from "./team-detail-invite";
 import { TeamDetailMember } from "./team-detail-member";
 import { TeamDetailOverview } from "./team-detail-overview";
 import { TeamDetailSetting } from "./team-detail-setting/team-detail-setting";
-import { useSwitchTeam } from "../hooks";
+import { useGetTeamStatistics, useSwitchTeam } from "../hooks";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setTokens } from "@/store";
 import { TeamAvatar } from "@/components/team-avatar";
+import { Spinner } from "@/components/ui/spinner";
 
 interface TeamMainPanelProps {
   selectedTeam: ITeam | null;
@@ -29,6 +30,12 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { mutate: switchTeam, isPending } = useSwitchTeam();
+  const { data: teamStatistics, isPending: isTeamStatisticsPending } = useGetTeamStatistics(
+    {
+      id: selectedTeam?.id || 0,
+      enabled: !!selectedTeam?.id && selectedTeam?.type !== ETEAM_TYPE.PERSONAL,
+    }
+  );
 
   const handleSwitchTeam = (teamId: number) => {
     switchTeam(teamId, {
@@ -51,7 +58,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
-      <div className="flex flex-wrap items-center gap-4 pb-4 sm:gap-6">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
         <TeamAvatar
           src={selectedTeam?.logoUrl || ""}
           fallback={selectedTeam?.name || ""}
@@ -109,18 +116,24 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
             {
               value: "members",
               label: "Members",
+              count: teamStatistics?.members || 0,
+              isLoading: isTeamStatisticsPending,
               icon: Icons.user,
               content: <TeamDetailMember />,
             },
             {
               value: "joins",
               label: "Join Requests",
+              count: teamStatistics?.joinRequests || 0,
+              isLoading: isTeamStatisticsPending,
               icon: Icons.userPlus,
               content: <TeamDetailMember />,
             },
             {
               value: "invites",
               label: "Invites",
+              count: teamStatistics?.invites || 0,
+              isLoading: isTeamStatisticsPending,
               icon: Icons.mail,
               content: (
                 <TeamDetailInvite
@@ -138,7 +151,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
           ]}
         />
       )}
-    </div>
+    </div >
   );
 }
 

@@ -6,3 +6,4 @@ export * from "./useDeleteTeam";
 export * from "./useJoinTeam";
 export * from "./useLeaveTeam";
 export * from "./useInviteMembers";
+export * from "./useGetTeamStatistics";

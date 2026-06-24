@@ -35,9 +35,7 @@ export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
   const router = useRouter();
   const dispatch = useAppDispatch();
-
   const { user } = useUser();
-
   const { data: teams = [], isPending: loading } = useGetTeams();
   const { mutate: switchTeam } = useSwitchTeam();
 
@@ -66,9 +64,8 @@ export function OrgSwitcher() {
             <Skeleton className="size-8 rounded-lg" />
 
             <div
-              className={`grid flex-1 gap-1 ${
-                state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
-              }`}
+              className={`grid flex-1 gap-1 ${state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
+                }`}
             >
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-3 w-16" />
@@ -110,11 +107,10 @@ export function OrgSwitcher() {
               )}
 
               <div
-                className={`grid flex-1 text-left text-sm ${
-                  state === "collapsed"
+                className={`grid flex-1 text-left text-sm ${state === "collapsed"
                     ? "invisible max-w-0 overflow-hidden opacity-0"
                     : ""
-                }`}
+                  }`}
               >
                 <span className="truncate font-medium">
                   {currentTeam?.name || "Create your team"}
