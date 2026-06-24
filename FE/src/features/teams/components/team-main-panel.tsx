@@ -38,6 +38,17 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
       },
     });
   };
+
+  if (!selectedTeam) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Typography as="p" variant="paragraph-sm" className="text-muted-foreground">
+          No team selected. Please select a team to view its details.
+        </Typography>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4 pb-4 sm:gap-6">
@@ -99,6 +110,12 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               value: "members",
               label: "Members",
               icon: Icons.user,
+              content: <TeamDetailMember />,
+            },
+            {
+              value: "joins",
+              label: "Join Requests",
+              icon: Icons.userPlus,
               content: <TeamDetailMember />,
             },
             {
