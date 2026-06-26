@@ -16,5 +16,6 @@ export const QUERY_KEY = {
     INFO: ["team", "info"],
     LIST: ["team", "list"],
     STATISTICS: (id: number) => ["team", "statistics", id],
+    MEMBERS: (id: number) => ["team", "members", id],
   },
 } as const;

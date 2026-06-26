@@ -23,3 +23,14 @@ export interface ITeamStatistics {
   invites: 0;
   joinRequests: 0;
 }
+
+export interface ITeamMember {
+  id: number;
+  email: string;
+  fullName: string;
+  avatar: string;
+  role: string;
+  isVerified: boolean;
+  teamRole: string;
+}
+

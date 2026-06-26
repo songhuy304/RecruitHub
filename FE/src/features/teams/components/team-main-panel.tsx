@@ -119,7 +119,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               count: teamStatistics?.members || 0,
               isLoading: isTeamStatisticsPending,
               icon: Icons.user,
-              content: <TeamDetailMember />,
+              content: <TeamDetailMember teamId={selectedTeam?.id} />,
             },
             {
               value: "joins",
@@ -127,7 +127,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               count: teamStatistics?.joinRequests || 0,
               isLoading: isTeamStatisticsPending,
               icon: Icons.userPlus,
-              content: <TeamDetailMember />,
+              content: <TeamDetailMember teamId={selectedTeam?.id} />,
             },
             {
               value: "invites",
