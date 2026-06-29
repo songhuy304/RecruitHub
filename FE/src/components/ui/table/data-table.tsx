@@ -28,9 +28,9 @@ export function DataTable<TData>({
   isLoading = false
 }: DataTableProps<TData>) {
   return (
-    <div className='flex flex-1 flex-col space-y-4'>
+    <div className='flex flex-1 flex-col space-y-4 h-full'>
       {children}
-      <div className='relative flex min-h-96 flex-1'>
+      <div className='relative flex flex-1'>
         <div className='absolute inset-0 flex overflow-hidden rounded-lg border'>
           {isLoading ? (
             <div className='opacity-40 absolute bg-background inset-0 z-20 flex items-center justify-center pointer-events-none'>

@@ -10,24 +10,31 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import { setTokens } from "@/store";
 import { useRouter } from "next/navigation";
 import { parseAsStringEnum, useQueryStates } from "nuqs";
-import { useState } from "react";
 import { useGetTeamStatistics, useSwitchTeam } from "../hooks";
 import { ETEAM_TYPE, type ITeam } from "../types";
 import { TeamDetailInvite } from "./team-detail-invite";
 import { TeamDetailMember } from "./team-detail-member/team-detail-member";
 import { TeamDetailOverview } from "./team-detail-overview";
 import { TeamDetailSetting } from "./team-detail-setting/team-detail-setting";
+import { TeamDetailRequest } from "./team-detail-request/team-detail-request";
 
 interface TeamMainPanelProps {
   selectedTeam: ITeam | null;
   user: User | null;
 }
 
-export type TeamMainPanelTab = 'overview' | 'members' | 'joins' | 'invites' | 'settings';
+enum TeamMainPanelTab {
+  OVERVIEW = 'overview',
+  MEMBERS = 'members',
+  JOINS = 'joins',
+  INVITES = 'invites',
+  SETTINGS = 'settings',
+}
 
+const TEAM_MAIN_PANEL_TABS = Object.values(TeamMainPanelTab);
 function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const [params, setParams] = useQueryStates({
-    tab: parseAsStringEnum<TeamMainPanelTab>(['overview', 'members', 'joins', 'invites', 'settings']).withDefault('overview'),
+    tab: parseAsStringEnum<TeamMainPanelTab>(TEAM_MAIN_PANEL_TABS).withDefault(TeamMainPanelTab.OVERVIEW),
   });
   const isCurrentTeamId = user?.currentTeamId === selectedTeam?.id;
   const isPersonalAccount = selectedTeam?.type === ETEAM_TYPE.PERSONAL;
@@ -41,10 +48,9 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
     }
   );
 
-
   const onSetTab = (tab: TeamMainPanelTab) => {
     void setParams({
-      tab: tab as TeamMainPanelTab | undefined,
+      tab: tab,
     });
   };
 
@@ -114,18 +120,18 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
         </div>
       ) : (
         <TabsUnderline
-          value={params.tab || 'overview'}
+          value={params.tab || TeamMainPanelTab.OVERVIEW}
           onValueChange={(value) => onSetTab(value as TeamMainPanelTab)}
           className="gap-6"
           items={[
             {
-              value: "overview",
+              value: TeamMainPanelTab.OVERVIEW,
               label: "Overview",
               icon: Icons.adjustments,
               content: <TeamDetailOverview />,
             },
             {
-              value: "members",
+              value: TeamMainPanelTab.MEMBERS,
               label: "Members",
               count: teamStatistics?.members || 0,
               isLoading: isTeamStatisticsPending,
@@ -133,15 +139,15 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               content: <TeamDetailMember teamId={selectedTeam?.id} />,
             },
             {
-              value: "joins",
+              value: TeamMainPanelTab.JOINS,
               label: "Join Requests",
               count: teamStatistics?.joinRequests || 0,
               isLoading: isTeamStatisticsPending,
               icon: Icons.userPlus,
-              content: <TeamDetailMember teamId={selectedTeam?.id} />,
+              content: <TeamDetailRequest teamId={selectedTeam?.id} />,
             },
             {
-              value: "invites",
+              value: TeamMainPanelTab.INVITES,
               label: "Invites",
               count: teamStatistics?.invites || 0,
               isLoading: isTeamStatisticsPending,
@@ -149,12 +155,12 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               content: (
                 <TeamDetailInvite
                   teamId={selectedTeam?.id}
-                  onSkip={() => onSetTab("overview")}
+                  onSkip={() => onSetTab(TeamMainPanelTab.OVERVIEW)}
                 />
               ),
             },
             {
-              value: "settings",
+              value: TeamMainPanelTab.SETTINGS,
               label: "Settings",
               icon: Icons.settings,
               content: <TeamDetailSetting team={selectedTeam!} />,

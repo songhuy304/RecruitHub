@@ -20,6 +20,7 @@ const PATH = {
   INVITE: (teamId: number) => `/teams/${teamId}/invitations`,
   GET_STATISTICS: (teamId: number) => `/teams/${teamId}/statistics`,
   GET_MEMBERS: () => `/teams/members`,
+  GET_JOIN_REQUESTS: () => `/teams/join-requests`,
 };
 
 export const teamService = {
@@ -45,6 +46,11 @@ export const teamService = {
     params: IGetMembers
   ): Promise<IPaginatedResponse<ITeamMember>> =>
     apiClient.get(PATH.GET_MEMBERS(), {
+      params,
+    }),
+
+  getJoinRequests: (params: IGetMembers): Promise<IPaginatedResponse<ITeamMember>> =>
+    apiClient.get(PATH.GET_JOIN_REQUESTS(), {
       params,
     }),
 };

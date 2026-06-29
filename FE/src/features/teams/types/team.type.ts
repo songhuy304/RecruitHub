@@ -32,5 +32,7 @@ export interface ITeamMember {
   role: string;
   isVerified: boolean;
   teamRole: string;
+  createdAt: string;
+  updatedAt: string;
 }
 

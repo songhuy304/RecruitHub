@@ -8,3 +8,4 @@ export * from "./useLeaveTeam";
 export * from "./useInviteMembers";
 export * from "./useGetTeamStatistics";
 export * from "./useGetMembers";
+export * from "./useGetTeamRequest";

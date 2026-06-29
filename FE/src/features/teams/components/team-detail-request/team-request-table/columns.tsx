@@ -7,6 +7,7 @@ import { Icons } from '@/components/icons';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { cn } from '@/lib/utils';
 import { ITeamMember } from '@/features/teams/types';
+import { formatDate } from '@/lib/format';
 
 function getInitials(name: string) {
   if (!name) return '?';
@@ -49,7 +50,7 @@ export const columns: ColumnDef<ITeamMember>[] = [
     id: 'name',
     accessorKey: 'fullName',
     header: ({ column }: { column: Column<ITeamMember, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Member' />
+      <DataTableColumnHeader column={column} title='User' />
     ),
     cell: ({ row }) => (
       <div className='flex items-center gap-3'>
@@ -70,10 +71,18 @@ export const columns: ColumnDef<ITeamMember>[] = [
   },
   {
     accessorKey: 'email',
-    header: 'EMAIL',
-    cell: ({ cell }) => (
+    header: 'Email',
+    cell: ({ row }) => (
+      row.original.email
+    )
+  },
+
+  {
+    accessorKey: 'createdAt',
+    header: 'Joined',
+    cell: ({ row }) => (
       <span className='text-muted-foreground text-sm font-medium'>
-        {cell.getValue<ITeamMember['email']>()}
+        {formatDate(row.original.createdAt)}
       </span>
     )
   },
@@ -90,37 +99,5 @@ export const columns: ColumnDef<ITeamMember>[] = [
       </Badge>
     )
   },
-  {
-    id: 'teamRole',
-    accessorKey: 'teamRole',
-    enableSorting: false,
-    header: ({ column }: { column: Column<ITeamMember, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Team Role' />
-    ),
-    cell: ({ cell }) => <TeamRoleBadge role={cell.getValue<ITeamMember['teamRole']>()} />
-  },
-  {
-    id: 'status',
-    accessorKey: 'isVerified',
-    enableSorting: false,
-    header: 'STATUS',
-    cell: ({ cell }) => {
-      const isVerified = cell.getValue<ITeamMember['isVerified']>();
 
-      if (isVerified) {
-        return (
-          <Badge variant='success' className='gap-1'>
-            <Icons.check className='size-3' />
-            Verified
-          </Badge>
-        );
-      }
-
-      return (
-        <Badge variant='secondary' className={cn('text-muted-foreground')}>
-          Pending
-        </Badge>
-      );
-    }
-  }
 ];

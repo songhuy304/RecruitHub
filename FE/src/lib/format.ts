@@ -1,17 +1,15 @@
+import dayjs from 'dayjs';
+
+export const DEFAULT_DATE_FORMAT = 'DD-MM-YYYY';
+
 export function formatDate(
-  date: Date | string | number | undefined,
-  opts: Intl.DateTimeFormatOptions = {}
-) {
+  date?: dayjs.ConfigType,
+  pattern = DEFAULT_DATE_FORMAT
+): string {
   if (!date) return '';
 
-  try {
-    return new Intl.DateTimeFormat('en-US', {
-      month: opts.month ?? 'long',
-      day: opts.day ?? 'numeric',
-      year: opts.year ?? 'numeric',
-      ...opts
-    }).format(new Date(date));
-  } catch {
-    return '';
-  }
+  const d = dayjs(date);
+  if (!d.isValid()) return '';
+
+  return d.format(pattern);
 }

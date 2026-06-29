@@ -83,6 +83,7 @@ function DataTableToolbarFilter<TData>({ column }: DataTableToolbarFilterProps<T
               value={(column.getFilterValue() as string) ?? ''}
               onChange={(event) => column.setFilterValue(event.target.value)}
               className='h-8 w-40 lg:w-56 flex-none'
+              leftIcon={columnMeta.iconCustom as React.ReactNode}
             />
           );
 
