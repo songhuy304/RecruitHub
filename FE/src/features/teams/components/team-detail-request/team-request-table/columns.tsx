@@ -1,49 +1,12 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { DataTableColumnHeader } from '@/components/ui/table/data-table-column-header';
 import { Icons } from '@/components/icons';
-import { Column, ColumnDef } from '@tanstack/react-table';
-import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { DataTableColumnHeader } from '@/components/ui/table/data-table-column-header';
 import { ITeamMember } from '@/features/teams/types';
 import { formatDate } from '@/lib/format';
-
-function getInitials(name: string) {
-  if (!name) return '?';
-
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
-}
-
-function TeamRoleBadge({ role }: { role: string }) {
-  const normalizedRole = role?.toUpperCase();
-
-  if (normalizedRole === 'OWNER') {
-    return (
-      <Badge
-        variant='default'
-        className='bg-indigo-600 font-medium text-white hover:bg-indigo-600'
-      >
-        Owner
-      </Badge>
-    );
-  }
-
-  if (normalizedRole === 'ADMIN') {
-    return (
-      <Badge variant='default' className='bg-blue-600 font-medium text-white hover:bg-blue-600'>
-        Admin
-      </Badge>
-    );
-  }
-
-  return <Badge variant='secondary'>Member</Badge>;
-}
+import { Column, ColumnDef } from '@tanstack/react-table';
 
 export const columns: ColumnDef<ITeamMember>[] = [
   {
@@ -56,13 +19,13 @@ export const columns: ColumnDef<ITeamMember>[] = [
       <div className='flex items-center gap-3'>
         <Avatar className='size-10'>
           <AvatarImage src={row.original.avatar} alt={row.original.fullName} />
-          <AvatarFallback>{getInitials(row.original.fullName)}</AvatarFallback>
+          <AvatarFallback>{(row.original.fullName)}</AvatarFallback>
         </Avatar>
         <span className='truncate font-medium'>{row.original.fullName}</span>
       </div>
     ),
     meta: {
-      label: 'Member',
+      label: 'User',
       placeholder: 'Search members...',
       variant: 'text' as const,
       iconCustom: <Icons.search className='size-4' />
@@ -87,17 +50,24 @@ export const columns: ColumnDef<ITeamMember>[] = [
     )
   },
   {
-    id: 'role',
-    accessorKey: 'role',
-    enableSorting: false,
+    id: 'actions',
     header: ({ column }: { column: Column<ITeamMember, unknown> }) => (
-      <DataTableColumnHeader column={column} title='System Role' />
+      <div className='text-center'>
+        Actions
+      </div>
     ),
-    cell: ({ cell }) => (
-      <Badge variant='outline' className='capitalize'>
-        {cell.getValue<ITeamMember['role']>()?.toLowerCase() || 'member'}
-      </Badge>
-    )
-  },
+    cell: ({ row }) => (
+      <div className='flex gap-2 items-center justify-center'>
+        <Button variant="success">
+          <Icons.checks className='size-4' />
+          Approve
+        </Button >
 
+        <Button variant="destructive">
+          <Icons.xCircle className='size-4' />
+          Reject
+        </Button>
+      </div >
+    )
+  }
 ];

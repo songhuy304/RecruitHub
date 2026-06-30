@@ -7,6 +7,7 @@ import { Icons } from '@/components/icons';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { cn } from '@/lib/utils';
 import { ITeamMember } from '@/features/teams/types';
+import { formatDate } from '@/lib/format';
 
 function getInitials(name: string) {
   if (!name) return '?';
@@ -78,16 +79,12 @@ export const columns: ColumnDef<ITeamMember>[] = [
     )
   },
   {
-    id: 'role',
-    accessorKey: 'role',
-    enableSorting: false,
-    header: ({ column }: { column: Column<ITeamMember, unknown> }) => (
-      <DataTableColumnHeader column={column} title='System Role' />
-    ),
-    cell: ({ cell }) => (
-      <Badge variant='outline' className='capitalize'>
-        {cell.getValue<ITeamMember['role']>()?.toLowerCase() || 'member'}
-      </Badge>
+    accessorKey: 'createdAt',
+    header: 'Joined',
+    cell: ({ row }) => (
+      <span className='text-muted-foreground text-sm font-medium'>
+        {formatDate(row.original.createdAt)}
+      </span>
     )
   },
   {
@@ -99,28 +96,4 @@ export const columns: ColumnDef<ITeamMember>[] = [
     ),
     cell: ({ cell }) => <TeamRoleBadge role={cell.getValue<ITeamMember['teamRole']>()} />
   },
-  {
-    id: 'status',
-    accessorKey: 'isVerified',
-    enableSorting: false,
-    header: 'STATUS',
-    cell: ({ cell }) => {
-      const isVerified = cell.getValue<ITeamMember['isVerified']>();
-
-      if (isVerified) {
-        return (
-          <Badge variant='success' className='gap-1'>
-            <Icons.check className='size-3' />
-            Verified
-          </Badge>
-        );
-      }
-
-      return (
-        <Badge variant='secondary' className={cn('text-muted-foreground')}>
-          Pending
-        </Badge>
-      );
-    }
-  }
 ];
