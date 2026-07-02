@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Icons } from "@/components/icons";
@@ -22,13 +22,12 @@ import { useUser } from "@/hooks/useUser";
 
 import { useDeleteTeam, useLeaveTeam } from "../../hooks";
 import {
-  createTeamSchema,
-  type CreateTeamFormValues,
+  type CreateTeamFormValues
 } from "../../schemas/team.schema";
 import type { ITeam } from "../../types";
 
-import { DangerActionRow } from "./danger-action-row";
 import { SettingsCard } from "../settings-card";
+import { DangerActionRow } from "./danger-action-row";
 
 interface TeamDetailSettingProps {
   team: ITeam;
@@ -47,9 +46,6 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
       slug: team.slug,
       logoUrl: team.logoUrl ?? "",
     } as CreateTeamFormValues,
-    validators: {
-      onSubmit: createTeamSchema,
-    },
     onSubmit: () => {
       toast.info("Team update will be available soon");
     },
@@ -203,3 +199,4 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
 }
 
 export { TeamDetailSetting };
+
