@@ -29,7 +29,11 @@ const useUser = () => {
     return role === roles;
   };
 
-  return { user, hasRole, getTeamRole, hasTeamRole };
+  const isOwner = (teamId: number) => {
+    return getTeamRole(teamId) === ETEAM_ROLE.OWNER;
+  }
+
+  return { user, hasRole, getTeamRole, hasTeamRole, isOwner };
 };
 
 export { useUser };

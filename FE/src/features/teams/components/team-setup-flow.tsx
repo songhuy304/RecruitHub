@@ -55,12 +55,12 @@ function TeamSetupFlow() {
     );
   };
 
-  const handleJoinTeam = async (values: JoinTeamFormValues) => {
+  const handleJoinTeam = async (values: JoinTeamFormValues, form: any) => {
     const replace = values.inviteCode.replace(/#/g, "");
     joinTeam(replace, {
       onSuccess: () => {
         toast.success(t("Teams.join-team-success"));
-        setView("overview");
+        form.reset();
       }
     })
   };

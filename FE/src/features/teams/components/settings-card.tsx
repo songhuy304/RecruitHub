@@ -7,6 +7,7 @@ interface SettingsCardProps {
   description: string;
   variant?: "default" | "danger";
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
 export function SettingsCard({
@@ -14,12 +15,14 @@ export function SettingsCard({
   description,
   variant = "default",
   children,
+  disabled = false,
 }: SettingsCardProps) {
   return (
     <Card
       className={cn(
         "gap-0 py-0",
         variant === "danger" && "border-destructive/40",
+        disabled && "pointer-events-none",
       )}
     >
       <CardContent className="flex flex-col gap-8 p-6 lg:flex-row lg:gap-12">

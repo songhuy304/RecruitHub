@@ -21,11 +21,10 @@ interface InviteMemberFormProps {
 }
 
 function InviteMemberForm({
-  onSkip,
   onSubmit,
   isPending = false,
 }: InviteMemberFormProps) {
-  const t = useTranslations("Invite");
+  const t = useTranslations();
 
   const form = useAppForm({
     defaultValues: {
@@ -48,9 +47,9 @@ function InviteMemberForm({
       <form.Form className="flex min-h-full flex-col p-0">
         <div className="flex flex-1 flex-col gap-6 p-6">
           <div>
-            <Typography variant="h4">{t("form-title")}</Typography>
+            <Typography variant="h4">{t("Invite.form-title")}</Typography>
             <Typography variant="paragraph-sm" className="text-muted-foreground">
-              {t("form-description")}
+              {t("Invite.form-description")}
             </Typography>
           </div>
 
@@ -60,38 +59,33 @@ function InviteMemberForm({
               label={
                 <FieldLabelWithIcon
                   icon={Icons.mail}
-                  label={t("email-label")}
+                  label={t("Invite.email-label")}
                 />
               }
-              placeholder={t("email-placeholder")}
-              description={t("email-helper")}
+              placeholder={t("Invite.email-placeholder")}
+              description={t("Invite.email-helper")}
               rows={4}
             />
 
             <FormSelectField
               name="role"
               label={
-                <FieldLabelWithIcon icon={Icons.shield} label={t("role")} />
+                <FieldLabelWithIcon icon={Icons.shield} label={t("Invite.role")} />
               }
               options={TEAM_ROLE_OPTIONS}
-              placeholder={t("member")}
+              placeholder={t("Invite.member-placeholder")}
             />
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-3 border-t px-6 py-4">
-          {onSkip && (
-            <Button type="button" variant="outline" onClick={onSkip}>
-              {t("skip")}
-            </Button>
-          )}
           <Button
             type="submit"
             isLoading={isPending}
             className={cn("gap-2")}
           >
             <Icons.send className="size-4" />
-            {t("send")}
+            {t("Common.send")}
           </Button>
         </div>
       </form.Form>

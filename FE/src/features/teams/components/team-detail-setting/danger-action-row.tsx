@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
+import { Icons } from "@/components/icons";
 
 interface DangerActionRowProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -24,6 +25,7 @@ interface DangerActionRowProps {
   onConfirm: () => void;
   isPending?: boolean;
   onBeforeOpen?: () => boolean;
+  disabled?: boolean;
 }
 
 export function DangerActionRow({
@@ -36,6 +38,7 @@ export function DangerActionRow({
   onConfirm,
   isPending = false,
   onBeforeOpen,
+  disabled = false,
 }: DangerActionRowProps) {
   const [open, setOpen] = useState(false);
 
@@ -73,6 +76,7 @@ export function DangerActionRow({
         variant="outline"
         className="border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
         onClick={handleTriggerClick}
+        disabled={disabled}
       >
         {actionLabel}
       </Button>

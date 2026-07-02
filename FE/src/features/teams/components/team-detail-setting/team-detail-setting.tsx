@@ -28,6 +28,7 @@ import type { ITeam } from "../../types";
 
 import { SettingsCard } from "../settings-card";
 import { DangerActionRow } from "./danger-action-row";
+import { generateSlug } from "@/lib/utils";
 
 interface TeamDetailSettingProps {
   team: ITeam;
@@ -35,7 +36,7 @@ interface TeamDetailSettingProps {
 
 function TeamDetailSetting({ team }: TeamDetailSettingProps) {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isOwner } = useUser();
   const { mutate: deleteTeam, isPending: isDeleting } = useDeleteTeam();
   const { mutate: leaveTeam, isPending: isLeaving } = useLeaveTeam();
   const [isActiveTeamWarningOpen, setIsActiveTeamWarningOpen] = useState(false);
@@ -51,15 +52,8 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
     },
   });
 
-  const { FormTextField, FormFileUploadField } = useFormFields<CreateTeamFormValues>();
 
-  useEffect(() => {
-    form.reset({
-      name: team.name,
-      slug: team.slug,
-      logoUrl: team.logoUrl ?? "",
-    });
-  }, [form, team.id, team.logoUrl, team.name, team.slug]);
+  const { FormTextField, FormFileUploadField } = useFormFields<CreateTeamFormValues>();
 
   const checkActiveTeam = () => {
     if (user?.currentTeamId === team.id) {
@@ -104,17 +98,26 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
         <form.AppForm>
           <form.Form className="flex flex-col gap-5 p-0">
             <FormTextField
+              disabled={!isOwner(team.id)}
               name="name"
               label="Team Name"
               placeholder="Enter team name"
+              listeners={{
+                onChange: ({ value }) => {
+                  form.setFieldValue(
+                    "slug",
+                    generateSlug((value as string) ?? ""),
+                  );
+                },
+              }}
             />
 
             <div className="flex flex-col gap-2">
               <FormTextField
+                disabled={!isOwner(team.id)}
                 name="slug"
                 label="Team Slug"
                 placeholder="team-slug"
-                disabled
               />
               <Typography
                 as="p"
@@ -126,6 +129,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
             </div>
 
             <FormFileUploadField
+              disabled={!isOwner(team.id)}
               name="logoUrl"
               label="Logo"
               className="m-h-24"
@@ -134,7 +138,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
             />
 
             <div className="flex justify-end pt-2">
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={!isOwner(team.id)}>Save Changes</Button>
             </div>
           </form.Form>
         </form.AppForm>
@@ -170,6 +174,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
             onConfirm={handleDeleteTeam}
             isPending={isDeleting}
             onBeforeOpen={checkActiveTeam}
+            disabled={!isOwner(team.id)}
           />
         </div>
       </SettingsCard>

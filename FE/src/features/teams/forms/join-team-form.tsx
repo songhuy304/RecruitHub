@@ -12,7 +12,7 @@ import { Icons } from "@/components/icons";
 
 interface JoinTeamFormProps {
   onCancel: () => void;
-  onSubmit?: (values: JoinTeamFormValues) => void;
+  onSubmit?: (values: JoinTeamFormValues, form: any) => void;
   isPending?: boolean;
 }
 
@@ -30,30 +30,29 @@ function JoinTeamForm({
       onSubmit: joinTeamSchema(t),
     },
     onSubmit: ({ value }) => {
-      onSubmit?.(value);
+      onSubmit?.(value, form);
     },
   });
 
   const { FormTextField } = useFormFields<JoinTeamFormValues>();
 
   return (
-    <div>
-      <Typography variant="h4">{t("Teams.JoinTeam.title")}</Typography>
-      <Typography color="muted" variant="paragraph-sm">
-        {t("Teams.JoinTeam.description")}
-      </Typography>
+    <form.AppForm>
+      <form.Form className="p-0 mt-4 max-w-lg">
+        <Typography variant="h4">{t("Teams.JoinTeam.title")}</Typography>
+        <Typography color="muted" variant="paragraph-sm">
+          {t("Teams.JoinTeam.description")}
+        </Typography>
 
-      <div className="p-0 mt-4 max-w-lg">
-        <form.AppForm>
-          <form.Form className="">
-            <FormTextField
-              name="inviteCode"
-              label={t("field.invite-code.label")}
-              placeholder={t("field.invite-code.placeholder")}
-            />
-          </form.Form>
-        </form.AppForm>
-        <div className="justify-end gap-4 flex items-center mt-4">
+        <div className="mt-4">
+          <FormTextField
+            name="inviteCode"
+            label={t("field.invite-code.label")}
+            placeholder={t("field.invite-code.placeholder")}
+          />
+        </div>
+
+        <div className="mt-4 flex items-center justify-end gap-4">
           <Button type="button" variant="secondary" onClick={onCancel}>
             {t("Common.cancel")}
           </Button>
@@ -61,8 +60,8 @@ function JoinTeamForm({
             {t("Common.submit")}
           </Button>
         </div>
-      </div>
-    </div>
+      </form.Form>
+    </form.AppForm>
   );
 }
 

@@ -17,6 +17,7 @@ import { TeamDetailMember } from "./team-detail-member/team-detail-member";
 import { TeamDetailOverview } from "./team-detail-overview";
 import { TeamDetailSetting } from "./team-detail-setting/team-detail-setting";
 import { TeamDetailRequest } from "./team-detail-request/team-detail-request";
+import { useUser } from "@/hooks/useUser";
 
 interface TeamMainPanelProps {
   selectedTeam: ITeam | null;
@@ -32,6 +33,7 @@ enum TeamMainPanelTab {
 }
 
 const TEAM_MAIN_PANEL_TABS = Object.values(TeamMainPanelTab);
+
 function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const [params, setParams] = useQueryStates({
     tab: parseAsStringEnum<TeamMainPanelTab>(TEAM_MAIN_PANEL_TABS).withDefault(TeamMainPanelTab.OVERVIEW),
@@ -41,6 +43,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { mutate: switchTeam, isPending } = useSwitchTeam();
+  const { isOwner } = useUser();
   const { data: teamStatistics, isPending: isTeamStatisticsPending } = useGetTeamStatistics(
     {
       id: selectedTeam?.id || 0,
@@ -62,6 +65,52 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
       },
     });
   };
+
+  const TabsOptions = [
+    {
+      value: TeamMainPanelTab.OVERVIEW,
+      label: "Overview",
+      icon: Icons.adjustments,
+      content: <TeamDetailOverview />,
+    },
+    {
+      value: TeamMainPanelTab.MEMBERS,
+      label: "Members",
+      count: teamStatistics?.members || 0,
+      isLoading: isTeamStatisticsPending,
+      icon: Icons.user,
+      content: <TeamDetailMember teamId={selectedTeam?.id || 0} />,
+    },
+    ...(isOwner(selectedTeam?.id || 0) ? [
+      {
+        value: TeamMainPanelTab.JOINS,
+        label: "Join Requests",
+        count: teamStatistics?.joinRequests || 0,
+        isLoading: isTeamStatisticsPending,
+        icon: Icons.userPlus,
+        content: <TeamDetailRequest teamId={selectedTeam?.id || 0} />,
+      },
+    ] : []),
+    {
+      value: TeamMainPanelTab.INVITES,
+      label: "Invites",
+      count: teamStatistics?.invites || 0,
+      isLoading: isTeamStatisticsPending,
+      icon: Icons.mail,
+      content: (
+        <TeamDetailInvite
+          teamId={selectedTeam?.id}
+          onSkip={() => onSetTab(TeamMainPanelTab.OVERVIEW)}
+        />
+      ),
+    },
+    {
+      value: TeamMainPanelTab.SETTINGS,
+      label: "Settings",
+      icon: Icons.settings,
+      content: <TeamDetailSetting team={selectedTeam!} />,
+    },
+  ]
 
   if (!selectedTeam) {
     return (
@@ -123,49 +172,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
           value={params.tab || TeamMainPanelTab.OVERVIEW}
           onValueChange={(value) => onSetTab(value as TeamMainPanelTab)}
           className="gap-6"
-          items={[
-            {
-              value: TeamMainPanelTab.OVERVIEW,
-              label: "Overview",
-              icon: Icons.adjustments,
-              content: <TeamDetailOverview />,
-            },
-            {
-              value: TeamMainPanelTab.MEMBERS,
-              label: "Members",
-              count: teamStatistics?.members || 0,
-              isLoading: isTeamStatisticsPending,
-              icon: Icons.user,
-              content: <TeamDetailMember teamId={selectedTeam?.id} />,
-            },
-            {
-              value: TeamMainPanelTab.JOINS,
-              label: "Join Requests",
-              count: teamStatistics?.joinRequests || 0,
-              isLoading: isTeamStatisticsPending,
-              icon: Icons.userPlus,
-              content: <TeamDetailRequest teamId={selectedTeam?.id} />,
-            },
-            {
-              value: TeamMainPanelTab.INVITES,
-              label: "Invites",
-              count: teamStatistics?.invites || 0,
-              isLoading: isTeamStatisticsPending,
-              icon: Icons.mail,
-              content: (
-                <TeamDetailInvite
-                  teamId={selectedTeam?.id}
-                  onSkip={() => onSetTab(TeamMainPanelTab.OVERVIEW)}
-                />
-              ),
-            },
-            {
-              value: TeamMainPanelTab.SETTINGS,
-              label: "Settings",
-              icon: Icons.settings,
-              content: <TeamDetailSetting team={selectedTeam!} />,
-            },
-          ]}
+          items={TabsOptions}
         />
       )}
     </div >

@@ -28,6 +28,7 @@ interface FileUploadFieldProps {
   maxSize?: number;
   className?: string;
   folderPath?: string;
+  disabled?: boolean;
 }
 
 export function FileUploadField({
@@ -37,6 +38,7 @@ export function FileUploadField({
   maxSize,
   className,
   folderPath,
+  disabled = false,
 }: FileUploadFieldProps) {
   const field = useFieldContext();
   const value = useStore(field.store, (s) => s.value) as string | undefined;
@@ -106,7 +108,7 @@ export function FileUploadField({
             onPreviewRemove={handlePreviewRemove}
             maxSize={maxSize}
             className={className}
-            disabled={isPending}
+            disabled={isPending || disabled}
           />
         </div>
 

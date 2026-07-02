@@ -80,7 +80,8 @@
       "user-already-in-team": "Người dùng đã có trong nhóm.",
       "request-already-processed": "Yêu cầu đã được xử lý.",
       "not-in-team": "Người dùng không có trong nhóm.",
-      "same-team": "Bạn đang sử dụng nhóm này."
+      "same-team": "Bạn đang sử dụng nhóm này.",
+      "owner-required": "Bạn không có quyền để thực hiện hành động này."
     }
   },
   "validation": {
