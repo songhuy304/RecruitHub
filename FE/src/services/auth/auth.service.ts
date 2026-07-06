@@ -1,6 +1,8 @@
 import { apiClient } from "@/lib/axios";
+import { refreshToken } from "@/lib/refresh-token.util";
 import {
   IForgotPasswordRequest,
+  IRefreshTokenRequest,
   IResetPasswordRequest,
   ISignInRequest,
   ISignUpRequest,
@@ -17,7 +19,7 @@ export const authService = {
     apiClient.post("/auth/signup", payload),
 
   forgotPassword: (
-    payload: IForgotPasswordRequest,
+    payload: IForgotPasswordRequest
   ): Promise<IApiBaseResponse> =>
     apiClient.post("/auth/forgot-password", payload),
 
@@ -25,7 +27,12 @@ export const authService = {
     apiClient.post("/auth/reset-password", payload),
 
   verifyToken: (
-    payload: IVerifyTokenRequest,
+    payload: IVerifyTokenRequest
   ): Promise<IResponse<ITokenResponse>> =>
     apiClient.post("/auth/verify", payload),
+
+  refreshToken: (
+    payload: IRefreshTokenRequest
+  ): Promise<IResponse<ITokenResponse>> =>
+    apiClient.post("/auth/refresh-token", payload),
 };

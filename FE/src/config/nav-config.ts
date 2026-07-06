@@ -168,7 +168,7 @@ export const navGroups: NavGroup[] = [
         items: [
           {
             title: "Profile",
-            url: "/dashboard/profile",
+            url: "/profile",
             icon: "profile",
             shortcut: ["m", "m"],
           },

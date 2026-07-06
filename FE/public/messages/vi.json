@@ -67,6 +67,7 @@
     "no-account": "Chưa có tài khoản?",
     "sign-in-success": "Đăng nhập thành công! Chào mừng trở lại."
   },
+
   "Teams": {
     "join-team-success": "Đã gửi yêu cầu tham gia team. Vui lòng chờ chủ team phê duyệt.",
     "create-team-success": "Tạo nhóm thành công!",
@@ -89,7 +90,8 @@
       "not-found": "Không tìm thấy người dùng.",
       "invalid-credentials": "Email hoặc mật khẩu không hợp lệ.",
       "already-exists": "Người dùng đã tồn tại.",
-      "already-in-team": "Người dùng đã có trong nhóm."
+      "already-in-team": "Người dùng đã có trong nhóm.",
+      "same-password": "Mật khẩu mới không được trùng với mật khẩu cũ."
     },
     "auth": {
       "token-invalid": "Token không hợp lệ.",
@@ -124,7 +126,8 @@
   "field": {
     "email": {
       "label": "Email",
-      "placeholder": "Nhập email của bạn"
+      "placeholder": "Nhập email của bạn",
+      "description": "Email address cannot be changed"
     },
     "email-or-username": {
       "label": "Email hoặc Tên người dùng",

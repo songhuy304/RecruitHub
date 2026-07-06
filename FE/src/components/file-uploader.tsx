@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { cn, formatBytes } from "@/lib/utils";
+import { Typography } from "./ui/typography";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: File[];
@@ -81,7 +83,7 @@ export function FileUploader(props: FileUploaderProps) {
         });
       }
     },
-    [onUpload, setFiles],
+    [onUpload, setFiles]
   );
 
   function handlePreviewRemove(event: React.MouseEvent) {
@@ -100,69 +102,73 @@ export function FileUploader(props: FileUploaderProps) {
     >
       {({ getRootProps, getInputProps, isDragActive }) => (
         <div
-          {...getRootProps()}
           className={cn(
-            "group border-muted-foreground/25 hover:bg-muted/25 relative h-40 w-full cursor-pointer overflow-hidden rounded-lg border-2 border-dashed transition",
-            "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden",
-            isDragActive && "border-muted-foreground/50",
-            disabled && "pointer-events-none opacity-60",
-            hasPreview && "border-solid p-0 hover:bg-transparent",
-            className,
+            "flex w-full flex-col items-center gap-4 lg:w-56 lg:shrink-0 xl:w-64",
+            className
           )}
-          {...dropzoneProps}
         >
-          <input {...getInputProps()} />
+          <div
+            {...getRootProps()}
+            className={cn(
+              "group relative cursor-pointer rounded-full",
+              "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden",
+              disabled && "pointer-events-none opacity-60"
+            )}
+            {...dropzoneProps}
+          >
+            <input {...getInputProps()} />
 
-          {isDragActive ? (
-            <div className="bg-background/80 absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 backdrop-blur-sm">
-              <div className="rounded-full border border-dashed p-3">
+            <Avatar className="size-28 border border-dashed border-muted-foreground/30">
+              {previewUrl ? (
+                <AvatarImage src={previewUrl} alt="Avatar" />
+              ) : (
+                <AvatarFallback className="flex flex-col gap-1 bg-transparent group-hover:bg-black/20 transition-all duration-300">
+                  {isUploading ? (
+                    <Icons.spinner className="size-6 animate-spin" />
+                  ) : (
+                    <>
+                      <Icons.upload className="size-8 text-muted-foreground" />
+                    </>
+                  )}
+                </AvatarFallback>
+              )}
+            </Avatar>
+
+            {/* Overlay khi đang kéo file vào */}
+            {isDragActive ? (
+              <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center rounded-full backdrop-blur-sm">
                 <Icons.upload
-                  className="text-muted-foreground size-7"
+                  className="text-muted-foreground size-6"
                   aria-hidden="true"
                 />
               </div>
-              <p className="text-muted-foreground font-medium">
-                Drop the file here
-              </p>
-            </div>
-          ) : null}
+            ) : null}
 
-          {hasPreview ? (
-            <>
-              <Image
-                src={previewUrl}
-                alt="Uploaded file"
-                fill
-                unoptimized
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/40" />
-              <p className="absolute inset-x-0 bottom-3 z-10 px-4 text-center text-xs font-medium text-white opacity-0 transition group-hover:opacity-100">
-                Click or drag to replace
+            {/* Overlay hover khi đã có ảnh */}
+            {hasPreview && !isDragActive ? (
+              <div className="absolute inset-0 rounded-full bg-black/0 transition group-hover:bg-black/20" />
+            ) : null}
+
+            <Button
+              type="button"
+              size="icon"
+              variant="secondary"
+              className="border-background absolute right-0 bottom-0 z-20 size-8 rounded-full border-2 shadow-sm"
+              disabled={disabled}
+            >
+              <Icons.camera className="size-4" />
+              <span className="sr-only">Change profile photo</span>
+            </Button>
+          </div>
+
+          {isUploading ? (
+            <div className="space-y-1 text-center">
+              <p className="text-foreground/80 line-clamp-1 text-sm font-medium">
+                {uploadingFile.name}
               </p>
-              <Button
-                type="button"
-                variant="secondary"
-                size="icon"
-                onClick={handlePreviewRemove}
-                disabled={disabled || !onPreviewRemove}
-                className="absolute top-2 right-2 z-20 size-8 rounded-full shadow-sm"
-              >
-                <Icons.close className="size-4" />
-                <span className="sr-only">Remove file</span>
-              </Button>
-            </>
-          ) : isUploading ? (
-            <div className="flex h-full flex-col items-center justify-center gap-3 px-5 text-center">
-              <Icons.spinner className="text-muted-foreground size-7 animate-spin" />
-              <div className="space-y-1">
-                <p className="text-foreground/80 line-clamp-1 text-sm font-medium">
-                  {uploadingFile.name}
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  {formatBytes(uploadingFile.size)}
-                </p>
-              </div>
+              <p className="text-muted-foreground text-xs">
+                {formatBytes(uploadingFile.size)}
+              </p>
               {progresses?.[uploadingFile.name] ? (
                 <Progress
                   value={progresses[uploadingFile.name]}
@@ -171,18 +177,29 @@ export function FileUploader(props: FileUploaderProps) {
               ) : null}
             </div>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-4 px-5 text-center">
-              <div className="rounded-full border border-dashed p-3">
-                <Icons.upload
-                  className="text-muted-foreground size-7"
-                  aria-hidden="true"
-                />
-              </div>
-              <p className="text-muted-foreground/70 text-sm">
-                Upload a file up to {formatBytes(maxSize)}
-              </p>
-            </div>
+            <Typography
+              as="p"
+              variant="paragraph-xs"
+              className="text-muted-foreground text-center"
+            >
+              Upload a file up to {formatBytes(maxSize)}
+            </Typography>
           )}
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full gap-2"
+            onClick={() =>
+              (
+                document.querySelector('input[type="file"]') as HTMLInputElement
+              )?.click()
+            }
+            disabled={disabled}
+          >
+            <Icons.upload className="size-4" />
+            Upload new photo
+          </Button>
         </div>
       )}
     </Dropzone>

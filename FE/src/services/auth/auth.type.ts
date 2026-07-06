@@ -26,3 +26,7 @@ export interface IResetPasswordRequest {
 export interface IVerifyTokenRequest {
   token: string;
 }
+
+export interface IRefreshTokenRequest {
+  token: string;
+}

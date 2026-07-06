@@ -1,45 +1,115 @@
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+
 import { API_URL } from "@/config/app.config";
 import { tokenStorage } from "@/lib/auth";
 import { logout, store } from "@/store";
 import { ApiError } from "@/types/api.type";
-import axios from "axios";
+import { refreshToken } from "./refresh-token.util";
+import { AUTH_PATHS } from "@/config/paths.config";
+
+interface RetryRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 export const apiClient = axios.create({
   baseURL: `${API_URL}/api/v1`,
   timeout: 10_000,
-  headers: { "Content-Type": "application/json" },
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = tokenStorage.getAccess();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const accessToken = tokenStorage.getAccess();
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
   return config;
 });
 
-const AUTH_ENDPOINTS_WITHOUT_REDIRECT = ["/auth/login", "/auth/signup"];
+const AUTH_ENDPOINTS = [
+  AUTH_PATHS.SIGN_IN,
+  AUTH_PATHS.SIGN_UP,
+  AUTH_PATHS.REFRESH_TOKEN,
+];
+
+let isRefreshing = false;
+
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (error?: unknown, token?: string) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token!);
+    }
+  });
+
+  failedQueue = [];
+};
 
 apiClient.interceptors.response.use(
-  (res) => res.data,
-  (err) => {
-    if (err.response?.status === 401) {
-      const requestUrl = err.config?.url ?? "";
-      const isAuthRequest = AUTH_ENDPOINTS_WITHOUT_REDIRECT.some((path) =>
-        requestUrl.includes(path),
-      );
+  (response) => response.data,
+  async (error: AxiosError<ApiError>) => {
+    const originalRequest = error.config as RetryRequestConfig;
 
-      store.dispatch(logout());
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
 
-      if (!isAuthRequest) {
-        window.location.href = "/auth/sign-in";
+    const status = error.response?.status;
+    const requestUrl = originalRequest.url ?? "";
+
+    const isAuthApi = AUTH_ENDPOINTS.some((path) => requestUrl.includes(path));
+
+    if (status === 401 && !originalRequest._retry && !isAuthApi) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: (accessToken) => {
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+              resolve(apiClient(originalRequest));
+            },
+            reject,
+          });
+        });
+      }
+
+      isRefreshing = true;
+
+      try {
+        const tokens = await refreshToken();
+
+        processQueue(undefined, tokens.accessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
+
+        return apiClient(originalRequest);
+      } catch (err) {
+        processQueue(err);
+
+        store.dispatch(logout());
+
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 
-    return Promise.reject<ApiError>(
-      err.response?.data ?? {
+    return Promise.reject(
+      error.response?.data ?? {
         statusCode: 500,
-        message: "error.internal-sever",
-      },
+        message: "error.internal-server",
+      }
     );
-  },
+  }
 );
