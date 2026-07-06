@@ -1,0 +1,53 @@
+import { TFunction } from "@/i18n/config";
+import { z } from "zod";
+
+export const updateProfileSchema = (t: TFunction) =>
+  z.object({
+    fullName: z
+      .string()
+      .trim()
+      .min(
+        1,
+        t("validation.required", { field: t("field.full-name.label") }),
+      ),
+    email: z.string().email(),
+    avatarUrl: z.string().optional(),
+  });
+
+export const changePasswordSchema = (t: TFunction) =>
+  z
+    .object({
+      currentPassword: z.string().min(
+        1,
+        t("validation.required", {
+          field: t("field.password.label"),
+        }),
+      ),
+      newPassword: z
+        .string()
+        .min(
+          8,
+          t("validation.min-length", {
+            field: t("field.password.label"),
+            minLength: 8,
+          }),
+        ),
+      confirmPassword: z.string().min(
+        1,
+        t("validation.required", {
+          field: t("field.confirm-password.label"),
+        }),
+      ),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t("validation.password-mismatch"),
+      path: ["confirmPassword"],
+    });
+
+export type UpdateProfileFormValues = z.infer<
+  ReturnType<typeof updateProfileSchema>
+>;
+
+export type ChangePasswordFormValues = z.infer<
+  ReturnType<typeof changePasswordSchema>
+>;
