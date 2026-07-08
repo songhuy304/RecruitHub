@@ -17,4 +17,10 @@ export const QUERY_KEY = {
     MEMBERS: (id: number) => ["team", "members", id],
     JOIN_REQUESTS: (id: number) => ["team", "join-requests", id],
   },
+
+  NOTIFICATION: {
+    ROOT: "notification",
+    LIST: ["notification", "list"],
+    UNREAD_COUNT: ["notification", "unread-count"],
+  },
 } as const;

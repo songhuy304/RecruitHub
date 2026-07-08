@@ -8,6 +8,7 @@ export enum ENotificationType {
 
   MEMBER_JOINED_TEAM = "MEMBER_JOINED_TEAM",
   MEMBER_LEFT_TEAM = "MEMBER_LEFT_TEAM",
+  TEAM_INVITE = "TEAM_INVITE",
 }
 
 export interface INotificationRes<T = unknown> {
@@ -17,4 +18,23 @@ export interface INotificationRes<T = unknown> {
 
 export interface MemberJoinedTeamData {
   teamId: number;
+}
+
+export interface INotification {
+  id: number;
+  title: string;
+  content: string;
+  type: string;
+  isRead: boolean;
+  userId: number;
+  createdAt?: string;
+}
+
+export interface IGetNotificationsParams {
+  page: number;
+  limit: number;
+}
+
+export interface ICountUnread {
+  count: number;
 }

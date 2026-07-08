@@ -51,6 +51,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const {
     data: teamStatistics,
     isPending: isTeamStatisticsPending,
+    isFetching: isTeamStatisticsFetching,
     refetch: refetchTeamStatistics,
   } = useGetTeamStatistics({
     id: selectedTeam?.id || 0,
@@ -89,7 +90,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
       value: TeamMainPanelTab.MEMBERS,
       label: "Members",
       count: teamStatistics?.members || 0,
-      isLoading: isTeamStatisticsPending,
+      isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
       icon: Icons.user,
       content: <TeamDetailMember teamId={selectedTeam?.id || 0} />,
     },
@@ -99,7 +100,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
             value: TeamMainPanelTab.JOINS,
             label: "Join Requests",
             count: teamStatistics?.joinRequests || 0,
-            isLoading: isTeamStatisticsPending,
+            isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
             icon: Icons.userPlus,
             content: <TeamDetailRequest teamId={selectedTeam?.id || 0} />,
           },
@@ -109,7 +110,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
       value: TeamMainPanelTab.INVITES,
       label: "Invites",
       count: teamStatistics?.invites || 0,
-      isLoading: isTeamStatisticsPending,
+      isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
       icon: Icons.mail,
       content: (
         <TeamDetailInvite

@@ -1,15 +1,6 @@
 import { QUERY_KEY } from "@/config/query-keys";
 import { useQuery } from "@tanstack/react-query";
 import { teamService } from "../services";
-// const [getStatistics, query] = useLazyQuery(
-//   (id: number) => QUERY_KEY.TEAM.STATISTICS(id),
-//   (id: number) => teamService.getStatistics(id),
-// );
-
-// return {
-//   getStatistics,
-//   ...query,
-// };
 
 const useGetTeamStatistics = ({
   id,

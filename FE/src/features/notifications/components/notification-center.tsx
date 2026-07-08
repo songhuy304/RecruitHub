@@ -1,16 +1,21 @@
 'use client';
 
 import { Icons } from '@/components/icons';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { NotificationCard } from '@/components/ui/notification-card';
-import { useNotificationStore } from '../utils/store';
 import { useRouter } from 'next/navigation';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import {
+  useGetInfiniteNotifications,
+  useGetUnreadCount,
+  useMarkAllAsRead,
+  useMarkAsRead
+} from '../hooks';
+import { mapApiNotification } from '../utils/map-notification';
 
-const MAX_VISIBLE = 5;
+const PAGE_SIZE = 5;
 
 const actionRoutes: Record<string, string> = {
   view: '/dashboard/workspaces',
@@ -21,10 +26,28 @@ const actionRoutes: Record<string, string> = {
 };
 
 export function NotificationCenter() {
-  const { notifications, markAsRead, markAllAsRead, unreadCount } = useNotificationStore();
+  const {
+    data: notificationsRes,
+    isLoading,
+    fetchNextPage,
+    hasNextPage
+  } = useGetInfiniteNotifications({ limit: PAGE_SIZE });
+  const { data: unreadCountRes } = useGetUnreadCount();
+  const { mutate: markAsRead } = useMarkAsRead();
+  const { mutate: markAllAsRead } = useMarkAllAsRead();
   const router = useRouter();
-  const count = unreadCount();
-  const visibleNotifications = notifications.slice(0, MAX_VISIBLE);
+
+  const count = unreadCountRes?.data?.count ?? 0;
+  const apiNotifications = notificationsRes?.pages.flatMap((page) => page.data) ?? [];
+  const notifications = apiNotifications.map(mapApiNotification);
+
+  const handleMarkAsRead = (id: string) => {
+    markAsRead(Number(id));
+  };
+
+  const handleMarkAllAsRead = () => {
+    markAllAsRead();
+  };
 
   return (
     <Popover>
@@ -41,22 +64,14 @@ export function NotificationCenter() {
       </PopoverTrigger>
       <PopoverContent align='end' className='w-[calc(100vw-2rem)] p-0 sm:w-[380px]' sideOffset={8}>
         <div className='flex items-center justify-between px-4 py-3'>
-          <Link href='/dashboard/notifications' className='group flex items-center gap-1'>
-            <h4 className='text-sm font-semibold group-hover:underline'>Notifications</h4>
-            <Icons.chevronRight className='text-muted-foreground h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
-          </Link>
+          <h4 className='text-sm font-semibold group-hover:underline'>Notifications</h4>
           <div className='flex items-center gap-2'>
-            {count > 0 && (
-              <span className='bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs'>
-                {count} new
-              </span>
-            )}
             {count > 0 && (
               <Button
                 variant='ghost'
                 size='sm'
                 className='text-muted-foreground h-auto px-2 py-1 text-xs'
-                onClick={markAllAsRead}
+                onClick={handleMarkAllAsRead}
               >
                 Mark all as read
               </Button>
@@ -64,15 +79,38 @@ export function NotificationCenter() {
           </div>
         </div>
         <Separator />
-        <ScrollArea className='h-[400px]'>
-          {notifications.length === 0 ? (
+        <div id='notification-scroll-container' className='h-[400px] overflow-y-auto'>
+          {isLoading ? (
+            <div className='flex flex-col items-center justify-center py-12'>
+              <Icons.spinner className='text-muted-foreground/40 mb-2 h-8 w-8 animate-spin' />
+              <p className='text-muted-foreground text-sm'>Loading...</p>
+            </div>
+          ) : notifications.length === 0 ? (
             <div className='flex flex-col items-center justify-center py-12'>
               <Icons.notification className='text-muted-foreground/40 mb-2 h-8 w-8' />
               <p className='text-muted-foreground text-sm'>No notifications yet</p>
             </div>
           ) : (
-            <div className='flex flex-col gap-1 p-2'>
-              {visibleNotifications.map((notification) => (
+            <InfiniteScroll
+              dataLength={notifications.length}
+              next={fetchNextPage}
+              hasMore={Boolean(hasNextPage)}
+              loader={
+                <div className='flex items-center justify-center px-4 py-3'>
+                  <Icons.spinner className='text-muted-foreground h-4 w-4 animate-spin' />
+                </div>
+              }
+              scrollableTarget='notification-scroll-container'
+              className='flex flex-col gap-1 p-2'
+              endMessage={
+                notifications.length > PAGE_SIZE ? (
+                  <p className='text-muted-foreground px-2 py-3 text-center text-xs'>
+                    You&apos;ve reached the end.
+                  </p>
+                ) : undefined
+              }
+            >
+              {notifications.map((notification) => (
                 <NotificationCard
                   key={notification.id}
                   id={notification.id}
@@ -80,20 +118,19 @@ export function NotificationCenter() {
                   body={notification.body}
                   status={notification.status}
                   createdAt={notification.createdAt}
-                  actions={notification.actions}
-                  onMarkAsRead={markAsRead}
+                  onMarkAsRead={handleMarkAsRead}
                   onAction={(notifId, actionId) => {
                     const route = actionRoutes[actionId];
                     if (route) {
-                      markAsRead(notifId);
+                      handleMarkAsRead(notifId);
                       router.push(route);
                     }
                   }}
                 />
               ))}
-            </div>
+            </InfiniteScroll>
           )}
-        </ScrollArea>
+        </div>
       </PopoverContent>
     </Popover>
   );

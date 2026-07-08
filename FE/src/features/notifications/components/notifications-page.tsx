@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button';
 import { NotificationCard } from '@/components/ui/notification-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
-import { useNotificationStore } from '../utils/store';
+import {
+  useGetNotifications,
+  useGetUnreadCount,
+  useMarkAllAsRead,
+  useMarkAsRead
+} from '../hooks';
+import { mapApiNotification } from '../utils/map-notification';
 
 const actionRoutes: Record<string, string> = {
   view: '/dashboard/workspaces',
@@ -17,14 +23,37 @@ const actionRoutes: Record<string, string> = {
 };
 
 export default function NotificationsPage() {
-  const { notifications, markAsRead, markAllAsRead, unreadCount } = useNotificationStore();
+  const { data: notificationsRes, isLoading } = useGetNotifications({ page: 1, limit: 100 });
+  const { data: unreadCountRes } = useGetUnreadCount();
+  const { mutate: markAsRead } = useMarkAsRead();
+  const { mutate: markAllAsRead } = useMarkAllAsRead();
   const router = useRouter();
-  const count = unreadCount();
+
+  const count = unreadCountRes?.data?.count ?? 0;
+  const apiNotifications = notificationsRes?.data ?? [];
+  const notifications = apiNotifications.map(mapApiNotification);
 
   const unreadNotifications = notifications.filter((n) => n.status === 'unread');
   const readNotifications = notifications.filter((n) => n.status === 'read');
 
+  const handleMarkAsRead = (id: string) => {
+    markAsRead(Number(id));
+  };
+
+  const handleMarkAllAsRead = () => {
+    markAllAsRead();
+  };
+
   const renderList = (items: typeof notifications) => {
+    if (isLoading) {
+      return (
+        <div className='flex flex-col items-center justify-center py-16'>
+          <Icons.spinner className='text-muted-foreground/40 mb-3 h-10 w-10 animate-spin' />
+          <p className='text-muted-foreground text-sm'>Loading notifications...</p>
+        </div>
+      );
+    }
+
     if (items.length === 0) {
       return (
         <div className='flex flex-col items-center justify-center py-16'>
@@ -45,11 +74,11 @@ export default function NotificationsPage() {
             status={notification.status}
             createdAt={notification.createdAt}
             actions={notification.actions}
-            onMarkAsRead={markAsRead}
+            onMarkAsRead={handleMarkAsRead}
             onAction={(notifId, actionId) => {
               const route = actionRoutes[actionId];
               if (route) {
-                markAsRead(notifId);
+                handleMarkAsRead(notifId);
                 router.push(route);
               }
             }}
@@ -65,7 +94,7 @@ export default function NotificationsPage() {
       pageDescription='View and manage all your notifications.'
       pageHeaderAction={
         count > 0 ? (
-          <Button variant='outline' size='sm' onClick={markAllAsRead}>
+          <Button variant='outline' size='sm' onClick={handleMarkAllAsRead}>
             Mark all as read
           </Button>
         ) : undefined

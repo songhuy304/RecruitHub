@@ -11,6 +11,9 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "../styles/globals.css";
 import ReduxProvider from "@/components/layout/redux-provider";
 import { NextIntlClientProvider } from "next-intl";
+import { createMetadata } from "@/lib/metadata";
+
+export const metadata = createMetadata("RecruitHub");
 
 const META_THEME_COLORS = {
   light: "#ffffff",
