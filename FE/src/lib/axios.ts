@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const requestUrl = originalRequest.url ?? "";
 
-    const isAuthApi = AUTH_ENDPOINTS.some((path) => requestUrl.includes(path));
+    const isAuthApi = () => requestUrl.startsWith("/auth/");
 
     if (status === 401 && !originalRequest._retry && !isAuthApi) {
       originalRequest._retry = true;

@@ -6,6 +6,7 @@ import { InfoSidebar } from "@/components/layout/info-sidebar";
 import { InfobarProvider } from "@/components/ui/infobar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
+import { SocketProvider } from "@/components/layout/providers/socket-provider";
 
 export default async function Layout({
   children,
@@ -17,18 +18,20 @@ export default async function Layout({
 
   return (
     <AppBootstrap>
-      <KBar>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <AppSidebar />
-          <SidebarInset>
-            <Header />
-            <InfobarProvider defaultOpen={false}>
-              {children}
-              <InfoSidebar side="right" />
-            </InfobarProvider>
-          </SidebarInset>
-        </SidebarProvider>
-      </KBar>
+      <SocketProvider>
+        <KBar>
+          <SidebarProvider defaultOpen={defaultOpen}>
+            <AppSidebar />
+            <SidebarInset>
+              <Header />
+              <InfobarProvider defaultOpen={false}>
+                {children}
+                <InfoSidebar side="right" />
+              </InfobarProvider>
+            </SidebarInset>
+          </SidebarProvider>
+        </KBar>
+      </SocketProvider>
     </AppBootstrap>
   );
 }
