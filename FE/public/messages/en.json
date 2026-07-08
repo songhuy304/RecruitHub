@@ -212,5 +212,11 @@
     "invalid-emails": "Invalid email format in the list",
     "success": "Invites sent successfully!",
     "error": "Failed to send invites!"
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "mark-all-as-read": "Mark all as read",
+    "no-notifications": "No notifications yet",
+    "reached-end": "You've reached the end."
   }
 }

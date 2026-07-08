@@ -187,5 +187,11 @@
     "invalid-emails": "Định dạng email không hợp lệ trong danh sách",
     "success": "Gửi lời mời thành công!",
     "error": "Gửi lời mời thất bại!"
+  },
+  "Notifications": {
+    "title": "Thông báo",
+    "mark-all-as-read": "Đánh dấu tất cả là đã đọc",
+    "no-notifications": "Chưa có thông báo nào",
+    "reached-end": "Bạn đã xem hết thông báo."
   }
 }

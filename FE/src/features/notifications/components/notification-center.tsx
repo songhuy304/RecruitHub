@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { NotificationCard } from '@/components/ui/notification-card';
 import { useRouter } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useTranslations } from 'next-intl';
 import {
   useGetInfiniteNotifications,
   useGetUnreadCount,
@@ -26,6 +27,7 @@ const actionRoutes: Record<string, string> = {
 };
 
 export function NotificationCenter() {
+  const t = useTranslations();
   const {
     data: notificationsRes,
     isLoading,
@@ -59,12 +61,12 @@ export function NotificationCenter() {
               {count > 9 ? '9+' : count}
             </span>
           )}
-          <span className='sr-only'>Notifications</span>
+          <span className='sr-only'>{t('Notifications.title')}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align='end' className='w-[calc(100vw-2rem)] p-0 sm:w-[380px]' sideOffset={8}>
         <div className='flex items-center justify-between px-4 py-3'>
-          <h4 className='text-sm font-semibold group-hover:underline'>Notifications</h4>
+          <h4 className='text-sm font-semibold group-hover:underline'>{t('Notifications.title')}</h4>
           <div className='flex items-center gap-2'>
             {count > 0 && (
               <Button
@@ -73,7 +75,7 @@ export function NotificationCenter() {
                 className='text-muted-foreground h-auto px-2 py-1 text-xs'
                 onClick={handleMarkAllAsRead}
               >
-                Mark all as read
+                {t('Notifications.mark-all-as-read')}
               </Button>
             )}
           </div>
@@ -83,12 +85,12 @@ export function NotificationCenter() {
           {isLoading ? (
             <div className='flex flex-col items-center justify-center py-12'>
               <Icons.spinner className='text-muted-foreground/40 mb-2 h-8 w-8 animate-spin' />
-              <p className='text-muted-foreground text-sm'>Loading...</p>
+              <p className='text-muted-foreground text-sm'>{t('Common.loading')}</p>
             </div>
           ) : notifications.length === 0 ? (
             <div className='flex flex-col items-center justify-center py-12'>
               <Icons.notification className='text-muted-foreground/40 mb-2 h-8 w-8' />
-              <p className='text-muted-foreground text-sm'>No notifications yet</p>
+              <p className='text-muted-foreground text-sm'>{t('Notifications.no-notifications')}</p>
             </div>
           ) : (
             <InfiniteScroll
@@ -105,7 +107,7 @@ export function NotificationCenter() {
               endMessage={
                 notifications.length > PAGE_SIZE ? (
                   <p className='text-muted-foreground px-2 py-3 text-center text-xs'>
-                    You&apos;ve reached the end.
+                    {t('Notifications.reached-end')}
                   </p>
                 ) : undefined
               }
