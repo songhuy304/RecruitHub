@@ -14,7 +14,7 @@ import {
 type Option = { value: string; label: string };
 
 interface RadioGroupFieldProps {
-  label: string;
+  label?: string;
   description?: string;
   required?: boolean;
   options: Option[];
@@ -31,10 +31,12 @@ export function RadioGroupField({
 
   return (
     <FormFieldSet>
-      <FieldLabel>
-        {label}
-        {required && <span className="text-red-500"> *</span>}
-      </FieldLabel>
+      {label && (
+        <FieldLabel>
+          {label}
+          {required && <span className="text-red-500"> *</span>}
+        </FieldLabel>
+      )}
       {description && <FieldDescription>{description}</FieldDescription>}
       <RadioGroup
         value={value}
@@ -44,10 +46,7 @@ export function RadioGroupField({
       >
         {options.map((opt) => (
           <div key={opt.value} className="flex items-center space-x-2">
-            <RadioGroupItem
-              value={opt.value}
-              id={`${field.name}-${opt.value}`}
-            />
+            <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} />
             <Label htmlFor={`${field.name}-${opt.value}`}>{opt.label}</Label>
           </div>
         ))}

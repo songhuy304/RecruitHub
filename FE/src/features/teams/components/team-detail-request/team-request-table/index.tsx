@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import { DataTable } from '@/components/ui/table/data-table';
-import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
-import { DataTableToolbar } from '@/components/ui/table/data-table-toolbar';
-import { useGetTeamRequest } from '@/features/teams/hooks';
-import { useDataTable } from '@/hooks/use-data-table';
-import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
-import { columns } from './columns';
-import { useTranslations } from 'next-intl';
+import { FormFilter } from "@/components/forms/form-filter";
+import { DataTable } from "@/components/ui/table/data-table";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { useGetTeamRequest } from "@/features/teams/hooks";
+import { IFormFilterJoinRequest } from "@/features/teams/types";
+import { useDataTable } from "@/hooks/use-data-table";
+import { useFilterParams } from "@/hooks/use-filter-params";
+import { useTranslations } from "next-intl";
+import { parseAsInteger, parseAsString } from "nuqs";
+import { columns } from "./columns";
+import { Icons } from "@/components/icons";
 
 interface TeamRequestTableProps {
   teamId: number;
@@ -15,17 +18,23 @@ interface TeamRequestTableProps {
 
 export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
   const t = useTranslations();
-  const [params] = useQueryStates({
-    page: parseAsInteger.withDefault(1),
-    perPage: parseAsInteger.withDefault(10),
-    name: parseAsString
+  const { params, handleSubmit, handleReset } = useFilterParams<IFormFilterJoinRequest>({
+    parsers: {
+      page: parseAsInteger.withDefault(1),
+      perPage: parseAsInteger.withDefault(10),
+      search: parseAsString,
+    },
   });
 
-  const { data: requestsResponse, isPending, isFetching } = useGetTeamRequest({
+  const {
+    data: requestsResponse,
+    isPending,
+    isFetching,
+  } = useGetTeamRequest({
     teamId,
     page: params.page,
     limit: params.perPage,
-    ...(params.name && { search: params.name })
+    search: params.search,
   });
 
   const requests = requestsResponse?.data ?? [];
@@ -37,16 +46,37 @@ export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
     columns: tableColumns,
     pageCount,
     shallow: true,
-    debounceMs: 500
+    debounceMs: 500,
   });
 
   if (isPending) {
-    return <DataTableSkeleton columnCount={tableColumns.length} filterCount={1} rowCount={5} />;
+    return (
+      <DataTableSkeleton columnCount={tableColumns.length} filterCount={1} rowCount={5} />
+    );
   }
 
   return (
-    <DataTable table={table} isLoading={isFetching}>
-      <DataTableToolbar table={table} />
-    </DataTable>
+    <div>
+    <FormFilter<IFormFilterJoinRequest>
+        className="mb-4"
+        defaultValues={params}
+        fields={[
+          {
+            type: "text",
+            name: "search",
+            placeholder: "Search by name or email",
+            leftIcon: <Icons.search className="size-4" />,
+          },
+        ]}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
+        onReset={() => {
+          handleReset();
+        }}
+      />
+      <DataTable table={table} isLoading={isFetching} />
+    </div>
+      
   );
 }

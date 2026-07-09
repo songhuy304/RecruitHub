@@ -13,11 +13,11 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { InputPassword } from "@/components/ui/input-password";
 
-interface TextFieldProps extends InputCustomProps, Omit<
-  React.ComponentProps<"input">,
-  "value" | "onChange" | "onBlur"
-> {
-  label: React.ReactNode;
+interface TextFieldProps
+  extends
+    InputCustomProps,
+    Omit<React.ComponentProps<"input">, "value" | "onChange" | "onBlur"> {
+  label?: React.ReactNode;
   description?: string;
   required?: boolean;
   type?: "text" | "email" | "password" | "tel" | "url" | "number";
@@ -45,10 +45,12 @@ export function TextField({
   return (
     <FormFieldSet>
       <FormField>
-        <FieldLabel htmlFor={field.name}>
-          {label}
-          {required && <span className="text-red-500"> *</span>}
-        </FieldLabel>
+        {label && (
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required && <span className="text-red-500"> *</span>}
+          </FieldLabel>
+        )}
         <div className="relative">
           <Component
             id={field.name}

@@ -1,11 +1,10 @@
+import { Button } from "@/components/ui/button";
 import { useAppForm, useFormFields } from "@/components/ui/tanstack-form";
 import { FilterFieldConfig } from "./form-filter.type";
-import { Button } from "@/components/ui/button";
-import { resetQueryParams } from "@/lib/searchparams";
 
 interface FormFilterProps<T extends Record<string, any>> {
   fields: FilterFieldConfig[];
-  defaultValues?: T;
+  defaultValues?: Partial<T>;
   onSubmit: (values: T) => void;
   onReset?: () => void;
   className?: string;
@@ -23,7 +22,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
   const form = useAppForm({
     defaultValues,
     onSubmit: ({ value }) => {
-      onSubmit(value);
+      onSubmit(value as T);
     },
   });
 

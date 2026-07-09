@@ -20,7 +20,7 @@ import {
 type Option = { value: string; label: string };
 
 interface SelectFieldProps {
-  label: React.ReactNode;
+  label?: React.ReactNode;
   description?: string;
   required?: boolean;
   options: Option[];
@@ -42,10 +42,12 @@ export function SelectField({
   return (
     <FormFieldSet className="min-w-40">
       <FormField>
-        <FieldLabel htmlFor={field.name}>
-          {label}
-          {required && <span className="text-red-500"> *</span>}
-        </FieldLabel>
+        {label && (
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required && <span className="text-red-500"> *</span>}
+          </FieldLabel>
+        )}
         <Select
           value={value}
           onValueChange={field.handleChange}

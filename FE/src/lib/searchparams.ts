@@ -43,23 +43,20 @@ export function createQueryParams<T extends Record<string, any>>(
     ])
   ) as { [K in keyof T]: T[K] | null };
 }
-export function resetQueryParams<T extends Record<string, any>>(
+export function toQueryParams<T extends Record<string, any>>(
   values: T
-): Partial<Record<keyof T, null>> {
+): Partial<Record<keyof T, any>> {
   return Object.entries(values).reduce(
     (acc, [key, value]) => {
-      const shouldRemove =
+      const isEmpty =
         value == null || value === "" || (Array.isArray(value) && value.length === 0);
 
-      if (shouldRemove) {
-        acc[key as keyof T] = null;
-      }
+      acc[key as keyof T] = isEmpty ? null : value;
 
       return acc;
     },
-    {} as Partial<Record<keyof T, null>>
+    {} as Partial<Record<keyof T, any>>
   );
 }
-
 export const searchParamsCache = createSearchParamsCache(searchParams);
 export const serialize = createSerializer(searchParams);

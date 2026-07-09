@@ -26,9 +26,6 @@ export function TeamMembersTable({ teamId }: TeamMembersTableProps) {
       perPage: parseAsInteger.withDefault(10),
       search: parseAsString,
     },
-    defaultFilters: {
-      search: undefined,
-    },
   });
 
   const {
@@ -63,12 +60,12 @@ export function TeamMembersTable({ teamId }: TeamMembersTableProps) {
     <>
       <FormFilter<IGetMembers>
         className="mb-4"
+        defaultValues={params}
         fields={[
           {
             type: "text",
             name: "search",
             placeholder: "Search by name or email",
-            label: "Keyword",
             leftIcon: <Icons.search className="size-4" />,
           },
         ]}

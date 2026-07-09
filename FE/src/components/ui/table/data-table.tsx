@@ -29,10 +29,10 @@ export function DataTable<TData>({
   isLoading = false,
 }: DataTableProps<TData>) {
   return (
-    <div className="flex flex-1 flex-col space-y-4 h-full">
+    <div className="flex flex-1 flex-col space-y-4">
       {children}
-      <div className="relative flex flex-1">
-        <div className="absolute inset-0 flex overflow-hidden rounded-lg border">
+      <div className="relative flex flex-1 overflow-hidden">
+        <div className="flex overflow-hidden rounded-lg border w-full">
           {isLoading ? (
             <div className="opacity-40 absolute bg-background inset-0 z-20 flex items-center justify-center pointer-events-none">
               <Spinner className="size-6" />
@@ -93,9 +93,9 @@ export function DataTable<TData>({
                   <TableRow>
                     <TableCell
                       colSpan={table.getAllColumns().length}
-                      className="h-24 text-center"
+                      className="h-24 text-center py-16 px-5 text-muted-foreground"
                     >
-                      <Icons.empty className="mx-auto mb-4 text-muted-foreground" />
+                      <Icons.empty className="mx-auto mb-4" />
                       No data
                     </TableCell>
                   </TableRow>

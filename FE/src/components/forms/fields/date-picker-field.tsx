@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form-context";
 
 interface DatePickerFieldProps {
-  label: React.ReactNode;
+  label?: React.ReactNode;
   description?: string;
   required?: boolean;
   placeholder?: string;
@@ -42,10 +42,12 @@ export function DatePickerField({
   return (
     <FormFieldSet className="min-w-48">
       <FormField>
-        <FieldLabel htmlFor={field.name}>
-          {label}
-          {required && <span className="text-red-500">*</span>}
-        </FieldLabel>
+        {label && (
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required && <span className="text-red-500">*</span>}
+          </FieldLabel>
+        )}
 
         <Popover>
           <PopoverTrigger asChild>

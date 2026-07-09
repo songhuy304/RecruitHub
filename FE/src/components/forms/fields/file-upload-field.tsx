@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useStore } from "@tanstack/react-form";
 
 import { FileUploader } from "@/components/file-uploader";
@@ -22,7 +17,7 @@ import {
 import { useUploadFile } from "@/hooks/use-upload-file";
 
 interface FileUploadFieldProps {
-  label: string;
+  label?: string;
   description?: string;
   required?: boolean;
   maxSize?: number;
@@ -53,8 +48,7 @@ export function FileUploadField({
 
   const handleValueChange: Dispatch<SetStateAction<File[]>> = (nextValue) => {
     setFiles((prev) => {
-      const next =
-        typeof nextValue === "function" ? nextValue(prev) : nextValue;
+      const next = typeof nextValue === "function" ? nextValue(prev) : nextValue;
 
       if (!next.length) {
         field.handleChange("");
@@ -94,10 +88,12 @@ export function FileUploadField({
   return (
     <FormFieldSet>
       <FormField>
-        <FieldLabel htmlFor={field.name}>
-          {label}
-          {required && <span className="text-red-500"> *</span>}
-        </FieldLabel>
+        {label && (
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required && <span className="text-red-500"> *</span>}
+          </FieldLabel>
+        )}
 
         <div onBlur={field.handleBlur}>
           <FileUploader
