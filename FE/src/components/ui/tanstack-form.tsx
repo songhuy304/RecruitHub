@@ -40,6 +40,7 @@ import {
   FormRadioGroupField,
   FormSliderField,
   FormFileUploadField,
+  FormDatePickerField,
 } from "@/components/forms/fields";
 import { cn } from "@/lib/utils";
 import {
@@ -236,6 +237,10 @@ function useFormFields<TValues extends Record<string, unknown>>() {
     >,
     FormFileUploadField: FormFileUploadField as unknown as Typed<
       typeof FormFileUploadField
+    >,
+
+    FormDatePickerField: FormDatePickerField as unknown as Typed<
+      typeof FormDatePickerField
     >,
   };
 }

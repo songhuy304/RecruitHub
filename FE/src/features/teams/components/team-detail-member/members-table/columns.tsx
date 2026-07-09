@@ -153,7 +153,9 @@ export const columns = (
         placeholder: "Search members...",
         variant: "text" as const,
         iconCustom: <Icons.search className="size-4" />,
+
       },
+
       enableColumnFilter: true,
     },
     {
@@ -174,6 +176,7 @@ export const columns = (
         </span>
       ),
     },
+
     {
       id: "teamRole",
       accessorKey: "teamRole",
@@ -196,19 +199,19 @@ export const columns = (
     },
     ...(isOwner
       ? [
-          {
-            id: "actions",
-            header: () => <div className="">{t("Column.actions")}</div>,
-            cell: ({ row }: { row: any }) => (
-              <CellAction
-                data={row.original}
-                teamId={teamId}
-                t={t}
-                user={user}
-              />
-            ),
-          } satisfies ColumnDef<ITeamMember>,
-        ]
+        {
+          id: "actions",
+          header: () => <div className="">{t("Column.actions")}</div>,
+          cell: ({ row }: { row: any }) => (
+            <CellAction
+              data={row.original}
+              teamId={teamId}
+              t={t}
+              user={user}
+            />
+          ),
+        } satisfies ColumnDef<ITeamMember>,
+      ]
       : []),
   ];
 };

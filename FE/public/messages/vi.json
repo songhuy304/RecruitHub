@@ -85,6 +85,7 @@
 
   "error": {
     "internal-sever": "Lỗi hệ thống",
+    "internal-server": "Lỗi hệ thống",
     "user": {
       "forbidden": "Bạn không có quyền thực hiện hành động này.",
       "not-found": "Không tìm thấy người dùng.",

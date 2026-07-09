@@ -44,7 +44,7 @@ function CreateTeamForm({
     isValid: state.isValid,
   }));
 
-  const { FormTextField, FormFileUploadField } =
+  const { FormTextField, FormFileUploadField, FormDatePickerField } =
     useFormFields<CreateTeamFormValues>();
 
   return (

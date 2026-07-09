@@ -110,6 +110,7 @@
 
   "error": {
     "internal-sever": "Internal server error",
+    "internal-server": "Internal server error",
     "user": {
       "forbidden": "You do not have permission to perform this action.",
       "not-found": "User not found.",
