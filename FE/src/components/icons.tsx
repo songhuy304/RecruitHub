@@ -49,6 +49,8 @@ import {
   IconHelpCircle,
   IconInfoCircle,
   IconItalic,
+  IconList,
+  IconListNumbers,
   IconLayoutDashboard,
   IconLayoutKanban,
   IconLayoutSidebar,
@@ -225,6 +227,8 @@ export const Icons = {
   italic: IconItalic,
   underline: IconUnderline,
   text: IconTypography,
+  list: IconList,
+  listNumbers: IconListNumbers,
 
   // Toast
   toastSuccess: IconCircleCheck,

@@ -17,7 +17,7 @@ import {
   createFormField,
 } from "@/components/ui/form-context";
 
-type Option = { value: string; label: string };
+export type Option = { value: string; label: React.ReactNode };
 
 interface SelectFieldProps {
   label?: React.ReactNode;

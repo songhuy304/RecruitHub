@@ -70,6 +70,13 @@ export const navGroups: NavGroup[] = [
         items: [],
       },
       {
+        title: "Job",
+        url: "/job",
+        icon: "post",
+        isActive: false,
+        items: [],
+      },
+      {
         title: "Users",
         url: "/dashboard/users",
         icon: "teams",
