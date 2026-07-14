@@ -3,9 +3,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormFields } from "@/components/ui/tanstack-form";
 import type { JobFormValues } from "../../schemas/job.schema";
-import { JobRichTextToolbar } from "./job-rich-text-toolbar";
+import { useState } from "react";
+import { TextEditor } from "@/components/rte-editor/text-editor";
 
 export function JobDescriptionCard() {
+  const [content, setContent] = useState("");
   const { FormTextareaField } = useFormFields<JobFormValues>();
 
   return (
@@ -15,14 +17,16 @@ export function JobDescriptionCard() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-1">
-          <FormTextareaField
+          {/* <FormTextareaField
             name="description"
             label="Description"
             required
             placeholder="Describe the role, responsibilities, and what the candidate will be doing..."
             rows={5}
             className="focus-visible:ring-offset-0 rounded-b-none border-b-0 focus:border-border focus-visible:ring-0"
-          />
+          /> */}
+
+          <TextEditor value={content} onChange={setContent} />
         </div>
 
         <div className="space-y-1">
@@ -34,7 +38,6 @@ export function JobDescriptionCard() {
             rows={5}
             className="focus-visible:ring-offset-0 rounded-b-none border-b-0 focus:border-border focus-visible:ring-0"
           />
-          <JobRichTextToolbar />
         </div>
 
         <div className="space-y-1">
@@ -45,7 +48,6 @@ export function JobDescriptionCard() {
             rows={4}
             className="focus-visible:ring-offset-0 rounded-b-none border-b-0 focus:border-border focus-visible:ring-0"
           />
-          <JobRichTextToolbar />
         </div>
       </CardContent>
     </Card>

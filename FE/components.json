@@ -20,6 +20,6 @@
   },
   "registries": {
     "@shadcn-space": "https://shadcnspace.com/r/{name}.json",
-    "@plate": "https://platejs.org/r/{name}.json"
+     "@rtecn": "https://rtecn.space/r/{name}.json"
   }
 }
