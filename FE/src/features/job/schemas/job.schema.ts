@@ -84,21 +84,24 @@ export const createJobSchema = (t: TFunction) =>
       }),
       salaryMin: z.number().optional(),
       salaryMax: z.number().optional(),
-      currency: z.string().default("VND"),
+      currency: z.string(),
       isNegotiable: z.boolean().default(false),
       skills: z
         .array(
-          z.object({
-            id: z.string(),
-            text: z.string(),
-          })
+          z.string().min(
+            1,
+            t("validation.required", {
+              field: t("field.skills.label"),
+            })
+          )
         )
         .min(
           1,
           t("validation.required", {
             field: t("field.skills.label"),
           })
-        ),
+        )
+        .max(10, t("validation.max-tags", { max: 10 })),
       openedAt: z.date().optional(),
       expiresAt: z.date().optional(),
       description: z.string().optional(),
