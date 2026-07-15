@@ -71,7 +71,7 @@ export function JobListHeader({ className }: { className?: string }) {
         </Button>
         <Button type="button" variant="outline" size="icon" className="size-9">
           <Icons.ellipsis className="h-4 w-4" />
-          <span className="sr-only">{t("list.more-actions")}</span>
+          <span className="sr-only">{t("more-actions")}</span>
         </Button>
       </div>
     </div>

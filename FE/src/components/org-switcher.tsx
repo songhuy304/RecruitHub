@@ -49,12 +49,7 @@ export function OrgSwitcher() {
     : "Get started";
 
   const handleSwitchTeam = (teamId: number) => {
-    switchTeam(teamId, {
-      onSuccess: (data) => {
-        dispatch(setTokens(data.data));
-        router.refresh();
-      },
-    });
+    switchTeam(teamId);
   };
 
   useEffect(() => {

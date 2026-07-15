@@ -71,12 +71,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   }, [selectedTeam]);
 
   const handleSwitchTeam = (teamId: number) => {
-    switchTeam(teamId, {
-      onSuccess: (data) => {
-        dispatch(setTokens(data.data));
-        router.refresh();
-      },
-    });
+    switchTeam(teamId);
   };
 
   const TabsOptions = [
@@ -130,11 +125,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   if (!selectedTeam) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Typography
-          as="p"
-          variant="paragraph-sm"
-          className="text-muted-foreground"
-        >
+        <Typography as="p" variant="paragraph-sm" className="text-muted-foreground">
           No team selected. Please select a team to view its details.
         </Typography>
       </div>
@@ -189,23 +180,12 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
               />
             </span>
             <div className="space-y-4 text-center max-w-2xl">
-              <Typography
-                as="h2"
-                variant="h3"
-                className="font-semibold"
-                align="center"
-              >
+              <Typography as="h2" variant="h3" className="font-semibold" align="center">
                 Welcome to your Personal Account
               </Typography>
-              <Typography
-                as="p"
-                align="center"
-                variant="paragraph-sm"
-                color="muted"
-              >
-                This is your personal workspace. You can use it to organize your
-                work, manage your projects, and collaborate with others when
-                you&apos;re ready.
+              <Typography as="p" align="center" variant="paragraph-sm" color="muted">
+                This is your personal workspace. You can use it to organize your work,
+                manage your projects, and collaborate with others when you&apos;re ready.
               </Typography>
             </div>
 
