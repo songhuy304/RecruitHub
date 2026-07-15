@@ -2,7 +2,6 @@ import get from "lodash/get";
 
 import { CreateJobFormValues } from "../schemas";
 import { ICreateJobEntity, JobSubmitAction } from "../types";
-import { EJobStatus } from "../enums";
 import { toNumber } from "lodash";
 
 export const mutationJobMapper = {
@@ -22,7 +21,7 @@ export const mutationJobMapper = {
 
       employmentType: get(values, "employmentType", null),
       level: get(values, "level", null),
-      status: get(values, "status", action === "publish" ? EJobStatus.OPEN : null),
+      status: get(values, "status"),
 
       salaryMin: salaryMax ? toNumber(salaryMin) : null,
       salaryMax: salaryMax ? toNumber(salaryMax) : null,
@@ -32,7 +31,7 @@ export const mutationJobMapper = {
       openedAt: opensAt ? opensAt.toISOString() : null,
       expiresAt: expiresAt ? expiresAt.toISOString() : null,
 
-      isPublished: get(values, "published", false),
+      isPublished: get(values, "published", action === "publish" ? true : false),
       isPinned: get(values, "pinned", false),
 
       officeAddress: get(values, "officeAddress", ""),

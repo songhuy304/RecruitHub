@@ -5,17 +5,14 @@ import { useGetMe } from "@/features/auth/hooks";
 import { LoadingPage } from "../loading-page";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { tokenStorage } from "@/lib/auth";
-import { selectAccessToken, setTokens, setUser } from "@/store";
+import { selectAccessToken, selectIsLoading, setTokens, setUser } from "@/store";
 import { useRouter } from "next/navigation";
 import { AUTH_PATHS } from "@/config/paths.config";
 
-export default function AppBootstrap({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppBootstrap({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const selectToken = useAppSelector(selectAccessToken);
+  const selectLoading = useAppSelector(selectIsLoading);
   const router = useRouter();
   const { isLoading, error, data } = useGetMe();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -36,9 +33,7 @@ export default function AppBootstrap({
     if (!isHydrated || isLoading) return;
 
     if (!selectToken || error) {
-      router.replace(
-        `${AUTH_PATHS.SIGN_IN}?redirect=${window.location.pathname}`,
-      );
+      router.replace(`${AUTH_PATHS.SIGN_IN}?redirect=${window.location.pathname}`);
       return;
     }
 
@@ -55,5 +50,10 @@ export default function AppBootstrap({
     return <LoadingPage />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {selectLoading && <LoadingPage />}
+      {children}
+    </>
+  );
 }

@@ -9,15 +9,19 @@ import { jobService } from "../services";
 import { ICreateJobEntity, JobSubmitAction } from "../types";
 import { ECurrency, EEmploymentType, EJobStatus, EWorkLocationType } from "../enums";
 import { mutationJobMapper } from "../mappers";
+import { useRouter } from "next/navigation";
+import { JOB_PATHS } from "@/config/paths.config";
 
 const useCreateJob = () => {
   const t = useTranslations();
+  const router = useRouter();
 
   const { mutateAsync, isPending, isError, error } = useMutation({
     mutationFn: (payload: ICreateJobEntity) => jobService.createJob(payload),
     onSuccess: () => {
       invalidateQueries([QUERY_KEY.JOB.LIST]);
       toast.success(t("Jobs.create-success"));
+      router.push(JOB_PATHS.JOBS);
     },
     onError: (error: Error) => {
       toast.error(error?.message || t("Jobs.create-failed"));

@@ -315,9 +315,34 @@
     "pinned-title": "Pinned",
     "pinned-description": "Highlight this job on top of the list.",
     "create-title": "Create Job",
+    "edit-title": "Edit Job",
+    "list-title": "Jobs",
+    "list-description": "Manage your job postings and track applicants.",
+    "create-job": "Create job",
+    "more-actions": "More actions",
+    "stats": {
+      "total": "Total",
+      "open": "Open",
+      "on-hold": "On hold",
+      "closed": "Closed"
+    },
     "create-description": "Post a new job opening and attract top talent.",
     "save-draft": "Save draft",
-    "publish-job": "Publish job"
+    "publish-job": "Publish job",
+    "create-success": "Job created successfully!",
+    "update-success": "Job updated successfully!",
+    "card": {
+      "updated": "Updated {time}",
+      "views": "{count} views",
+      "applicants": "{count} applicants",
+      "expires-in": "Expires in {days} days",
+      "pin": "Pin job",
+      "unpin": "Unpin job",
+      "actions": "Job actions",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "archive": "Archive"
+    }
   },
   "Notifications": {
     "title": "Notifications",

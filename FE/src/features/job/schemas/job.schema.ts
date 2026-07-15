@@ -50,7 +50,7 @@ export const createJobSchema = (t: TFunction) =>
         }),
       }),
 
-      departments: z.enum(EJobLevel, {
+      departments: z.string({
         message: t("validation.required", {
           field: t("field.level.label"),
         }),

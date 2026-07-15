@@ -14,12 +14,13 @@ import { useTranslations } from "next-intl";
 import { Icons } from "@/components/icons";
 import { useStore } from "@tanstack/react-store";
 import { ECurrency } from "../enums";
-import { useGetLocation } from "@/hooks/options";
+import { useGetDepartment, useGetLocation } from "@/hooks/options";
 
 export function JobBasicInfoCard() {
   const t = useTranslations();
   const form = useFormContext();
-  const { options, isPending } = useGetLocation();
+  const { options: locationOptions } = useGetLocation();
+  const { options: departmentOptions } = useGetDepartment();
 
   const currency = useStore(form.store, (state) => state.values.currency);
 
@@ -40,6 +41,7 @@ export function JobBasicInfoCard() {
     FormSwitchField,
     FormDatePickerField,
     FormTagsField,
+    FormComboboxField,
   } = useFormFields<CreateJobFormValues>();
 
   return (
@@ -88,11 +90,11 @@ export function JobBasicInfoCard() {
             />
           </div>
           <div className="col-span-1 md:col-span-2">
-            <FormSelectField
+            <FormComboboxField
               name="departments"
               label={t("field.departments.label")}
               required
-              options={levelOptions}
+              options={departmentOptions}
               placeholder={t("field.departments.placeholder")}
             />
           </div>
@@ -131,7 +133,7 @@ export function JobBasicInfoCard() {
 
           <div className="col-span-1 md:col-span-2">
             <FormSelectField
-              options={options}
+              options={locationOptions}
               name="location"
               label={t("field.location.label")}
               required

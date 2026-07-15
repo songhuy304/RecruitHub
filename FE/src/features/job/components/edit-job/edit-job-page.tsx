@@ -7,8 +7,14 @@ import { useCreateJob } from "../../hooks";
 import { CreateJobFormValues } from "../../schemas";
 import { JobSubmitAction } from "../../types";
 import { CreateJobHeader } from "../job-header";
+import { useTranslations } from "next-intl";
 
-export default function CreateJobPage() {
+interface EditJobPageProps {
+  id: string;
+}
+
+export default function EditJobPage({ id }: EditJobPageProps) {
+  const t = useTranslations();
   const { isPending, createInitValues, handleCreateJob } = useCreateJob();
   const submitActionRef = useRef<JobSubmitAction>("publish");
 
@@ -23,6 +29,7 @@ export default function CreateJobPage() {
           onSaveDraft={() => {
             submitActionRef.current = "save";
           }}
+          title={t("Jobs.edit-title")}
           onPublish={() => {
             submitActionRef.current = "publish";
           }}

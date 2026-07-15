@@ -1,5 +1,5 @@
 import { NavGroup } from "@/types";
-import { TEAM_PATHS } from "./paths.config";
+import { JOB_PATHS, TEAM_PATHS } from "./paths.config";
 
 /**
  * Navigation configuration with RBAC support
@@ -70,10 +70,10 @@ export const navGroups: NavGroup[] = [
         items: [],
       },
       {
-        title: "Job",
-        url: "/job",
+        title: "Jobs",
+        url: JOB_PATHS.JOBS,
         icon: "post",
-        isActive: false,
+        isActive: true,
         items: [],
       },
       {

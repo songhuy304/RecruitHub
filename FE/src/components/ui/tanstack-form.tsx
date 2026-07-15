@@ -45,6 +45,7 @@ import {
   FormTextEditorField,
   FormDateRangePickerField,
   FormTagsField,
+  FormComboboxField,
 } from "@/components/forms/fields";
 import { cn } from "@/lib/utils";
 import {
@@ -234,8 +235,8 @@ function useFormFields<TValues extends Record<string, unknown>>() {
     FormTextEditorField: FormTextEditorField as unknown as Typed<
       typeof FormTextEditorField
     >,
-
     FormTagsField: FormTagsField as unknown as Typed<typeof FormTagsField>,
+    FormComboboxField: FormComboboxField as unknown as Typed<typeof FormComboboxField>,
   };
 }
 

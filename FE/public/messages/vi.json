@@ -100,9 +100,34 @@
     "pinned-title": "Đã ghim",
     "pinned-description": "Ghim công việc này lên đầu danh sách.",
     "create-title": "Tạo công việc",
+    "edit-title": "Chỉnh sửa công việc",
+    "list-title": "Công việc",
+    "list-description": "Quản lý tin tuyển dụng và theo dõi ứng viên.",
+    "create-job": "Tạo công việc",
+    "more-actions": "Thêm thao tác",
+    "stats": {
+      "total": "Tổng",
+      "open": "Đang mở",
+      "on-hold": "Tạm dừng",
+      "closed": "Đã đóng"
+    },
     "create-description": "Đăng tin tuyển dụng mới và thu hút nhân tài hàng đầu.",
     "save-draft": "Lưu nháp",
-    "publish-job": "Đăng tuyển"
+    "publish-job": "Đăng tuyển",
+    "create-success": "Job created successfully!",
+    "update-success": "Job updated successfully!",
+    "card": {
+      "updated": "Cập nhật {time}",
+      "views": "{count} lượt xem",
+      "applicants": "{count} ứng viên",
+      "expires-in": "Hết hạn sau {days} ngày",
+      "pin": "Ghim công việc",
+      "unpin": "Bỏ ghim",
+      "actions": "Thao tác",
+      "edit": "Chỉnh sửa",
+      "duplicate": "Nhân bản",
+      "archive": "Lưu trữ"
+    }
   },
 
   "error": {

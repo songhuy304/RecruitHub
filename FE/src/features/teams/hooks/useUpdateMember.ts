@@ -23,18 +23,13 @@ const useUpdateMember = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEY.TEAM.MEMBERS(variables.teamId),
       });
-      toast.success(t("Teams.update-member-success"));
     },
     onError: (error: Error) => {
       toast.error(t(error.message));
     },
   });
 
-  const handleUpdateMember = (
-    teamId: number,
-    userId: number,
-    role: ETEAM_ROLE
-  ) =>
+  const handleUpdateMember = (teamId: number, userId: number, role: ETEAM_ROLE) =>
     updateMemberMutation.mutateAsync({
       teamId,
       userId,

@@ -28,8 +28,9 @@ import { useUser } from "@/hooks/useUser";
 
 import { type ITeam } from "@/features/teams/types"; // sửa path theo project bạn
 import { useAppDispatch } from "@/hooks/useRedux";
-import { setTokens } from "@/store";
+import { setLoading, setTokens } from "@/store";
 import { TeamAvatar } from "./team-avatar";
+import { useEffect } from "react";
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
@@ -37,7 +38,7 @@ export function OrgSwitcher() {
   const dispatch = useAppDispatch();
   const { user } = useUser();
   const { data: teams = [], isPending: loading } = useGetTeams();
-  const { mutate: switchTeam } = useSwitchTeam();
+  const { mutate: switchTeam, isPending: isSwitchingTeam } = useSwitchTeam();
 
   const currentTeam = teams.find((team: ITeam) => {
     return team.id === user?.currentTeamId;
@@ -56,6 +57,10 @@ export function OrgSwitcher() {
     });
   };
 
+  useEffect(() => {
+    dispatch(setLoading(isSwitchingTeam));
+  }, [dispatch, isSwitchingTeam]);
+
   if (loading) {
     return (
       <SidebarMenu>
@@ -64,8 +69,9 @@ export function OrgSwitcher() {
             <Skeleton className="size-8 rounded-lg" />
 
             <div
-              className={`grid flex-1 gap-1 ${state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
-                }`}
+              className={`grid flex-1 gap-1 ${
+                state === "collapsed" ? "invisible max-w-0 opacity-0" : ""
+              }`}
             >
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-3 w-16" />
@@ -107,10 +113,11 @@ export function OrgSwitcher() {
               )}
 
               <div
-                className={`grid flex-1 text-left text-sm ${state === "collapsed"
+                className={`grid flex-1 text-left text-sm ${
+                  state === "collapsed"
                     ? "invisible max-w-0 overflow-hidden opacity-0"
                     : ""
-                  }`}
+                }`}
               >
                 <span className="truncate font-medium">
                   {currentTeam?.name || "Create your team"}
@@ -153,9 +160,7 @@ export function OrgSwitcher() {
                   </div>
                   <span>{team.name}</span>
                   {isActive && <Icons.check className="ml-auto size-4" />}
-                  {!isActive && (
-                    <DropdownMenuShortcut>#{team.id}</DropdownMenuShortcut>
-                  )}
+                  {!isActive && <DropdownMenuShortcut>#{team.id}</DropdownMenuShortcut>}
                 </DropdownMenuItem>
               );
             })}

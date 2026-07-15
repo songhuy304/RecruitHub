@@ -10,3 +10,8 @@ export const TEAM_PATHS = {
   TEAMS: "/teams",
   CREATE_TEAM: "/teams/create",
 };
+
+export const JOB_PATHS = {
+  JOBS: "/jobs",
+  CREATE_JOB: "/jobs/create",
+};

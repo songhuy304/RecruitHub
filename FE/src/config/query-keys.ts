@@ -28,6 +28,10 @@ export const QUERY_KEY = {
     LIST: ["location", "list"],
   },
 
+  DEPARTMENT: {
+    LIST: ["department", "list"],
+  },
+
   JOB: {
     ROOT: "job",
     INFO: ["job", "info"],

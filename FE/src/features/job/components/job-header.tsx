@@ -1,6 +1,6 @@
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { JobSubmitAction } from "../../types";
+import { JobSubmitAction } from "../types";
 import { useTranslations } from "next-intl";
 
 interface CreateJobHeaderProps {
@@ -8,6 +8,7 @@ interface CreateJobHeaderProps {
   onPublish: () => void;
   isSubmitting?: boolean;
   submittingAction?: JobSubmitAction | null;
+  title?: string;
 }
 
 export function CreateJobHeader({
@@ -15,13 +16,16 @@ export function CreateJobHeader({
   onPublish,
   isSubmitting = false,
   submittingAction = null,
+  title,
 }: CreateJobHeaderProps) {
   const t = useTranslations();
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("Jobs.create-title")}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {title || t("Jobs.create-title")}
+        </h1>
         <p className="text-muted-foreground text-sm">{t("Jobs.create-description")}</p>
       </div>
       <div className="flex items-center gap-3">
