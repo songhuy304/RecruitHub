@@ -23,4 +23,14 @@ export const QUERY_KEY = {
     LIST: ["notification", "list"],
     UNREAD_COUNT: ["notification", "unread-count"],
   },
+
+  LOCATION: {
+    LIST: ["location", "list"],
+  },
+
+  JOB: {
+    ROOT: "job",
+    INFO: ["job", "info"],
+    LIST: ["job", "list"],
+  },
 } as const;

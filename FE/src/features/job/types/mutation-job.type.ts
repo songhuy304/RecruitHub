@@ -1,8 +1,8 @@
 import { EEmploymentType, EJobLevel, EJobStatus, EWorkLocationType } from "../enums";
 
-export type JobSubmitAction = "draft" | "publish";
+export type JobSubmitAction = "save" | "publish";
 
-export interface IJobEntity {
+export interface ICreateJobEntity {
   title: string;
   description: string | null;
   requirements: string | null;

@@ -4,7 +4,6 @@ export enum EEmploymentType {
   CONTRACT = "CONTRACT",
   INTERN = "INTERN",
   FREELANCE = "FREELANCE",
-  TEMPORARY = "TEMPORARY",
 }
 
 export enum EJobLevel {
@@ -14,7 +13,6 @@ export enum EJobLevel {
   MIDDLE = "MIDDLE",
   SENIOR = "SENIOR",
   LEAD = "LEAD",
-  MANAGER = "MANAGER",
 }
 
 export enum EJobStatus {
@@ -28,4 +26,9 @@ export enum EWorkLocationType {
   AT_OFFICE = "AT_OFFICE",
   REMOTE = "REMOTE",
   HYBRID = "HYBRID",
+}
+
+export enum ECurrency {
+  USD = "USD",
+  VND = "VND",
 }

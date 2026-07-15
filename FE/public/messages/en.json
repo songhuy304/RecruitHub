@@ -142,6 +142,7 @@
     "invalid-email": "Invalid email address.",
     "min-length": "{field} must be at least {minLength} characters.",
     "max-length": "{field} must not exceed {maxLength} characters.",
+    "max-tags": "This field must not exceed {max}.",
     "password-format": "Password must be 8-72 characters and include uppercase, lowercase, numbers, and special characters.",
     "password-mismatch": "Passwords do not match.",
     "username-format": "Username can only contain letters, numbers, and underscores.",

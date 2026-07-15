@@ -12,32 +12,33 @@ export function JobDescriptionCard() {
   return (
     <Card className="border-border/80 border shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">{t('Jobs.description-title')}</CardTitle>
+        <CardTitle className="text-xl font-semibold">
+          {t("Jobs.description-title")}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-1">
           <FormTextEditorField
             name="description"
-            label={t('field.description.label')}
+            label={t("field.description.label")}
             required
-            placeholder={t('field.description.placeholder')}
+            placeholder={t("field.description.placeholder")}
           />
         </div>
 
         <div className="space-y-1">
           <FormTextEditorField
             name="requirements"
-            label={t('field.requirements.label')}
-            required
-            placeholder={t('field.requirements.placeholder')}
+            label={t("field.requirements.label")}
+            placeholder={t("field.requirements.placeholder")}
           />
         </div>
 
         <div className="space-y-1">
           <FormTextEditorField
             name="benefits"
-            label={t('field.benefits.label')}
-            placeholder={t('field.benefits.placeholder')}
+            label={t("field.benefits.label")}
+            placeholder={t("field.benefits.placeholder")}
           />
         </div>
       </CardContent>

@@ -2,18 +2,27 @@
 
 import PageContainer from "@/components/layout/page-container";
 import { CreateJobForm } from "@/features/job/form";
+import { CreateJobHeader } from "./create-job-header";
+import { useCreateJob } from "../../hooks";
 import { CreateJobFormValues } from "../../schemas";
-import { JobSubmitAction } from "../../types";
 
 export default function CreateJobPage() {
-  const handleSubmit = (values: CreateJobFormValues, action: JobSubmitAction) => {
-    console.log(values, action);
+  const { isPending, createInitValues, handleCreateJob } = useCreateJob();
+
+  const handleSubmit = async (values: CreateJobFormValues, form: any) => {
+    await handleCreateJob(values, "publish");
   };
 
   return (
     <PageContainer>
       <div className="flex-1 space-y-4">
-        <CreateJobForm onSubmit={handleSubmit} isSubmitting={false} />
+        <CreateJobHeader
+          onSaveDraft={() => {}}
+          onPublish={() => {}}
+          isSubmitting={isPending}
+        />
+
+        <CreateJobForm onSubmit={handleSubmit} defaultValues={createInitValues} />
       </div>
     </PageContainer>
   );

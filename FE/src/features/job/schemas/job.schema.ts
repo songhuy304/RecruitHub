@@ -1,5 +1,11 @@
 import * as z from "zod";
-import { EEmploymentType, EJobLevel, EJobStatus, EWorkLocationType } from "../enums";
+import {
+  ECurrency,
+  EEmploymentType,
+  EJobLevel,
+  EJobStatus,
+  EWorkLocationType,
+} from "../enums";
 import { TFunction } from "@/i18n/config";
 
 export const createJobSchema = (t: TFunction) =>
@@ -69,13 +75,7 @@ export const createJobSchema = (t: TFunction) =>
             field: t("field.office-address.label"),
           })
         )
-        .trim()
-        .min(
-          1,
-          t("validation.required", {
-            field: t("field.office-address.label"),
-          })
-        ),
+        .optional(),
 
       workLocationType: z.enum(EWorkLocationType, {
         message: t("validation.required", {
@@ -84,27 +84,25 @@ export const createJobSchema = (t: TFunction) =>
       }),
       salaryMin: z.number().optional(),
       salaryMax: z.number().optional(),
-      currency: z.string(),
+      currency: z.enum(ECurrency, {
+        message: t("validation.required", {
+          field: t("field.currency.label"),
+        }),
+      }),
       isNegotiable: z.boolean().default(false),
       skills: z
         .array(
-          z.string().min(
-            1,
-            t("validation.required", {
-              field: t("field.skills.label"),
-            })
-          )
+          z
+            .string(t("validation.required", { field: t("field.skills.label") }))
+            .min(1, t("validation.required", { field: t("field.skills.label") }))
         )
-        .min(
-          1,
-          t("validation.required", {
-            field: t("field.skills.label"),
-          })
-        )
+        .min(1, t("validation.required", { field: t("field.skills.label") }))
         .max(10, t("validation.max-tags", { max: 10 })),
       openedAt: z.date().optional(),
       expiresAt: z.date().optional(),
-      description: z.string().optional(),
+      description: z
+        .string(t("validation.required", { field: t("field.description.label") }))
+        .min(1, t("validation.required", { field: t("field.description.label") })),
       requirements: z.string().optional(),
       benefits: z.string().optional(),
       published: z.boolean().default(false),

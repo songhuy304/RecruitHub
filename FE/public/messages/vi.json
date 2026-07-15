@@ -140,6 +140,7 @@
     "invalid-email": "Địa chỉ email không hợp lệ.",
     "min-length": "{field} phải có ít nhất {minLength} ký tự.",
     "max-length": "{field} không được vượt quá {maxLength} ký tự.",
+    "max-tags": "Không được vượt quá {max}.",
     "password-format": "Mật khẩu phải có 8-72 ký tự và bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
     "password-mismatch": "Mật khẩu không khớp.",
     "username-format": "Tên người dùng chỉ chứa chữ cái, số và dấu gạch dưới.",

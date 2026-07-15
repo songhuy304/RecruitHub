@@ -1,15 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { useEditorState } from "@tiptap/react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Toggle } from "../ui/toggle";
 import { useRichTextEditorContext } from "../rte-context";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function LinkControl() {
   const { editor, labels, icons } = useRichTextEditorContext();
@@ -19,9 +15,7 @@ export function LinkControl() {
   const active = useEditorState({
     editor: editor ?? null,
     selector: (ctx) =>
-      ctx.editor && !ctx.editor.isDestroyed
-        ? ctx.editor.isActive("link")
-        : false,
+      ctx.editor && !ctx.editor.isDestroyed ? ctx.editor.isActive("link") : false,
   });
 
   const handleOpen = (isOpen: boolean) => {
@@ -39,12 +33,7 @@ export function LinkControl() {
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
     } else {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run();
+      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
     }
     setOpen(false);
     setUrl("");
@@ -65,18 +54,18 @@ export function LinkControl() {
 
   return (
     <Popover open={open} onOpenChange={handleOpen}>
-      <PopoverTrigger
-        onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
-      >
-        <Toggle
-          size="sm"
-          pressed={active ?? false}
-          aria-label={labels.linkControlLabel}
-          title={labels.linkControlLabel}
-          className="p-0"
-        >
-          {icons.linkControlIcon}
-        </Toggle>
+      <PopoverTrigger asChild onMouseDown={(e: React.MouseEvent) => e.preventDefault()}>
+        <div>
+          <Toggle
+            size="sm"
+            pressed={active ?? false}
+            aria-label={labels.linkControlLabel}
+            title={labels.linkControlLabel}
+            className="p-0"
+          >
+            {icons.linkControlIcon}
+          </Toggle>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-3">
         <div className="rte-link-editor">

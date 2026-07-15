@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFormFields } from "@/components/ui/tanstack-form";
+import { useFormContext, useFormFields } from "@/components/ui/tanstack-form";
 import {
   currencyOptions,
   employmentTypeOptions,
@@ -12,15 +12,33 @@ import {
 import { CreateJobFormValues } from "../schemas";
 import { useTranslations } from "next-intl";
 import { Icons } from "@/components/icons";
+import { useStore } from "@tanstack/react-store";
+import { ECurrency } from "../enums";
+import { useGetLocation } from "@/hooks/options";
 
 export function JobBasicInfoCard() {
   const t = useTranslations();
+  const form = useFormContext();
+  const { options, isPending } = useGetLocation();
+
+  const currency = useStore(form.store, (state) => state.values.currency);
+
+  const getCurrencySymbol = () => {
+    switch (currency) {
+      case ECurrency.USD:
+        return <Icons.dollar />;
+      case ECurrency.VND:
+        return "VND";
+      default:
+        return "";
+    }
+  };
+
   const {
     FormTextField,
     FormSelectField,
     FormSwitchField,
     FormDatePickerField,
-    FormTagInputField,
     FormTagsField,
   } = useFormFields<CreateJobFormValues>();
 
@@ -82,7 +100,7 @@ export function JobBasicInfoCard() {
           <div className="col-span-1 md:col-span-2">
             <FormTextField
               name="salaryMin"
-              leftIcon={<Icons.dollar />}
+              leftIcon={getCurrencySymbol()}
               label={t("field.salary-min.label")}
               placeholder={t("field.salary-min.placeholder")}
               type="number"
@@ -91,7 +109,7 @@ export function JobBasicInfoCard() {
           </div>
           <div className="col-span-1 md:col-span-2">
             <FormTextField
-              leftIcon={<Icons.dollar />}
+              leftIcon={getCurrencySymbol()}
               name="salaryMax"
               label={t("field.salary-max.label")}
               placeholder={t("field.salary-max.placeholder")}
@@ -112,7 +130,8 @@ export function JobBasicInfoCard() {
           </div> */}
 
           <div className="col-span-1 md:col-span-2">
-            <FormTextField
+            <FormSelectField
+              options={options}
               name="location"
               label={t("field.location.label")}
               required
@@ -123,7 +142,6 @@ export function JobBasicInfoCard() {
             <FormTextField
               name="officeAddress"
               label={t("field.office-address.label")}
-              required
               placeholder={t("field.office-address.placeholder")}
             />
           </div>

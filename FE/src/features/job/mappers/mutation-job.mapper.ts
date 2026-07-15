@@ -1,23 +1,24 @@
 import get from "lodash/get";
 
-import { JobFormValues } from "../schemas";
-import { IJobEntity } from "../types";
+import { CreateJobFormValues } from "../schemas";
+import { ICreateJobEntity, JobSubmitAction } from "../types";
+import { EJobStatus } from "../enums";
 
 export const mutationJobMapper = {
-  toEntity: (values: JobFormValues): IJobEntity => {
-    const opensAt = get(values, "opensAt");
+  toEntity: (values: CreateJobFormValues, action: JobSubmitAction): ICreateJobEntity => {
+    const opensAt = get(values, "opensAt") as Date | null | undefined;
     const expiresAt = get(values, "expiresAt");
 
     return {
       title: get(values, "title"),
 
-      description: get(values, "description"),
-      requirements: get(values, "requirements"),
+      description: get(values, "description", ""),
+      requirements: get(values, "requirements", ""),
       benefits: get(values, "benefits", ""),
 
       employmentType: get(values, "employmentType", null),
       level: get(values, "level", null),
-      status: get(values, "status", null),
+      status: get(values, "status", action === "publish" ? EJobStatus.OPEN : null),
 
       salaryMin: get(values, "salaryMin", null),
       salaryMax: get(values, "salaryMax", null),
@@ -30,14 +31,12 @@ export const mutationJobMapper = {
       isPublished: get(values, "published", false),
       isPinned: get(values, "pinned", false),
 
-      officeAddress: get(values, "officeAddress"),
+      officeAddress: get(values, "officeAddress", ""),
       location: get(values, "location"),
 
       departments: [get(values, "departments")],
 
-      skills: get(values, "skills", []).map(
-        (item: { id: string; text: string }) => item.text
-      ),
+      skills: get(values, "skills", []),
 
       workLocationType: get(values, "workLocationType"),
     };
