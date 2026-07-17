@@ -7,16 +7,19 @@ import { Empty } from "@/components/ui/empty";
 import { JOB_PATHS } from "@/config/paths.config";
 import { JobCard } from "@/features/job/components/job-card";
 import { useGetJobs } from "@/features/job/hooks";
-import { IJob, IJobFilterFormValues } from "@/features/job/types";
+import { IJob } from "@/features/job/types";
+import { useFilterParams } from "@/hooks/use-filter-params";
 import { cn } from "@/lib/utils";
-import { IPagination } from "@/types/api.type";
 import { useRouter } from "next/navigation";
 
+type JobFilterParams = ReturnType<typeof useFilterParams>["params"];
+
 interface JobListContentProps {
-  params: IJobFilterFormValues & IPagination; // hoặc kiểu cụ thể trả về từ useFilterParams
+  params: JobFilterParams;
+  setParams: ReturnType<typeof useFilterParams>["setParams"];
 }
 
-export function JobListContent({ params }: JobListContentProps) {
+export function JobListContent({ params, setParams }: JobListContentProps) {
   const router = useRouter();
 
   const {
