@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useAppForm, useFormFields } from "@/components/ui/tanstack-form";
 import { FilterFieldConfig } from "./form-filter.type";
+import { Icons } from "@/components/icons";
+import { FormComboboxField, FormDateRangePickerField } from "../fields";
 
 interface FormFilterProps<T extends Record<string, any>> {
   fields: FilterFieldConfig[];
@@ -33,22 +35,87 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
     switch (field.type) {
       case "text": {
         const { name, type, ...rest } = field;
-        return <FormTextField key={name} name={name} {...rest} />;
+        return (
+          <FormTextField
+            listeners={{
+              onChangeDebounceMs: 600,
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
       }
 
       case "select": {
         const { name, type, ...rest } = field;
-        return <FormSelectField key={name} name={name} {...rest} />;
+        return (
+          <FormSelectField
+            listeners={{
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
+      }
+
+      case "multiSelect": {
+        const { name, type, ...rest } = field;
+        return (
+          <FormComboboxField
+            listeners={{
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
       }
 
       case "date": {
         const { name, type, ...rest } = field;
-        return <FormDatePickerField key={name} name={name} {...rest} />;
+        return (
+          <FormDatePickerField
+            listeners={{
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
+      }
+
+      case "dateRange": {
+        const { name, type, ...rest } = field;
+        return (
+          <FormDateRangePickerField
+            listeners={{
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
       }
 
       case "checkbox": {
         const { name, type, ...rest } = field;
-        return <FormCheckboxField key={name} name={name} {...rest} />;
+        return (
+          <FormCheckboxField
+            listeners={{
+              onChange: triggerSubmit,
+            }}
+            key={name}
+            name={name}
+            {...rest}
+          />
+        );
       }
 
       default: {
@@ -64,19 +131,24 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
     form.reset();
   };
 
+  const triggerSubmit = () => {
+    form.handleSubmit();
+  };
+
   return (
     <form.AppForm>
       <form.Form className={className}>
         <div className="flex flex-wrap items-end gap-4">
           {fields.map(renderField)}
 
-          <div className="ml-auto flex gap-2">
-            <Button type="submit">Apply</Button>
+          {/* <div className="ml-auto flex gap-2"> */}
+          {/* <Button type="submit">Apply</Button> */}
 
-            <Button type="button" variant="outline" onClick={handleReset}>
-              Reset
-            </Button>
-          </div>
+          <Button type="button" variant="outline" onClick={handleReset}>
+            <Icons.arrowBack />
+            Reset
+          </Button>
+          {/* </div> */}
         </div>
       </form.Form>
     </form.AppForm>

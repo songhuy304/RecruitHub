@@ -1,4 +1,4 @@
-import EditJobPage from "@/features/job/components/edit-job/edit-job-page";
+import EditJobPage from "@/features/job/page-edit/page";
 import { createMetadata } from "@/lib/metadata";
 export const metadata = createMetadata("Edit Job", "");
 

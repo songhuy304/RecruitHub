@@ -1,6 +1,6 @@
-import { cn } from "./ui/utils";
-import { useRichTextEditorContext } from './rte-context';
-import type { RichTextEditorToolbarProps } from './types';
+import { cn } from "@/lib/utils";
+import { useRichTextEditorContext } from "./rte-context";
+import type { RichTextEditorToolbarProps } from "./types";
 
 export function Toolbar({
   children,
@@ -15,13 +15,13 @@ export function Toolbar({
   return (
     <div
       className={cn(
-        'rte-toolbar',
-        'bg-transparent dark:bg-input/30',
+        "rte-toolbar",
+        "bg-transparent dark:bg-input/30",
         variant !== "default" && `rte-toolbar--${variant}`,
-        sticky && 'sticky z-10',
+        sticky && "sticky z-10",
         className
       )}
-      data-sticky={sticky ? '' : undefined}
+      data-sticky={sticky ? "" : undefined}
       style={sticky ? { top: stickyOffset } : undefined}
     >
       {children}

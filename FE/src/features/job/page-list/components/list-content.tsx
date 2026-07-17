@@ -1,22 +1,23 @@
 "use client";
 
+import { Icons } from "@/components/icons";
 import { PagePagination } from "@/components/pagination";
+import { Card, CardContent } from "@/components/ui/card";
+import { Empty } from "@/components/ui/empty";
+import { JOB_PATHS } from "@/config/paths.config";
 import { JobCard } from "@/features/job/components/job-card";
 import { useGetJobs } from "@/features/job/hooks";
-import { IGetJobs, IJob } from "@/features/job/types";
-import { useFilterParams } from "@/hooks/use-filter-params";
+import { IJob, IJobFilterFormValues } from "@/features/job/types";
 import { cn } from "@/lib/utils";
+import { IPagination } from "@/types/api.type";
 import { useRouter } from "next/navigation";
-import { parseAsInteger } from "nuqs";
 
-export function JobListContent() {
+interface JobListContentProps {
+  params: IJobFilterFormValues & IPagination; // hoặc kiểu cụ thể trả về từ useFilterParams
+}
+
+export function JobListContent({ params }: JobListContentProps) {
   const router = useRouter();
-  const { params, setParams } = useFilterParams<IGetJobs>({
-    parsers: {
-      page: parseAsInteger.withDefault(1),
-      perPage: parseAsInteger.withDefault(10),
-    },
-  });
 
   const {
     data: jobsResponse,
@@ -64,9 +65,21 @@ export function JobListContent() {
           ))}
         </div>
       ) : (
-        <div className="text-muted-foreground flex min-h-40 items-center justify-center text-sm">
-          No jobs found.
-        </div>
+        <Card>
+          <CardContent>
+            <Empty
+              title="No jobs found"
+              description="Create your first job to start attracting great candidates"
+              buttonText={
+                <>
+                  <Icons.plusCircle className="mr-2 h-4 w-4" />
+                  Create your first job
+                </>
+              }
+              onButtonClick={() => router.push(JOB_PATHS.CREATE_JOB)}
+            />
+          </CardContent>
+        </Card>
       )}
 
       <PagePagination

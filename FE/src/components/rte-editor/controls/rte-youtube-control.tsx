@@ -2,11 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Node, nodeInputRule } from "@tiptap/core";
-import {
-  ReactNodeViewRenderer,
-  useEditorState,
-  type NodeViewProps,
-} from "@tiptap/react";
+import { ReactNodeViewRenderer, useEditorState, type NodeViewProps } from "@tiptap/react";
 import { useRichTextEditorContext } from "../rte-context";
 import { RichTextEditorControl } from "../controls/rte-control";
 import {
@@ -18,9 +14,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
+} from "@/components/ui/dialog";
 import { ResizableNodeView } from "../extensions/resizable-node-view";
+import { Input } from "@/components/ui/input";
 
 function getYouTubeId(url: string): string | null {
   const clean = url.trim();
@@ -45,7 +41,13 @@ function YouTubeNodeView(props: NodeViewProps) {
   const videoId = getYouTubeId(node.attrs.src) || node.attrs.src;
 
   return (
-    <ResizableNodeView {...props} lockAspect aspectRatio={16 / 9} minWidth={320} maxWidth={1200}>
+    <ResizableNodeView
+      {...props}
+      lockAspect
+      aspectRatio={16 / 9}
+      minWidth={320}
+      maxWidth={1200}
+    >
       <iframe
         src={`https://www.youtube-nocookie.com/embed/${videoId}`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -90,8 +92,7 @@ export const YouTubeEmbed = Node.create({
       },
       align: {
         default: "center",
-        parseHTML: (el: HTMLElement) =>
-          el.getAttribute("data-align") || "center",
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-align") || "center",
         renderHTML: (attrs: Record<string, unknown>) => ({
           "data-align": attrs.align,
         }),
@@ -153,9 +154,7 @@ export function YouTubeEmbedControl({ className }: { className?: string }) {
     editor: editor ?? null,
     selector: (ctx) => ({
       active:
-        ctx.editor && !ctx.editor.isDestroyed
-          ? ctx.editor.isActive("youtube")
-          : false,
+        ctx.editor && !ctx.editor.isDestroyed ? ctx.editor.isActive("youtube") : false,
     }),
   }) ?? { active: false };
 
@@ -168,36 +167,32 @@ export function YouTubeEmbedControl({ className }: { className?: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <RichTextEditorControl
-            active={active}
-            className={className}
-            title="Embed YouTube video"
-            aria-label="Embed YouTube video"
+      <DialogTrigger asChild>
+        <RichTextEditorControl
+          active={active}
+          className={className}
+          title="Embed YouTube video"
+          aria-label="Embed YouTube video"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            className="rte-editor-icon"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              className="rte-editor-icon"
-            >
-              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8z" />
-              <path d="M9.5 15.5V8.5l6.2 3.5z" />
-            </svg>
-          </RichTextEditorControl>
-        }
-      />
-      <DialogContent showCloseButton={false}>
+            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8z" />
+            <path d="M9.5 15.5V8.5l6.2 3.5z" />
+          </svg>
+        </RichTextEditorControl>
+      </DialogTrigger>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Embed YouTube video</DialogTitle>
-          <DialogDescription>
-            Paste a YouTube video URL or ID.
-          </DialogDescription>
+          <DialogDescription>Paste a YouTube video URL or ID.</DialogDescription>
         </DialogHeader>
         <Input
           value={url}

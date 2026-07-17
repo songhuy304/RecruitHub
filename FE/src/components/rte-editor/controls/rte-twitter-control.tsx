@@ -2,14 +2,9 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Node, nodeInputRule } from "@tiptap/core";
-import {
-  ReactNodeViewRenderer,
-  useEditorState,
-  type NodeViewProps,
-} from "@tiptap/react";
+import { ReactNodeViewRenderer, useEditorState, type NodeViewProps } from "@tiptap/react";
 import { useRichTextEditorContext } from "../rte-context";
 import { RichTextEditorControl } from "../controls/rte-control";
-import { Input } from "../ui/input";
 import {
   Dialog,
   DialogClose,
@@ -19,8 +14,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import { ResizableNodeView } from "../extensions/resizable-node-view";
+import { Input } from "@/components/ui/input";
 
 const WIDGET_SCRIPT_URL = "https://platform.twitter.com/widgets.js";
 
@@ -99,8 +95,7 @@ export const TwitterEmbed = Node.create({
       },
       align: {
         default: "center",
-        parseHTML: (el: HTMLElement) =>
-          el.getAttribute("data-align") || "center",
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-align") || "center",
         renderHTML: (attrs: Record<string, unknown>) => ({
           "data-align": attrs.align,
         }),
@@ -155,7 +150,9 @@ export const TwitterEmbed = Node.create({
 
 function extractTweetId(input: string): string | null {
   const clean = input.trim();
-  const match = clean.match(/(?:twitter\.com|x\.com)\/(?:\w+\/status\/|i\/web\/status\/)(\d+)/);
+  const match = clean.match(
+    /(?:twitter\.com|x\.com)\/(?:\w+\/status\/|i\/web\/status\/)(\d+)/
+  );
   return match ? (match[1] ?? null) : /^\d+$/.test(clean) ? clean : null;
 }
 
@@ -168,9 +165,7 @@ export function TwitterEmbedControl({ className }: { className?: string }) {
     editor: editor ?? null,
     selector: (ctx) => ({
       active:
-        ctx.editor && !ctx.editor.isDestroyed
-          ? ctx.editor.isActive("twitter")
-          : false,
+        ctx.editor && !ctx.editor.isDestroyed ? ctx.editor.isActive("twitter") : false,
     }),
   }) ?? { active: false };
 
@@ -186,25 +181,23 @@ export function TwitterEmbedControl({ className }: { className?: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <RichTextEditorControl
-            active={active}
-            className={className}
-            title="Embed Tweet"
-            aria-label="Embed Tweet"
+      <DialogTrigger asChild>
+        <RichTextEditorControl
+          active={active}
+          className={className}
+          title="Embed Tweet"
+          aria-label="Embed Tweet"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="rte-editor-icon"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="rte-editor-icon"
-            >
-              <path d="M18.2 3.2h3.3l-7.2 8.2 8.5 11.2h-6.6l-5.2-6.8-6 6.8H2.7l7.7-8.8L2.3 3.2h6.8l4.7 6.2 5.4-6.2zm-1.2 17.3h1.8L7 4.8H5.1l11.9 15.7z" />
-            </svg>
-          </RichTextEditorControl>
-        }
-      />
+            <path d="M18.2 3.2h3.3l-7.2 8.2 8.5 11.2h-6.6l-5.2-6.8-6 6.8H2.7l7.7-8.8L2.3 3.2h6.8l4.7 6.2 5.4-6.2zm-1.2 17.3h1.8L7 4.8H5.1l11.9 15.7z" />
+          </svg>
+        </RichTextEditorControl>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Embed Tweet</DialogTitle>

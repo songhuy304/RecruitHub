@@ -109,6 +109,8 @@
       "total": "Tổng",
       "open": "Đang mở",
       "on-hold": "Tạm dừng",
+      "draft": "Bản nháp",
+      "archived": "Đã lưu trữ",
       "closed": "Đã đóng"
     },
     "create-description": "Đăng tin tuyển dụng mới và thu hút nhân tài hàng đầu.",

@@ -3,11 +3,11 @@
 import PageContainer from "@/components/layout/page-container";
 import { CreateJobForm } from "@/features/job/form";
 import { useRef } from "react";
-import { useCreateJob } from "../../hooks";
-import { CreateJobFormValues } from "../../schemas";
-import { JobSubmitAction } from "../../types";
-import { CreateJobHeader } from "../job-header";
 import { useTranslations } from "next-intl";
+import { CreateJobHeader } from "@/features/job/components";
+import { JobSubmitAction } from "@/features/job/types";
+import { useCreateJob } from "@/features/job/hooks";
+import { CreateJobFormValues } from "@/features/job/schemas";
 
 interface EditJobPageProps {
   id: string;

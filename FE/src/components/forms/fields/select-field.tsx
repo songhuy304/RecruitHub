@@ -49,7 +49,7 @@ export function SelectField({
           </FieldLabel>
         )}
         <Select
-          value={value}
+          value={value ?? ""}
           onValueChange={field.handleChange}
           onOpenChange={(open) => {
             if (!open) field.handleBlur();

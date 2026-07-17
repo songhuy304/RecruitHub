@@ -22,5 +22,6 @@
   },
   "[css]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  },
+  "js/ts.preferences.importModuleSpecifier": "non-relative"
 }

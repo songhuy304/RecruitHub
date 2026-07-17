@@ -105,6 +105,7 @@ import {
   IconEye,
   IconLinkFilled,
   IconCurrencyDollar,
+  IconArrowBackUp,
 } from "@tabler/icons-react";
 import { IconNoData } from "./ui/icons/empty.icon";
 
@@ -142,6 +143,7 @@ export const Icons = {
   chevronsLeft: IconChevronsLeft,
   chevronsRight: IconChevronsRight,
   chevronsUpDown: IconSelector,
+  arrowBack: IconArrowBackUp,
 
   // Layout
   dashboard: IconLayoutDashboard,

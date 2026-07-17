@@ -1,7 +1,9 @@
 import { ComponentProps } from "react";
 import {
   FormCheckboxField,
+  FormComboboxField,
   FormDatePickerField,
+  FormDateRangePickerField,
   FormSelectField,
   FormTextField,
 } from "../fields";
@@ -9,12 +11,16 @@ import {
 type CheckboxProps = ComponentProps<typeof FormCheckboxField>;
 type TextFieldProps = ComponentProps<typeof FormTextField>;
 type SelectFieldProps = ComponentProps<typeof FormSelectField>;
+type MultiSelectFieldProps = ComponentProps<typeof FormComboboxField>;
 type DatePickerFieldProps = ComponentProps<typeof FormDatePickerField>;
+type DateRangePickerFieldProps = ComponentProps<typeof FormDateRangePickerField>;
 
 export interface FieldPropsMap {
   text: TextFieldProps;
+  multiSelect: MultiSelectFieldProps;
   select: SelectFieldProps;
   date: DatePickerFieldProps;
+  dateRange: DateRangePickerFieldProps;
   checkbox: CheckboxProps;
 }
 

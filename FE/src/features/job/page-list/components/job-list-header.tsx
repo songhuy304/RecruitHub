@@ -7,27 +7,34 @@ import { useGetJobStatistics } from "@/features/job/hooks/use-get-job-statistics
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { EJobStatus } from "../../enums";
+import { jobStatusConfig } from "../../constants";
 
 function JobStatItem({
   label,
   value,
   isLoading,
+  status,
 }: {
   label: string;
   value: number;
   isLoading?: boolean;
+  status?: EJobStatus | undefined;
 }) {
+  const config = status ? jobStatusConfig[status] : undefined;
   return (
     <div className="flex min-w-14 flex-col items-center gap-1 text-center">
-      <span className="text-muted-foreground text-[10px] font-medium tracking-[0.12em] uppercase">
-        {label}
-      </span>
+      <div className="flex items-center gap-1.5">
+        {config && <span className={cn("size-2 rounded-full", config?.dot)} />}
+        <span className="text-muted-foreground text-[10px] font-medium tracking-[0.12em]">
+          {label}
+        </span>
+      </div>
+
       {isLoading ? (
         <span className="bg-muted h-7 w-9 animate-pulse rounded" />
       ) : (
-        <span className="text-2xl leading-none font-semibold tracking-tight tabular-nums">
-          {value}
-        </span>
+        <span className="text-xl font-semibold tabular-nums">{value}</span>
       )}
     </div>
   );
@@ -38,10 +45,11 @@ export function JobListHeader({ className }: { className?: string }) {
   const { total, open, onHold, closed, isPending } = useGetJobStatistics();
 
   const stats = [
-    { label: t("stats.total"), value: total },
-    { label: t("stats.open"), value: open },
-    { label: t("stats.on-hold"), value: onHold },
-    { label: t("stats.closed"), value: closed },
+    { label: t("stats.total"), value: total, status: undefined },
+    { label: t("stats.open"), value: open, status: EJobStatus.OPEN },
+    { label: t("stats.archived"), value: onHold, status: EJobStatus.ARCHIVED },
+    { label: t("stats.draft"), value: closed, status: EJobStatus.DRAFT },
+    { label: t("stats.closed"), value: closed, status: EJobStatus.CLOSED },
   ] as const;
 
   return (
@@ -51,10 +59,11 @@ export function JobListHeader({ className }: { className?: string }) {
         className
       )}
     >
-      <div className="flex items-center gap-6 sm:gap-10">
+      <div className="flex items-center gap-6 sm:gap-6">
         {stats.map((stat) => (
           <JobStatItem
             key={stat.label}
+            status={stat.status}
             label={stat.label}
             value={stat.value}
             isLoading={isPending}

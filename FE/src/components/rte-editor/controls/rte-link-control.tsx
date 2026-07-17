@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { useEditorState } from "@tiptap/react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Toggle } from "../ui/toggle";
 import { useRichTextEditorContext } from "../rte-context";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Toggle } from "@/components/ui/toggle";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function LinkControl() {
   const { editor, labels, icons } = useRichTextEditorContext();

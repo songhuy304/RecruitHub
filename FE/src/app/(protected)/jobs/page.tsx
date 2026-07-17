@@ -1,5 +1,5 @@
 import PageContainer from "@/components/layout/page-container";
-import { ListJobPage } from "@/features/job/components/list-job";
+import { ListJobPage } from "@/features/job/page-list/page";
 import { createMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 

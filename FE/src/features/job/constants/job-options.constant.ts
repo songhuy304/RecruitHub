@@ -1,5 +1,5 @@
 import { Option } from "@/components/forms/fields/select-field";
-import { EEmploymentType, EJobLevel, EJobStatus, EWorkLocationType } from "../enums";
+import { EEmploymentType, EJobLevel, EWorkLocationType } from "../enums";
 
 export const employmentTypeOptions: Option[] = [
   {
@@ -13,14 +13,6 @@ export const employmentTypeOptions: Option[] = [
   {
     value: EEmploymentType.CONTRACT,
     label: "Contract",
-  },
-  {
-    value: EEmploymentType.INTERN,
-    label: "Intern",
-  },
-  {
-    value: EEmploymentType.FREELANCE,
-    label: "Freelance",
   },
 ];
 
@@ -50,31 +42,6 @@ export const levelOptions: Option[] = [
     label: "Lead",
   },
 ];
-
-export const jobStatusConfig: Record<
-  EJobStatus,
-  {
-    label: string;
-    color: string;
-  }
-> = {
-  [EJobStatus.DRAFT]: {
-    label: "Draft",
-    color: "bg-gray-400",
-  },
-  [EJobStatus.OPEN]: {
-    label: "Open",
-    color: "bg-green-500",
-  },
-  [EJobStatus.CLOSED]: {
-    label: "Closed",
-    color: "bg-red-500",
-  },
-  [EJobStatus.ARCHIVED]: {
-    label: "Archived",
-    color: "bg-slate-500",
-  },
-};
 
 export const workLocationTypeOptions: Option[] = [
   {

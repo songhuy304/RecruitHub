@@ -38,6 +38,7 @@ interface ComboboxFieldProps {
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
+  multiple?: boolean;
 }
 
 export function ComboboxField({
@@ -48,16 +49,64 @@ export function ComboboxField({
   placeholder = "Select an option",
   searchPlaceholder = "Search...",
   emptyText = "No data found.",
+  multiple = false,
 }: ComboboxFieldProps) {
   const field = useFieldContext();
 
-  const value = useStore(field.store, (s) => s.value) as string;
+  const value = useStore(field.store, (s) => s.value) as string | string[] | undefined;
+
   const isTouched = useStore(field.store, (s) => s.meta.isTouched);
   const isValid = useStore(field.store, (s) => s.meta.isValid);
 
   const [open, setOpen] = React.useState(false);
 
-  const selected = options.find((item) => item.value === value);
+  const values = React.useMemo(() => {
+    if (Array.isArray(value)) return value;
+    if (value) return [value];
+    return [];
+  }, [value]);
+
+  const selected = React.useMemo(
+    () => options.filter((item) => values.includes(item.value)),
+    [options, values]
+  );
+
+  const handleSelect = (selectedValue: string) => {
+    if (!multiple) {
+      field.handleChange(selectedValue);
+      setOpen(false);
+      return;
+    }
+
+    if (values.includes(selectedValue)) {
+      field.handleChange(values.filter((v) => v !== selectedValue));
+    } else {
+      field.handleChange([...values, selectedValue]);
+    }
+  };
+
+  const renderValue = () => {
+    if (selected.length === 0) {
+      return <span className="text-muted-foreground">{placeholder}</span>;
+    }
+
+    if (!multiple) {
+      return selected[0].label;
+    }
+
+    return (
+      <div className="flex min-w-0 gap-1 overflow-hidden">
+        {selected.map((item) => (
+          <span
+            key={item.value}
+            className="bg-muted shrink-0 rounded-md px-2 py-0.5 text-xs"
+          >
+            {item.label}
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <FormFieldSet className="min-w-40">
@@ -65,7 +114,7 @@ export function ComboboxField({
         {label && (
           <FieldLabel htmlFor={field.name}>
             {label}
-            {required && <span className="text-red-500"> *</span>}
+            {required && <span className="text-red-500">*</span>}
           </FieldLabel>
         )}
 
@@ -82,21 +131,22 @@ export function ComboboxField({
           <PopoverTrigger asChild>
             <Button
               id={field.name}
+              type="button"
               variant="outline"
               role="combobox"
               aria-expanded={open}
               aria-invalid={isTouched && !isValid}
               className="w-full justify-between font-normal"
             >
-              {selected?.label ?? (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
+              <div className="flex min-w-0 flex-1 items-center">
+                <span className="max-w-[200px] truncate">{renderValue()}</span>
+              </div>
 
               <Icons.chevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
 
-          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+          <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
             <Command>
               <CommandInput placeholder={searchPlaceholder} />
 
@@ -104,25 +154,26 @@ export function ComboboxField({
                 <CommandEmpty>{emptyText}</CommandEmpty>
 
                 <CommandGroup>
-                  {options.map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onSelect={(currentValue) => {
-                        field.handleChange(currentValue);
-                        setOpen(false);
-                      }}
-                    >
-                      <Icons.check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value === option.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
+                  {options.map((option) => {
+                    const checked = values.includes(option.value);
 
-                      {option.label}
-                    </CommandItem>
-                  ))}
+                    return (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        onSelect={() => handleSelect(option.value)}
+                      >
+                        <Icons.check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            checked ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+
+                        {option.label}
+                      </CommandItem>
+                    );
+                  })}
                 </CommandGroup>
               </CommandList>
             </Command>

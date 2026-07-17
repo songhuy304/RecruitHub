@@ -1,12 +1,12 @@
 "use client";
 
 import PageContainer from "@/components/layout/page-container";
+import { CreateJobHeader } from "@/features/job/components";
 import { CreateJobForm } from "@/features/job/form";
+import { useCreateJob } from "@/features/job/hooks";
+import { CreateJobFormValues } from "@/features/job/schemas";
+import { JobSubmitAction } from "@/features/job/types";
 import { useRef } from "react";
-import { useCreateJob } from "../../hooks";
-import { CreateJobFormValues } from "../../schemas";
-import { JobSubmitAction } from "../../types";
-import { CreateJobHeader } from "../job-header";
 
 export default function CreateJobPage() {
   const { isPending, createInitValues, handleCreateJob } = useCreateJob();

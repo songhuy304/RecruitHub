@@ -4,8 +4,8 @@ import type { RichTextEditorIcons } from "../icons";
 import { useRichTextEditorContext } from "../rte-context";
 import type { RichTextEditorControlProps } from "../types";
 import React from "react";
-import { Toggle } from "../ui/toggle";
-import { cn } from "../ui/utils";
+import { Toggle } from "@/components/ui/toggle";
+import { cn } from "@/lib/utils";
 
 type IsActiveConfig =
   | { name: string; attributes?: Record<string, any> | string }
@@ -62,8 +62,7 @@ export function createControl({
     const editorState = useEditorState({
       editor: editor ?? null,
       selector: (ctx) => {
-        const safeEditor =
-          ctx.editor && !ctx.editor.isDestroyed ? ctx.editor : null;
+        const safeEditor = ctx.editor && !ctx.editor.isDestroyed ? ctx.editor : null;
         const checkIsActive = () => {
           if (!safeEditor || !isActive) return false;
           if ("attrs" in isActive) return safeEditor.isActive(isActive.attrs);
@@ -91,11 +90,7 @@ export function createControl({
           if (!editor || editor.isDestroyed) {
             return;
           }
-          (editor as any)
-            .chain()
-            .focus()
-            [operation.name](operation.attributes)
-            .run();
+          (editor as any).chain().focus()[operation.name](operation.attributes).run();
         }}
       >
         {icons[iconKey]}

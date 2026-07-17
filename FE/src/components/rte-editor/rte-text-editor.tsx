@@ -1,17 +1,17 @@
-import { useMemo, useEffect } from 'react';
-import { cn } from "./ui/utils";
-import { RichTextEditorContext } from './rte-context';
-import { DEFAULT_LABELS } from './labels';
-import { DEFAULT_ICONS } from './icons';
-import { Toolbar } from './rte-toolbar';
-import { ControlsGroup } from './rte-controls-group';
-import { Content } from './rte-content';
-import { RichTextEditorControl } from './controls/rte-control';
-import { LinkControl } from './controls/rte-link-control';
-import * as controls from './controls/rte-controls';
-import type { RichTextEditorProps } from './types';
-import { YouTubeEmbedControl } from './controls/rte-youtube-control';
-import { TwitterEmbedControl } from './controls/rte-twitter-control';
+import { useMemo, useEffect } from "react";
+import { RichTextEditorContext } from "./rte-context";
+import { DEFAULT_LABELS } from "./labels";
+import { DEFAULT_ICONS } from "./icons";
+import { Toolbar } from "./rte-toolbar";
+import { ControlsGroup } from "./rte-controls-group";
+import { Content } from "./rte-content";
+import { RichTextEditorControl } from "./controls/rte-control";
+import { LinkControl } from "./controls/rte-link-control";
+import * as controls from "./controls/rte-controls";
+import type { RichTextEditorProps } from "./types";
+import { YouTubeEmbedControl } from "./controls/rte-youtube-control";
+import { TwitterEmbedControl } from "./controls/rte-twitter-control";
+import { cn } from "@/lib/utils";
 
 function RichTextEditorRoot({
   editor,
@@ -22,15 +22,9 @@ function RichTextEditorRoot({
   variant = "default",
   editable = true,
 }: RichTextEditorProps) {
-  const mergedLabels = useMemo(
-    () => ({ ...DEFAULT_LABELS, ...labels }),
-    [labels]
-  );
+  const mergedLabels = useMemo(() => ({ ...DEFAULT_LABELS, ...labels }), [labels]);
 
-  const mergedIcons = useMemo(
-    () => ({ ...DEFAULT_ICONS, ...icons }),
-    [icons]
-  );
+  const mergedIcons = useMemo(() => ({ ...DEFAULT_ICONS, ...icons }), [icons]);
 
   useEffect(() => {
     if (editor && editor.isEditable !== editable) {
@@ -39,10 +33,12 @@ function RichTextEditorRoot({
   }, [editor, editable]);
 
   return (
-    <RichTextEditorContext.Provider value={{ editor, labels: mergedLabels, icons: mergedIcons, variant, editable }}>
+    <RichTextEditorContext.Provider
+      value={{ editor, labels: mergedLabels, icons: mergedIcons, variant, editable }}
+    >
       <div
         className={cn(
-          'rte-root',
+          "rte-root",
           variant !== "default" && `rte-root--${variant}`,
           className
         )}
