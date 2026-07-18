@@ -17,14 +17,14 @@ interface UpdateTeamFormProps {
   team: ITeam;
   onSubmit: (teamId: number, values: UpdateTeamFormValues, form: any) => void;
   isPending?: boolean;
-  isOwner: boolean;
+  isTeamOwner: boolean;
 }
 
 const UpdateTeamForm = ({
   team,
   onSubmit,
   isPending,
-  isOwner,
+  isTeamOwner,
 }: UpdateTeamFormProps) => {
   const t = useTranslations();
 
@@ -42,8 +42,7 @@ const UpdateTeamForm = ({
     },
   });
 
-  const { FormTextField, FormFileUploadField } =
-    useFormFields<UpdateTeamFormValues>();
+  const { FormTextField, FormFileUploadField } = useFormFields<UpdateTeamFormValues>();
 
   const { isDirty, isValid } = useStore(form.store, (state) => ({
     isDirty: state.isDirty,
@@ -54,7 +53,7 @@ const UpdateTeamForm = ({
     <form.AppForm>
       <form.Form className="flex flex-col gap-5 p-0">
         <FormTextField
-          disabled={!isOwner}
+          disabled={!isTeamOwner}
           name="name"
           label="Team Name"
           placeholder="Enter team name"
@@ -72,17 +71,13 @@ const UpdateTeamForm = ({
             label="Team Slug"
             placeholder="team-slug"
           />
-          <Typography
-            as="p"
-            variant="paragraph-xs"
-            className="text-muted-foreground"
-          >
+          <Typography as="p" variant="paragraph-xs" className="text-muted-foreground">
             This is your team&apos;s unique identifier in URLs.
           </Typography>
         </div>
 
         <FormFileUploadField
-          disabled={!isOwner}
+          disabled={!isTeamOwner}
           name="logoUrl"
           label="Logo"
           className="m-h-24"
@@ -94,7 +89,7 @@ const UpdateTeamForm = ({
           <Button
             type="submit"
             isLoading={isPending}
-            disabled={!isOwner || !isDirty || !isValid}
+            disabled={!isTeamOwner || !isDirty || !isValid}
           >
             {t("Common.save-changes")}
           </Button>

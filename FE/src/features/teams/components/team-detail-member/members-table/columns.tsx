@@ -113,7 +113,7 @@ const CellRole = ({ value, teamId, userId, disabled }: CellRoleProps) => {
 export const columns = (
   teamId: number,
   t: TFunction,
-  isOwner: boolean,
+  isTeamOwner: boolean,
   user: User | null
 ): ColumnDef<ITeamMember>[] => {
   return [
@@ -171,12 +171,12 @@ export const columns = (
             teamId={teamId}
             userId={row.original.id}
             value={row.original.teamRole}
-            disabled={!isOwner || currentUser}
+            disabled={!isTeamOwner || currentUser}
           />
         );
       },
     },
-    ...(isOwner
+    ...(isTeamOwner
       ? [
           {
             id: "actions",

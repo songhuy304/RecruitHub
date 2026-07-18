@@ -9,6 +9,9 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { EJobStatus } from "../../enums";
 import { jobStatusConfig } from "../../constants";
+import { useUser } from "@/hooks/useUser";
+import { Can } from "@/components/ui/can";
+import { ETEAM_ROLE } from "@/enums";
 
 function JobStatItem({
   label,
@@ -43,6 +46,7 @@ function JobStatItem({
 export function JobListHeader({ className }: { className?: string }) {
   const t = useTranslations("Jobs");
   const { total, open, onHold, closed, isPending } = useGetJobStatistics();
+  const { hasCurrentTeamRole } = useUser();
 
   const stats = [
     { label: t("stats.total"), value: total, status: undefined },
@@ -72,12 +76,14 @@ export function JobListHeader({ className }: { className?: string }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button asChild>
-          <Link href={JOB_PATHS.CREATE_JOB}>
-            <Icons.add className="h-4 w-4" />
-            {t("create-job")}
-          </Link>
-        </Button>
+        <Can can={hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])}>
+          <Button asChild>
+            <Link href={JOB_PATHS.CREATE_JOB}>
+              <Icons.add className="h-4 w-4" />
+              {t("create-job")}
+            </Link>
+          </Button>
+        </Can>
         <Button type="button" variant="outline" size="icon" className="size-9">
           <Icons.ellipsis className="h-4 w-4" />
           <span className="sr-only">{t("more-actions")}</span>

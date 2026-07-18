@@ -1,16 +1,23 @@
 "use client";
 
 import { FormFilter } from "@/components/forms/form-filter";
+import { Icons } from "@/components/icons";
 import { DataTable } from "@/components/ui/table/data-table";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { useGetTeamRequest } from "@/features/teams/hooks";
-import { IFormFilterJoinRequest } from "@/features/teams/types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useFilterParams } from "@/hooks/use-filter-params";
 import { useTranslations } from "next-intl";
-import { parseAsInteger, parseAsString } from "nuqs";
+import { inferParserType, parseAsInteger, parseAsString } from "nuqs";
 import { columns } from "./columns";
-import { Icons } from "@/components/icons";
+
+const requestSearchParsers = {
+  page: parseAsInteger.withDefault(1),
+  limit: parseAsInteger.withDefault(10),
+  search: parseAsString,
+};
+
+type RequestSearchParams = inferParserType<typeof requestSearchParsers>;
 
 interface TeamRequestTableProps {
   teamId: number;
@@ -19,11 +26,7 @@ interface TeamRequestTableProps {
 export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
   const t = useTranslations();
   const { params, handleSubmit, handleReset } = useFilterParams({
-    parsers: {
-      page: parseAsInteger.withDefault(1),
-      perPage: parseAsInteger.withDefault(10),
-      search: parseAsString,
-    },
+    parsers: requestSearchParsers,
   });
 
   const {
@@ -33,8 +36,8 @@ export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
   } = useGetTeamRequest({
     teamId,
     page: params.page,
-    limit: params.perPage,
-    search: params.search,
+    limit: params.limit,
+    search: params.search ?? undefined,
   });
 
   const requests = requestsResponse?.data ?? [];
@@ -57,7 +60,7 @@ export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
 
   return (
     <div>
-    <FormFilter<IFormFilterJoinRequest>
+      <FormFilter<RequestSearchParams>
         className="mb-4"
         defaultValues={params}
         fields={[
@@ -68,15 +71,10 @@ export function TeamRequestTable({ teamId }: TeamRequestTableProps) {
             leftIcon: <Icons.search className="size-4" />,
           },
         ]}
-        onSubmit={(values) => {
-          handleSubmit(values);
-        }}
-        onReset={() => {
-          handleReset();
-        }}
+        onSubmit={handleSubmit}
+        onReset={handleReset}
       />
       <DataTable table={table} isLoading={isFetching} />
     </div>
-      
   );
 }

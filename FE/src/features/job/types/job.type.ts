@@ -1,5 +1,5 @@
-import { IPagination } from '@/types/api.type';
-import { EEmploymentType, EJobLevel, EJobStatus } from '../enums';
+import { IPagination } from "@/types/api.type";
+import { EEmploymentType, EJobLevel, EJobStatus } from "../enums";
 
 export interface IJobHiringTeamMember {
   id: string;
@@ -38,16 +38,16 @@ export interface IDateRangeFilter {
 
 export interface IJobSortFilter {
   sortBy?: string;
-  sortOrder?: 'ASC' | 'DESC';
+  sortOrder?: "ASC" | "DESC";
 }
 
 export interface IGetJobs extends IPagination {
   status?: EJobStatus;
   q?: string;
-  jobType?: EEmploymentType;
-  level?: EJobLevel;
+  jobType?: EEmploymentType[];
+  level?: EJobLevel[];
   isPinned?: boolean;
   createdAt?: IDateRangeFilter;
   sort?: IJobSortFilter;
-  location?: string;
+  location?: string[];
 }

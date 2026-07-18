@@ -1,39 +1,52 @@
+import { ETEAM_ROLE } from "@/enums";
 import { selectTeams, selectUser } from "@/store";
 import { useAppSelector } from "./useRedux";
-import { ETEAM_ROLE } from "@/enums";
 
-const useUser = () => {
+export const useUser = () => {
   const user = useAppSelector(selectUser);
   const teams = useAppSelector(selectTeams);
 
-  const hasRole = (role: string) => {
-    return user?.role?.includes(role);
+  const hasSystemRole = (role: string) => {
+    return user?.role?.includes(role) ?? false;
   };
 
-  const getTeamRole = (teamId: number) => {
-    return teams?.find((team) => team.id === teamId)?.teamRole as ETEAM_ROLE;
-  }
+  const getUserTeamRole = (teamId: number): ETEAM_ROLE | undefined => {
+    return teams?.find((team) => team.id === teamId)?.teamRole;
+  };
 
-  const hasTeamRole = (
-    teamId: number,
-    roles: string | string[]
-  ) => {
-    const role = getTeamRole(teamId);
-
+  const hasUserTeamRole = (teamId: number, roles: ETEAM_ROLE | ETEAM_ROLE[]) => {
+    const role = getUserTeamRole(teamId);
     if (!role) return false;
-
-    if (Array.isArray(roles)) {
-      return roles.includes(role);
-    }
-
-    return role === roles;
+    return Array.isArray(roles) ? roles.includes(role) : role === roles;
   };
 
-  const isOwner = (teamId: number) => {
-    return getTeamRole(teamId) === ETEAM_ROLE.OWNER;
-  }
+  const hasCurrentTeamRole = (roles: ETEAM_ROLE | ETEAM_ROLE[]) => {
+    if (!user?.currentTeamId) return false;
 
-  return { user, hasRole, getTeamRole, hasTeamRole, isOwner };
+    return hasUserTeamRole(user.currentTeamId, roles);
+  };
+
+  const isTeamOwner = (teamId: number) => {
+    return hasUserTeamRole(teamId, ETEAM_ROLE.OWNER);
+  };
+
+  const isCurrentTeamOwner = () => {
+    return hasCurrentTeamRole(ETEAM_ROLE.OWNER);
+  };
+
+  return {
+    user,
+
+    // System
+    hasSystemRole,
+
+    // Team
+    getUserTeamRole,
+    hasUserTeamRole,
+    hasCurrentTeamRole,
+
+    // Shortcut
+    isTeamOwner,
+    isCurrentTeamOwner,
+  };
 };
-
-export { useUser };

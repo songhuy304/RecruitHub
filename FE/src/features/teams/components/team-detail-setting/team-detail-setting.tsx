@@ -30,7 +30,7 @@ interface TeamDetailSettingProps {
 
 function TeamDetailSetting({ team }: TeamDetailSettingProps) {
   const router = useRouter();
-  const { user, isOwner } = useUser();
+  const { user, isTeamOwner } = useUser();
   const { mutate: deleteTeam, isPending: isDeleting } = useDeleteTeam();
   const { mutate: leaveTeam, isPending: isLeaving } = useLeaveTeam();
   const { handleUpdateTeam, isPending: isUpdating } = useUpdateTeam();
@@ -80,7 +80,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
           team={team}
           onSubmit={handleUpdateTeam}
           isPending={isUpdating}
-          isOwner={isOwner(team.id)}
+          isTeamOwner={isTeamOwner(team.id)}
         />
       </SettingsCard>
 
@@ -114,7 +114,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
             onConfirm={handleDeleteTeam}
             isPending={isDeleting}
             onBeforeOpen={checkActiveTeam}
-            disabled={!isOwner(team.id)}
+            disabled={!isTeamOwner(team.id)}
           />
         </div>
       </SettingsCard>
@@ -136,9 +136,7 @@ function TeamDetailSetting({ team }: TeamDetailSettingProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:justify-center">
-            <AlertDialogAction
-              onClick={() => setIsActiveTeamWarningOpen(false)}
-            >
+            <AlertDialogAction onClick={() => setIsActiveTeamWarningOpen(false)}>
               Hủy bỏ
             </AlertDialogAction>
           </AlertDialogFooter>

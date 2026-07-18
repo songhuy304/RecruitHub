@@ -52,7 +52,7 @@ const JobListFilter = ({ params, handleSubmit, handleReset }: JobListFilterProps
               type: "dateRange",
               name: "createdAt",
               placeholder: "Select created date",
-            }
+            },
           ]}
           onSubmit={handleSubmit}
           onReset={handleReset}

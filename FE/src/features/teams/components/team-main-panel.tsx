@@ -6,20 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TabsUnderline } from "@/components/ui/tabs-underline";
 import { Typography } from "@/components/ui/typography";
-import { useAppDispatch } from "@/hooks/useRedux";
-import { setTokens } from "@/store";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import Image from "next/image";
 import { parseAsStringEnum, useQueryStates } from "nuqs";
+import { useEffect } from "react";
 import { useGetTeamStatistics, useSwitchTeam } from "../hooks";
 import { ETEAM_TYPE, type ITeam } from "../types";
 import { TeamDetailInvite } from "./team-detail-invite";
 import { TeamDetailMember } from "./team-detail-member/team-detail-member";
 import { TeamDetailOverview } from "./team-detail-overview";
-import { TeamDetailSetting } from "./team-detail-setting/team-detail-setting";
 import { TeamDetailRequest } from "./team-detail-request/team-detail-request";
-import { useUser } from "@/hooks/useUser";
-import Image from "next/image";
-import { useEffect } from "react";
+import { TeamDetailSetting } from "./team-detail-setting/team-detail-setting";
 
 interface TeamMainPanelProps {
   selectedTeam: ITeam | null;
@@ -44,10 +41,9 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   });
   const isCurrentTeamId = user?.currentTeamId === selectedTeam?.id;
   const isPersonalAccount = selectedTeam?.type === ETEAM_TYPE.PERSONAL;
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+
   const { mutate: switchTeam, isPending } = useSwitchTeam();
-  const { isOwner } = useUser();
+  const { isTeamOwner } = useUser();
   const {
     data: teamStatistics,
     isPending: isTeamStatisticsPending,
@@ -55,7 +51,10 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
     refetch: refetchTeamStatistics,
   } = useGetTeamStatistics({
     id: selectedTeam?.id || 0,
-    enabled: !!selectedTeam?.id && selectedTeam?.type !== ETEAM_TYPE.PERSONAL,
+    enabled:
+      !!selectedTeam?.id &&
+      selectedTeam?.id > 0 &&
+      selectedTeam?.type !== ETEAM_TYPE.PERSONAL,
   });
 
   const onSetTab = (tab: TeamMainPanelTab) => {
@@ -89,7 +88,7 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
       icon: Icons.user,
       content: <TeamDetailMember teamId={selectedTeam?.id || 0} />,
     },
-    ...(isOwner(selectedTeam?.id || 0)
+    ...(isTeamOwner(selectedTeam?.id || 0)
       ? [
           {
             value: TeamMainPanelTab.JOINS,
