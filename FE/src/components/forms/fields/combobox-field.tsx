@@ -109,7 +109,7 @@ export function ComboboxField({
   };
 
   return (
-    <FormFieldSet className="min-w-40">
+    <FormFieldSet className="min-w-52">
       <FormField>
         {label && (
           <FieldLabel htmlFor={field.name}>
@@ -128,23 +128,34 @@ export function ComboboxField({
             }
           }}
         >
-          <PopoverTrigger asChild>
-            <Button
-              id={field.name}
+          <div className="relative">
+            <PopoverTrigger asChild>
+              <Button
+                id={field.name}
+                type="button"
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                aria-invalid={isTouched && !isValid}
+                className="w-full pr-10 justify-between font-normal border aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive!"
+              >
+                <div className="flex min-w-0 flex-1 items-center">
+                  <span className="max-w-50 truncate">{renderValue()}</span>
+                </div>
+              </Button>
+            </PopoverTrigger>
+            <button
               type="button"
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              aria-invalid={isTouched && !isValid}
-              className="w-full justify-between font-normal border aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:!border-destructive"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+              onClick={() => field.handleChange(multiple ? [] : undefined)}
             >
-              <div className="flex min-w-0 flex-1 items-center">
-                <span className="max-w-[200px] truncate">{renderValue()}</span>
-              </div>
-
-              <Icons.chevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
+              {selected.length > 0 ? (
+                <Icons.circleX className="size-4 shrink-0 opacity-50" />
+              ) : (
+                <Icons.chevronDown className="size-4 shrink-0 opacity-50" />
+              )}
+            </button>
+          </div>
 
           <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
             <Command>

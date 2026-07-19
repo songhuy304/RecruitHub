@@ -4,6 +4,8 @@ import { FilterFieldConfig } from "./form-filter.type";
 import { Icons } from "@/components/icons";
 import { FormComboboxField, FormDateRangePickerField } from "../fields";
 
+const triggerSubmitDebounceMs = 600;
+
 interface FormFilterProps<T extends Record<string, any>> {
   fields: FilterFieldConfig[];
   defaultValues?: Partial<T>;
@@ -38,7 +40,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
         return (
           <FormTextField
             listeners={{
-              onChangeDebounceMs: 600,
+              onChangeDebounceMs: triggerSubmitDebounceMs,
               onChange: triggerSubmit,
             }}
             key={name}
@@ -54,6 +56,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
           <FormSelectField
             listeners={{
               onChange: triggerSubmit,
+              onBlurDebounceMs: triggerSubmitDebounceMs,
             }}
             key={name}
             name={name}
@@ -68,6 +71,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
           <FormComboboxField
             listeners={{
               onChange: triggerSubmit,
+              onChangeDebounceMs: triggerSubmitDebounceMs,
             }}
             key={name}
             name={name}
@@ -95,7 +99,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
         return (
           <FormDateRangePickerField
             listeners={{
-              onChangeDebounceMs: 600,
+              onChangeDebounceMs: triggerSubmitDebounceMs,
               onChange: triggerSubmit,
             }}
             key={name}

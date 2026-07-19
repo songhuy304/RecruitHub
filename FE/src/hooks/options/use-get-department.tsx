@@ -12,7 +12,7 @@ const useGetDepartment = () => {
   const data = query.data?.data || [];
 
   const options = data.map((department) => ({
-    value: department.code,
+    value: String(department.id),
     label: department.name,
   }));
 

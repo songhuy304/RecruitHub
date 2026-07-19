@@ -26,7 +26,7 @@ export interface ICreateJobEntity {
   officeAddress: string | null;
   location: string;
 
-  departments: string[];
+  department: number;
   skills: string[];
 
   workLocationType: EWorkLocationType;

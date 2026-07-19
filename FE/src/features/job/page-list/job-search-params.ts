@@ -17,7 +17,9 @@ export const jobSearchParsers = {
   ),
   level: parseAsArrayOf(parseAsStringEnum<EJobLevel>(Object.values(EJobLevel))),
   location: parseAsArrayOf(parseAsString),
-  status: parseAsStringEnum<EJobStatus>(Object.values(EJobStatus)),
+  status: parseAsStringEnum<EJobStatus>(Object.values(EJobStatus)).withDefault(
+    EJobStatus.OPEN
+  ),
   sortBy: parseAsString,
   sortOrder: parseAsStringEnum(["ASC", "DESC"] as const),
   createdAt: parseAsDateRange,

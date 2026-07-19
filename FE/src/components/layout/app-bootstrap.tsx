@@ -1,22 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useGetMe } from "@/features/auth/hooks";
 import { LoadingPage } from "../loading-page";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { tokenStorage } from "@/lib/auth";
 import { selectAccessToken, selectIsLoading, setTokens, setUser } from "@/store";
 import { useRouter } from "next/navigation";
 import { AUTH_PATHS } from "@/config/paths.config";
+import { useGetMe } from "@/features/auth/hooks";
 
 export default function AppBootstrap({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
-  const selectToken = useAppSelector(selectAccessToken);
+  const token = useAppSelector(selectAccessToken);
   const selectLoading = useAppSelector(selectIsLoading);
   const router = useRouter();
-  const { isLoading, error, data } = useGetMe();
+
   const [isHydrated, setIsHydrated] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const accessToken = tokenStorage.getAccess();
@@ -25,28 +24,35 @@ export default function AppBootstrap({ children }: { children: React.ReactNode }
     if (accessToken && refreshToken) {
       dispatch(setTokens({ accessToken, refreshToken }));
     }
-
     setIsHydrated(true);
   }, [dispatch]);
 
+  const { data, error, isFetching, isPending } = useGetMe();
+
+  const isCheckingUser = !!token && isPending && isFetching;
+
   useEffect(() => {
-    if (!isHydrated || isLoading) return;
+    if (!isHydrated) return;
+    if (isCheckingUser) return;
 
-    if (!selectToken || error) {
+    if (!token || error) {
       router.replace(`${AUTH_PATHS.SIGN_IN}?redirect=${window.location.pathname}`);
-      return;
     }
-
-    setIsAuthorized(true);
-  }, [isHydrated, isLoading, selectToken, error, router]);
+  }, [isHydrated, isCheckingUser, token, error, router]);
 
   useEffect(() => {
     if (data) {
       dispatch(setUser(data?.data));
     }
-  }, [isAuthorized, dispatch, data]);
+  }, [data, dispatch]);
 
-  if (!isHydrated || isLoading || !isAuthorized) {
+  const isAuthorized = isHydrated && !!token && !!data && !error;
+
+  if (!isHydrated || isCheckingUser || (!!token && !isAuthorized && !error)) {
+    return <LoadingPage />;
+  }
+
+  if (!isAuthorized) {
     return <LoadingPage />;
   }
 

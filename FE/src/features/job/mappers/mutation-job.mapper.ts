@@ -37,7 +37,7 @@ export const mutationJobMapper = {
       officeAddress: get(values, "officeAddress", ""),
       location: get(values, "location"),
 
-      departments: [get(values, "departments")],
+      department: Number(get(values, "departments")),
 
       skills: get(values, "skills", []),
 

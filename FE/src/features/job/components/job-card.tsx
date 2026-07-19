@@ -47,10 +47,8 @@ function getEmploymentTypeLabel(employmentType: IJob["employmentType"]): string 
   return typeof label === "string" ? label : employmentType;
 }
 
-function getDepartmentLabel(departments: IJob["departments"]): string {
-  if (!departments.length) return "-";
-
-  return departments.join(", ");
+function getDepartmentLabel(department: IJob["department"]): string {
+  return department || "-";
 }
 
 function getNameLocation(location: IJob["location"], locations: ILocation[]): string {
@@ -147,13 +145,14 @@ export function JobCard({
       <CardContent className="space-y-2 px-4">
         <div className="min-w-0">
           <Link href={`/jobs/edit/${job.id}`}>
-            <Typography variant="h5" className="line-clamp-2 font-semibold">
+            <Typography variant="h5" className="line-clamp-1 font-semibold">
               {job.title}
             </Typography>
           </Link>
           <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
             <MetaItem icon={Icons.briefcase}>
-              {getDepartmentLabel(job.departments)}
+              {/* {getDepartmentLabel(job.departments)} */}
+              {job.department}
             </MetaItem>
             <span aria-hidden="true">·</span>
             <MetaItem icon={Icons.mapPin}>
@@ -190,8 +189,24 @@ export function JobCard({
         ) : null}
       </CardContent>
 
-      <CardFooter className="justify-between px-4 pt-0">
-        <JobCardAvatarGroup members={job.hiringTeam ?? []} className="shrink-0" />
+      <CardFooter className="justify-between px-4 pt-0 mt-auto">
+        <JobCardAvatarGroup
+          members={
+            job.hiringTeam ?? [
+              {
+                id: "0",
+                name: "T",
+                avatarUrl: null,
+              },
+              {
+                id: "3",
+                name: "M",
+                avatarUrl: null,
+              },
+            ]
+          }
+          className="shrink-0"
+        />
         <span className="text-muted-foreground/70 shrink-0 text-[11px]">
           {t("card.updated", { time: formatJobUpdatedAt(job.updatedAt) })}
         </span>

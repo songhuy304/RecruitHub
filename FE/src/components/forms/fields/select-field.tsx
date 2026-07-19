@@ -40,7 +40,7 @@ export function SelectField({
   const value = useStore(field.store, (s) => s.value) as string;
 
   return (
-    <FormFieldSet className="min-w-40">
+    <FormFieldSet className="min-w-52">
       <FormField>
         {label && (
           <FieldLabel htmlFor={field.name}>

@@ -23,7 +23,7 @@ export interface IJob {
   isPublished: boolean;
   isPinned: boolean;
   location: string;
-  departments: string[];
+  department: string;
   createdAt: string;
   updatedAt: string;
   viewCount?: number;

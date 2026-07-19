@@ -18,6 +18,23 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value == null) return;
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          searchParams.append(key, String(item));
+        });
+      } else {
+        searchParams.append(key, String(value));
+      }
+    });
+
+    return searchParams.toString();
+  },
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -30,11 +47,7 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-const AUTH_ENDPOINTS = [
-  AUTH_PATHS.SIGN_IN,
-  AUTH_PATHS.SIGN_UP,
-  AUTH_PATHS.REFRESH_TOKEN,
-];
+const AUTH_ENDPOINTS = [AUTH_PATHS.SIGN_IN, AUTH_PATHS.SIGN_UP, AUTH_PATHS.REFRESH_TOKEN];
 
 let isRefreshing = false;
 
