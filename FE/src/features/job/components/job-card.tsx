@@ -27,6 +27,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { JobCardAvatarGroup } from "./job-card-avatar-group";
 import { JobCardStatusBadge } from "./job-card-status-badge";
+import { ILocation } from "@/services/common/types";
 
 interface JobCardProps {
   job: IJob;
@@ -35,6 +36,7 @@ interface JobCardProps {
   onEdit?: (job: IJob) => void;
   onDuplicate?: (job: IJob) => void;
   onArchive?: (job: IJob) => void;
+  locations?: ILocation[];
 }
 
 function getEmploymentTypeLabel(employmentType: IJob["employmentType"]): string {
@@ -49,6 +51,11 @@ function getDepartmentLabel(departments: IJob["departments"]): string {
   if (!departments.length) return "-";
 
   return departments.join(", ");
+}
+
+function getNameLocation(location: IJob["location"], locations: ILocation[]): string {
+  const locationObj = locations.find((loc) => loc.code === location);
+  return locationObj ? locationObj.englishName : "-";
 }
 
 function MetaItem({
@@ -73,11 +80,11 @@ export function JobCard({
   onEdit,
   onDuplicate,
   onArchive,
+  locations = [],
 }: JobCardProps) {
   const t = useTranslations("Jobs");
   const expiresInDays = formatJobExpiresIn(job.expiresAt);
-  const hasStats =
-    job.viewCount != null || job.applicantCount != null || !!expiresInDays;
+  const hasStats = job.viewCount != null || job.applicantCount != null || !!expiresInDays;
 
   return (
     <Card
@@ -149,7 +156,9 @@ export function JobCard({
               {getDepartmentLabel(job.departments)}
             </MetaItem>
             <span aria-hidden="true">·</span>
-            <MetaItem icon={Icons.mapPin}>{job.location}</MetaItem>
+            <MetaItem icon={Icons.mapPin}>
+              {getNameLocation(job.location, locations)}
+            </MetaItem>
             <span aria-hidden="true">·</span>
             <MetaItem icon={Icons.building}>
               {getEmploymentTypeLabel(job.employmentType)}

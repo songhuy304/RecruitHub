@@ -41,7 +41,7 @@ export interface IJobSortFilter {
   sortOrder?: "ASC" | "DESC";
 }
 
-export interface IGetJobs extends IPagination {
+export interface IJobQueryParams extends IPagination {
   status?: EJobStatus;
   q?: string;
   jobType?: EEmploymentType[];

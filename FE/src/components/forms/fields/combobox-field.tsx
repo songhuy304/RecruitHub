@@ -136,7 +136,7 @@ export function ComboboxField({
               role="combobox"
               aria-expanded={open}
               aria-invalid={isTouched && !isValid}
-              className="w-full justify-between font-normal"
+              className="w-full justify-between font-normal border aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:!border-destructive"
             >
               <div className="flex min-w-0 flex-1 items-center">
                 <span className="max-w-[200px] truncate">{renderValue()}</span>

@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import type { SetValues } from "nuqs";
 import { JobSearchParams, jobSearchParsers } from "../job-search-params";
+import { useGetLocation } from "@/hooks/options";
 
 interface JobListContentProps {
   params: JobSearchParams;
@@ -20,6 +21,7 @@ interface JobListContentProps {
 
 export function JobListContent({ params, setParams }: JobListContentProps) {
   const router = useRouter();
+  const { data: locations = [] } = useGetLocation();
 
   const {
     data: jobsResponse,
@@ -28,6 +30,11 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
   } = useGetJobs({
     page: params.page,
     limit: params.limit,
+    status: params.status ?? undefined,
+    jobType: params.jobType ?? undefined,
+    location: params.location ?? undefined,
+    q: params.q ?? undefined,
+    level: params.level ?? undefined,
   });
 
   const jobs = jobsResponse?.data ?? [];
@@ -37,6 +44,10 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
 
   const handlePageChange = (page: number) => {
     void setParams({ page });
+  };
+
+  const handlePageSizeChange = (limit: number) => {
+    void setParams({ limit, page: 1 });
   };
 
   const handleEdit = (job: IJob) => {
@@ -54,7 +65,7 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
   }
 
   return (
-    <div className="space-y-20">
+    <div className="space-y-10">
       {jobs.length > 0 ? (
         <div
           className={cn(
@@ -63,33 +74,32 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
           )}
         >
           {jobs.map((job) => (
-            <JobCard key={job.id} job={job} onEdit={handleEdit} />
+            <JobCard key={job.id} job={job} onEdit={handleEdit} locations={locations} />
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent>
-            <Empty
-              title="No jobs found"
-              description="Create your first job to start attracting great candidates"
-              buttonText={
-                <>
-                  <Icons.plusCircle className="mr-2 h-4 w-4" />
-                  Create your first job
-                </>
-              }
-              onButtonClick={() => router.push(JOB_PATHS.CREATE_JOB)}
-            />
-          </CardContent>
-        </Card>
+        <Empty
+          title="No jobs found"
+          description="Create your first job to start attracting great candidates"
+          className="py-10"
+          buttonText={
+            <>
+              <Icons.plusCircle className="mr-2 h-4 w-4" />
+              Create your first job
+            </>
+          }
+          onButtonClick={() => router.push(JOB_PATHS.CREATE_JOB)}
+        />
       )}
 
       <PagePagination
-        className="mt-10"
         currentPage={currentPage}
         totalPages={totalPages}
+        totalItems={meta?.totalItems ?? 0}
+        pageSize={params.limit}
         isDisabled={isFetching}
         onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </div>
   );

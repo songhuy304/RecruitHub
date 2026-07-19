@@ -13,12 +13,13 @@ export function ListJobPage() {
 
   return (
     <div className="space-y-6">
+      <JobListHeader />
       <JobListFilter
         params={params}
         handleSubmit={handleSubmit}
         handleReset={handleReset}
+        setParams={setParams}
       />
-      <JobListHeader />
       <JobListContent params={params} setParams={setParams} />
     </div>
   );

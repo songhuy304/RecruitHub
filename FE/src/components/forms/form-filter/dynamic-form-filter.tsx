@@ -145,7 +145,12 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
           {/* <div className="ml-auto flex gap-2"> */}
           {/* <Button type="submit">Apply</Button> */}
 
-          <Button type="button" variant="outline" onClick={handleReset}>
+          <Button
+            type="button"
+            variant="outline"
+            className="border-dashed"
+            onClick={handleReset}
+          >
             <Icons.arrowBack />
             Reset
           </Button>

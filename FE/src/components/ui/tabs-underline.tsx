@@ -85,6 +85,7 @@ function TabsUnderline({
       className={cn("h-full", className)}
     >
       <TabsList
+        variant="line"
         className={cn(
           "no-visible-scrollbar! w-full flex h-auto! justify-start! gap-0! rounded-none border-b border-border bg-transparent p-0!",
           listClassName
@@ -153,10 +154,7 @@ function TabsUnderline({
       </TabsList>
 
       <div
-        className={cn(
-          "relative w-full min-h-0 overflow-hidden h-full",
-          contentClassName
-        )}
+        className={cn("relative w-full min-h-0 overflow-hidden h-full", contentClassName)}
       >
         {animated ? (
           <AnimatePresence mode="wait" custom={direction}>
