@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import type { SetValues } from "nuqs";
 import { JobSearchParams, jobSearchParsers } from "../job-search-params";
+import { Skeleton } from "@/components/ui/skeleton";
+import { JobList } from "@/features/job/page-list/components/list-jobs";
 
 interface JobListContentProps {
   params: JobSearchParams;
@@ -41,7 +43,6 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
   const meta = jobsResponse?.meta;
   const totalPages = meta?.totalPages ?? 1;
   const currentPage = meta?.currentPage ?? params.page;
-  // keepPreviousData keeps prior (often empty) list while filters change — treat that as loading
   const isLoading = isPending || (isFetching && isPlaceholderData);
 
   const handlePageChange = (page: number) => {
@@ -56,36 +57,15 @@ export function JobListContent({ params, setParams }: JobListContentProps) {
     router.push(`/jobs/edit/${job.id}`);
   };
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <div key={index} className="bg-muted h-40 animate-pulse rounded-xl border" />
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-10">
-      {jobs.length > 0 ? (
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4",
-            isFetching && "opacity-60"
-          )}
-        >
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} onEdit={handleEdit} locations={locations} />
-          ))}
-        </div>
-      ) : (
-        <Empty
-          title="No jobs found"
-          description="Create your first job to start attracting great candidates"
-          className="py-10"
-        />
-      )}
+      <JobList
+        loading={isLoading}
+        jobs={jobs}
+        locations={locations}
+        isFetching={isFetching}
+        onEdit={handleEdit}
+      />
 
       <PagePagination
         currentPage={currentPage}

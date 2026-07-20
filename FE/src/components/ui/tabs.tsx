@@ -1,116 +1,251 @@
 "use client";
 
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Tabs as TabsPrimitive } from "radix-ui";
+import { motion, MotionConfig, useReducedMotion, type Transition } from "motion/react";
+import {
+  ComponentType,
+  createContext,
+  useCallback,
+  useContext,
+  useId,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { cn } from "@/lib/utils";
+import { EASE_OUT } from "@/lib/ease";
+import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
 
-function Tabs({
-  className,
-  orientation = "vertical",
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
-  return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      data-orientation={orientation}
-      className={cn(
-        "group/tabs flex gap-2 data-[orientation=horizontal]:flex-col",
-        className
-      )}
-      {...props}
-    />
-  );
-}
+type Variant = "pill" | "underline" | "segment";
 
-const tabsListVariants = cva(
-  "group/tabs-list relative inline-flex flex-1 items-center justify-start text-muted-foreground group-data-[orientation=horizontal]/tabs:h-8 group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col",
-  {
-    variants: {
-      variant: {
-        default: "rounded-lg bg-muted p-[3px]",
-        line: "gap-3 rounded-none bg-transparent p-0 after:absolute after:bottom-[-3px] after:left-0 after:right-0 after:h-px after:bg-border",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+type TabsContextValue = {
+  value: string;
+  setValue: (value: string) => void;
+  layoutId: string;
+  variant: Variant;
+};
+
+const TabsContext = createContext<TabsContextValue | null>(null);
+
+function useTabs() {
+  const context = useContext(TabsContext);
+
+  if (!context) {
+    throw new Error("Tabs.* must be used inside <Tabs>");
   }
-);
 
-function TabsList({
-  className,
-  variant = "default",
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.List> &
-  VariantProps<typeof tabsListVariants>) {
-  return (
-    <TabsPrimitive.List
-      data-slot="tabs-list"
-      data-variant={variant}
-      className={cn(tabsListVariants({ variant }), className)}
-      {...props}
-    />
-  );
+  return context;
 }
 
-function TabsTrigger({
+const transition: Transition = {
+  type: "spring",
+  stiffness: 170,
+  damping: 24,
+  mass: 1.2,
+};
+
+export function Tabs({
+  defaultValue,
+  value,
+  onValueChange,
+  variant = "pill",
+  children,
   className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger> & {
-  tabsTriggerFullWidth?: boolean;
+}: {
+  defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  variant?: Variant;
+  children: ReactNode;
+  className?: string;
 }) {
+  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const layoutId = useId();
+  const reduceMotion = useReducedMotion();
+
+  const controlled = value !== undefined;
+  const currentValue = controlled ? value : internalValue;
+
+  const setValue = useCallback(
+    (nextValue: string) => {
+      if (!controlled) {
+        setInternalValue(nextValue);
+      }
+
+      onValueChange?.(nextValue);
+    },
+    [controlled, onValueChange]
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      value: currentValue,
+      setValue,
+      layoutId,
+      variant,
+    }),
+    [currentValue, layoutId, setValue, variant]
+  );
+
   return (
-    <TabsPrimitive.Trigger
-      data-slot="tabs-trigger"
-      className={cn(
-        // Base
-        "cursor-pointer relative inline-flex h-[calc(100%-1px)] items-center justify-start gap-3 whitespace-nowrap rounded-md border border-transparent px-3 py-2.5 text-sm font-medium text-foreground/60 transition-all",
-        "hover:text-foreground duration-300 hover:bg-muted/70",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50",
-
-        // Vertical
-        "group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start",
-
-        // Default variant
-        "group-data-[variant=default]/tabs-list:data-[state=active]:bg-background",
-        "group-data-[variant=default]/tabs-list:data-[state=active]:text-foreground",
-        "group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm",
-        "dark:group-data-[variant=default]/tabs-list:data-[state=active]:border-input",
-        "dark:group-data-[variant=default]/tabs-list:data-[state=active]:bg-input/30",
-
-        // Line variant
-        "group-data-[variant=line]/tabs-list:rounded-md",
-        "group-data-[variant=line]/tabs-list:border-none",
-        "group-data-[variant=line]/tabs-list:bg-transparent",
-        "group-data-[variant=line]/tabs-list:shadow-none",
-        "group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent",
-        "group-data-[variant=line]/tabs-list:data-[state=active]:text-foreground",
-
-        // underline active
-        "after:absolute after:left-0 after:right-0 after:bottom-[-3px] after:z-10 after:h-[2px] after:scale-x-0 after:bg-primary after:transition-transform after:duration-300",
-        "group-data-[variant=line]/tabs-list:data-[state=active]:after:scale-x-100",
-
-        className
-      )}
-      {...props}
-    />
+    <MotionConfig transition={reduceMotion ? { duration: 0 } : transition}>
+      <TabsContext.Provider value={contextValue}>
+        <motion.div layoutRoot className={className}>
+          {children}
+        </motion.div>
+      </TabsContext.Provider>
+    </MotionConfig>
   );
 }
 
-function TabsContent({
+const listClasses: Record<Variant, string> = {
+  pill: "inline-flex w-fit items-center gap-1 rounded-lg bg-muted p-[3px] text-muted-foreground",
+  segment:
+    "inline-flex w-fit items-center gap-0 rounded-lg bg-muted p-[3px] text-muted-foreground",
+  underline: "inline-flex w-fit items-center gap-1 border-b border-border",
+};
+
+export function TabsList({
+  children,
   className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) {
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const { variant } = useTabs();
+
   return (
-    <TabsPrimitive.Content
-      data-slot="tabs-content"
-      className={cn("flex-1 outline-none", className)}
-      {...props}
-    />
+    <div role="tablist" className={cn(listClasses[variant], className)}>
+      {children}
+    </div>
   );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants };
+export function TabsTrigger({
+  value,
+  children,
+  className,
+  indicatorClassName,
+  icon: Icon,
+  meta,
+}: {
+  value: string;
+  children: ReactNode;
+  className?: string;
+  indicatorClassName?: string;
+  icon?: ComponentType<{ className?: string }>;
+  meta?: {
+    count?: number;
+    isLoading?: boolean;
+  };
+}) {
+  const { value: currentValue, setValue, layoutId, variant } = useTabs();
+
+  const active = currentValue === value;
+
+  if (variant === "underline") {
+    return (
+      <button
+        type="button"
+        role="tab"
+        aria-selected={active}
+        onClick={() => setValue(value)}
+        className={cn(
+          "cursor-pointer relative inline-flex min-h-10 items-center justify-center px-3 py-2 text-sm font-medium transition-colors outline-none",
+          active ? "text-foreground" : "text-foreground/60 hover:text-foreground",
+          className
+        )}
+      >
+        {Icon ? <Icon className="relative z-10 size-4 mr-2" /> : null}
+        {children}
+
+        {meta?.count !== undefined && (
+          <Badge variant="secondary" className="rounded-full text-xs size-5 ml-2">
+            {meta?.isLoading ? <Spinner /> : meta?.count}
+          </Badge>
+        )}
+
+        {active && (
+          <motion.span
+            layoutId={layoutId}
+            className={cn(
+              "absolute inset-x-0 -bottom-px h-0.5 bg-primary",
+              indicatorClassName
+            )}
+          />
+        )}
+      </button>
+    );
+  }
+
+  return (
+    <div className="relative">
+      {active && (
+        <motion.span
+          layoutId={layoutId}
+          className={cn(
+            "absolute inset-0 rounded-md border border-border bg-background shadow-sm",
+            indicatorClassName
+          )}
+        />
+      )}
+
+      <button
+        type="button"
+        role="tab"
+        aria-selected={active}
+        onClick={() => setValue(value)}
+        className={cn(
+          "cursor-pointer relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors outline-none",
+          active ? "text-foreground" : "text-foreground/60 hover:text-foreground",
+          className
+        )}
+      >
+        {children}
+      </button>
+    </div>
+  );
+}
+
+export function TabsContent({
+  value,
+  children,
+  className,
+}: {
+  value: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  const { value: currentValue } = useTabs();
+  const reduceMotion = useReducedMotion();
+
+  if (currentValue !== value) {
+    return (
+      <div hidden className={className}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      key={value}
+      initial={{
+        opacity: 0,
+        y: reduceMotion ? 0 : 4,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.18,
+        ease: EASE_OUT,
+      }}
+      className={cn("mt-4", className)}
+    >
+      {children}
+    </motion.div>
+  );
+}

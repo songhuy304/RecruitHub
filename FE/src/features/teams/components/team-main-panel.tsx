@@ -4,7 +4,7 @@ import { Icons } from "@/components/icons";
 import { TeamAvatar } from "@/components/team-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TabsUnderline } from "@/components/ui/tabs-underline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Typography } from "@/components/ui/typography";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
@@ -72,54 +72,6 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
   const handleSwitchTeam = (teamId: number) => {
     switchTeam(teamId);
   };
-
-  const TabsOptions = [
-    {
-      value: TeamMainPanelTab.OVERVIEW,
-      label: "Overview",
-      icon: Icons.adjustments,
-      content: <TeamDetailOverview />,
-    },
-    {
-      value: TeamMainPanelTab.MEMBERS,
-      label: "Members",
-      count: teamStatistics?.members || 0,
-      isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
-      icon: Icons.user,
-      content: <TeamDetailMember teamId={selectedTeam?.id || 0} />,
-    },
-    ...(isTeamOwner(selectedTeam?.id || 0)
-      ? [
-          {
-            value: TeamMainPanelTab.JOINS,
-            label: "Join Requests",
-            count: teamStatistics?.joinRequests || 0,
-            isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
-            icon: Icons.userPlus,
-            content: <TeamDetailRequest teamId={selectedTeam?.id || 0} />,
-          },
-        ]
-      : []),
-    {
-      value: TeamMainPanelTab.INVITES,
-      label: "Invites",
-      count: teamStatistics?.invites || 0,
-      isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
-      icon: Icons.mail,
-      content: (
-        <TeamDetailInvite
-          teamId={selectedTeam?.id}
-          onSkip={() => onSetTab(TeamMainPanelTab.OVERVIEW)}
-        />
-      ),
-    },
-    {
-      value: TeamMainPanelTab.SETTINGS,
-      label: "Settings",
-      icon: Icons.settings,
-      content: <TeamDetailSetting team={selectedTeam!} />,
-    },
-  ];
 
   if (!selectedTeam) {
     return (
@@ -212,12 +164,66 @@ function TeamMainPanel({ selectedTeam, user }: TeamMainPanelProps) {
           </div>
         </div>
       ) : (
-        <TabsUnderline
+        <Tabs
+          variant="underline"
           value={params.tab || TeamMainPanelTab.OVERVIEW}
           onValueChange={(value) => onSetTab(value as TeamMainPanelTab)}
-          className="gap-6"
-          items={TabsOptions}
-        />
+          className="space-y-4"
+        >
+          <TabsList className="w-full">
+            <TabsTrigger value={TeamMainPanelTab.OVERVIEW} icon={Icons.adjustments}>
+              Overview
+            </TabsTrigger>
+            <TabsTrigger
+              value={TeamMainPanelTab.MEMBERS}
+              icon={Icons.user}
+              meta={{
+                count: teamStatistics?.members || 0,
+                isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
+              }}
+            >
+              Members
+            </TabsTrigger>
+            {isTeamOwner(selectedTeam?.id || 0) && (
+              <TabsTrigger
+                value={TeamMainPanelTab.JOINS}
+                icon={Icons.userPlus}
+                meta={{
+                  count: teamStatistics?.joinRequests || 0,
+                  isLoading: isTeamStatisticsPending || isTeamStatisticsFetching,
+                }}
+              >
+                Join Requests
+              </TabsTrigger>
+            )}
+            <TabsTrigger value={TeamMainPanelTab.INVITES} icon={Icons.mail}>
+              Invites
+            </TabsTrigger>
+            <TabsTrigger value={TeamMainPanelTab.SETTINGS} icon={Icons.settings}>
+              Settings
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value={TeamMainPanelTab.OVERVIEW}>
+            <TeamDetailOverview />
+          </TabsContent>
+          <TabsContent value={TeamMainPanelTab.MEMBERS}>
+            <TeamDetailMember teamId={selectedTeam?.id || 0} />
+          </TabsContent>
+          {isTeamOwner(selectedTeam?.id || 0) && (
+            <TabsContent value={TeamMainPanelTab.JOINS}>
+              <TeamDetailRequest teamId={selectedTeam?.id || 0} />
+            </TabsContent>
+          )}
+          <TabsContent value={TeamMainPanelTab.INVITES}>
+            <TeamDetailInvite
+              teamId={selectedTeam?.id}
+              onSkip={() => onSetTab(TeamMainPanelTab.OVERVIEW)}
+            />
+          </TabsContent>
+          <TabsContent value={TeamMainPanelTab.SETTINGS}>
+            <TeamDetailSetting team={selectedTeam!} />
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );

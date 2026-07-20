@@ -26,7 +26,9 @@
     "approve": "Approve",
     "reject": "Reject",
     "continue": "Continue",
-    "save-changes": "Save changes"
+    "save-changes": "Save changes",
+    "reset": "Reset",
+    "search": "Search"
   },
 
   "Column": {
@@ -273,8 +275,17 @@
     },
     "pinned": {
       "label": "Pinned"
+    },
+    "createdDate": {
+      "label": "Created at",
+      "placeholder": "Select your date"
+    },
+    "search": {
+      "label": "Search",
+      "placeholder": "Search by title, keywords..."
     }
   },
+
   "Invite": {
     "title": "Invite new members",
     "sidebar-title": "Invite members to your team",
@@ -299,6 +310,8 @@
     "invite-member-success": "Invite sent successfully!"
   },
   "Jobs": {
+    "title": "Jobs",
+    "description": "Manage and track all job postings in your organization",
     "basic-info-title": "Basic information",
     "salary-range": "Salary range",
     "description-title": "Job description",

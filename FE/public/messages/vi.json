@@ -26,7 +26,9 @@
     "approve": "Phê duyệt",
     "reject": "Từ chối",
     "continue": "Tiếp tục",
-    "save-changes": "Lưu thay đổi"
+    "save-changes": "Lưu thay đổi",
+    "reset": "Đặt lại",
+    "search": "Tìm kiếm"
   },
 
   "Column": {
@@ -84,6 +86,8 @@
   },
 
   "Jobs": {
+    "title": "Công việc",
+    "description": "Quản lý tin tuyển dụng và theo dõi ứng viên.",
     "basic-info-title": "Thông tin cơ bản",
     "salary-range": "Khoảng lương",
     "description-title": "Mô tả công việc",
@@ -298,6 +302,14 @@
     },
     "pinned": {
       "label": "Ghim tin tuyển dụng"
+    },
+    "createdDate": {
+      "label": "Created at",
+      "placeholder": "Chọn ngày"
+    },
+    "search": {
+      "label": "Search",
+      "placeholder": "Tìm kiếm theo tiêu đề, từ khóa..."
     }
   },
   "Invite": {

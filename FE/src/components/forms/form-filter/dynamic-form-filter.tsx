@@ -3,6 +3,7 @@ import { useAppForm, useFormFields } from "@/components/ui/tanstack-form";
 import { FilterFieldConfig } from "./form-filter.type";
 import { Icons } from "@/components/icons";
 import { FormComboboxField, FormDateRangePickerField } from "../fields";
+import { useTranslations } from "next-intl";
 
 const triggerSubmitDebounceMs = 600;
 
@@ -15,6 +16,7 @@ interface FormFilterProps<T extends Record<string, any>> {
   layout?: "horizontal" | "vertical";
 }
 const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) => {
+  const t = useTranslations();
   const {
     fields,
     defaultValues,
@@ -156,7 +158,7 @@ const FormFilter = <T extends Record<string, any>>(props: FormFilterProps<T>) =>
             onClick={handleReset}
           >
             <Icons.arrowBack />
-            Reset
+            {t("Common.reset")}
           </Button>
           {/* </div> */}
         </div>

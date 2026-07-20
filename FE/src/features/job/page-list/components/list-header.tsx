@@ -63,10 +63,7 @@ export function JobListHeader({ className }: { className?: string }) {
   return (
     <div className={cn("flex flex-wrap items-center justify-between gap-6", className)}>
       <div>
-        <Heading
-          title="Jobs"
-          description="Manage and track all job postings in your organization"
-        />
+        <Heading title={t("title")} description={t("description")} />
       </div>
       <div className="flex flex-wrap items-center gap-6 sm:gap-8">
         <div className="flex items-center gap-6 sm:gap-6">

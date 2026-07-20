@@ -1,11 +1,12 @@
 import { FormFilter } from "@/components/forms/form-filter";
 import { Icons } from "@/components/icons";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetLocation } from "@/hooks/options";
 import { employmentTypeOptions, levelOptions } from "../../constants";
 import { JobSearchParams, jobSearchParsers } from "../job-search-params";
 import { EJobStatus } from "@/features/job/enums";
 import { SetValues } from "nuqs";
+import { useTranslations } from "next-intl";
 
 interface JobListFilterProps {
   params: JobSearchParams;
@@ -20,6 +21,7 @@ const JobListFilter = ({
   handleReset,
   setParams,
 }: JobListFilterProps) => {
+  const t = useTranslations();
   const { options } = useGetLocation();
 
   return (
@@ -30,7 +32,7 @@ const JobListFilter = ({
           {
             type: "text",
             name: "q",
-            placeholder: "Search jobs by title, keywords...",
+            placeholder: t("field.search.placeholder"),
             leftIcon: <Icons.search className="size-4" />,
             className: "w-full",
           },
@@ -38,27 +40,27 @@ const JobListFilter = ({
             type: "multiSelect",
             name: "jobType",
             multiple: true,
-            placeholder: "Select job type",
+            placeholder: t("field.employment-type.placeholder"),
             options: employmentTypeOptions,
           },
           {
             type: "multiSelect",
             name: "level",
             multiple: true,
-            placeholder: "Select level",
+            placeholder: t("field.level.placeholder"),
             options: levelOptions,
           },
           {
             type: "multiSelect",
             multiple: true,
             name: "location",
-            placeholder: "Select location",
+            placeholder: t("field.location.placeholder"),
             options: options,
           },
           {
             type: "dateRange",
             name: "createdAt",
-            placeholder: "Select created date",
+            placeholder: t("field.createdDate.placeholder"),
           },
         ]}
         onSubmit={handleSubmit}
@@ -66,15 +68,17 @@ const JobListFilter = ({
       />
 
       <Tabs
+        variant="underline"
         defaultValue={params.status || EJobStatus.OPEN}
-        orientation="horizontal"
         onValueChange={(value) => setParams({ status: value as EJobStatus })}
       >
-        <TabsList variant="line">
-          <TabsTrigger value={EJobStatus.OPEN}>Open</TabsTrigger>
-          <TabsTrigger value={EJobStatus.ARCHIVED}>Archived</TabsTrigger>
-          <TabsTrigger value={EJobStatus.DRAFT}>Draft</TabsTrigger>
-          <TabsTrigger value={EJobStatus.CLOSED}>Closed</TabsTrigger>
+        <TabsList className="w-full">
+          <TabsTrigger value={EJobStatus.OPEN}>{t("Jobs.stats.open")}</TabsTrigger>
+          <TabsTrigger value={EJobStatus.ARCHIVED}>
+            {t("Jobs.stats.archived")}
+          </TabsTrigger>
+          <TabsTrigger value={EJobStatus.DRAFT}>{t("Jobs.stats.draft")}</TabsTrigger>
+          <TabsTrigger value={EJobStatus.CLOSED}>{t("Jobs.stats.closed")}</TabsTrigger>
         </TabsList>
       </Tabs>
     </div>
