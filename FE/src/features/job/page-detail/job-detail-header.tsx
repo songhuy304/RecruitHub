@@ -8,7 +8,9 @@ import { IJobDetail } from "@/features/job/types";
 import {
   formatJobSalaryRange,
   getEmploymentTypeLabel,
+  getJobLevelLabel,
   getNameLocation,
+  getWorkLocationTypeLabel,
 } from "@/features/job/utils";
 import {
   formatJobDaysOpen,
@@ -80,12 +82,13 @@ const JobDetailHeader = ({ jobDetail }: JobDetailHeaderProps) => {
           </MetaItem>
         </div>
 
-        <Can can={jobDetail.isPinned}>
-          <span className="text-primary bg-primary/10 flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
-            <Icons.pin className="size-3" />
-            {t("Jobs.pinned-title")}
-          </span>
-        </Can>
+        <span className="bg-border/70 h-3.5 w-px" aria-hidden="true" />
+
+        <MetaItem icon={Icons.clock}>
+          {updatedAt === "--" ? "--" : t("Jobs.card.updated", { time: updatedAt })}
+        </MetaItem>
+
+        <Icons.pin className={cn("size-3", jobDetail.isPinned && "text-primary")} />
       </div>
 
       <Typography variant="h4" className="font-semibold tracking-tight">
@@ -120,8 +123,19 @@ const JobDetailHeader = ({ jobDetail }: JobDetailHeaderProps) => {
           className="mx-3 h-4 data-[orientation=vertical]:h-4"
         />
 
-        <MetaItem icon={Icons.clock}>
-          {updatedAt === "--" ? "--" : t("Jobs.card.updated", { time: updatedAt })}
+        <MetaItem icon={Icons.laptop}>
+          {jobDetail.workLocationType
+            ? getWorkLocationTypeLabel(jobDetail.workLocationType)
+            : "--"}
+        </MetaItem>
+
+        <Separator
+          orientation="vertical"
+          className="mx-3 h-4 data-[orientation=vertical]:h-4"
+        />
+
+        <MetaItem icon={Icons.trendingUp}>
+          {jobDetail.level ? getJobLevelLabel(jobDetail.level) : "--"}
         </MetaItem>
       </div>
 

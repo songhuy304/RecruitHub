@@ -1,4 +1,8 @@
-import { employmentTypeOptions } from "@/features/job/constants";
+import {
+  employmentTypeOptions,
+  levelOptions,
+  workLocationTypeOptions,
+} from "@/features/job/constants";
 import { ECurrency } from "@/features/job/enums";
 import { IJob } from "@/features/job/types";
 import { ILocation } from "@/services/common/types";
@@ -39,6 +43,22 @@ export function getEmploymentTypeLabel(employmentType: IJob["employmentType"]): 
   )?.label;
 
   return typeof label === "string" ? label : employmentType;
+}
+
+export function getWorkLocationTypeLabel(workLocationType: IJob["workLocationType"]): string {
+  const label = workLocationTypeOptions.find(
+    (option) => option.value === workLocationType
+  )?.label;
+
+  return typeof label === "string" ? label : workLocationType;
+}
+
+export function getJobLevelLabel(level: IJob["level"]): string {
+  const label = levelOptions.find(
+    (option) => option.value === level
+  )?.label;
+
+  return typeof label === "string" ? label : level;
 }
 
 export function getNameLocation(
