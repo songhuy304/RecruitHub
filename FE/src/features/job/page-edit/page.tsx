@@ -9,6 +9,8 @@ import { JobSubmitAction } from "@/features/job/types";
 import { useCreateJob, useEditJob, useGetJobDetails } from "@/features/job/hooks";
 import { CreateJobFormValues } from "@/features/job/schemas";
 import { mutationJobMapper } from "@/features/job/mappers";
+import { useUser } from "@/hooks/useUser";
+import { ETEAM_ROLE } from "@/enums";
 
 interface EditJobPageProps {
   id: string;
@@ -16,6 +18,7 @@ interface EditJobPageProps {
 
 export default function EditJobPage({ id }: EditJobPageProps) {
   const t = useTranslations();
+  const { hasCurrentTeamRole } = useUser();
   const { isPending: isGetJobDetailsPending, data } = useGetJobDetails({
     id: parseInt(id),
   });
@@ -32,7 +35,10 @@ export default function EditJobPage({ id }: EditJobPageProps) {
     : undefined;
 
   return (
-    <PageContainer isLoading={isGetJobDetailsPending}>
+    <PageContainer
+      access={hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])}
+      isLoading={isGetJobDetailsPending}
+    >
       <div className="flex-1 space-y-4">
         <CreateJobHeader
           onSaveDraft={() => {

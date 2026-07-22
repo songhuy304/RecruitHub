@@ -33,7 +33,7 @@ export function MemberOptionRow({
   return (
     <div className={cn("flex w-full items-center justify-between gap-3", className)}>
       <div className="flex min-w-0 items-center gap-3">
-        <Avatar className="border-border/60 h-9 w-9 shrink-0 border">
+        <Avatar className="border-border/60 size-5 shrink-0 border">
           {member.avatar ? (
             <AvatarImage src={member.avatar} alt={member.fullName} />
           ) : null}

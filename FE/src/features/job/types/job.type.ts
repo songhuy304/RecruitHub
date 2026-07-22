@@ -37,13 +37,12 @@ export interface IJob {
   department: IDepartment;
   createdAt: string;
   updatedAt: string;
-  viewCount?: number;
+  viewCount?: number; 
   applicantCount?: number;
   currency: ECurrency;
   isNegotiable: boolean;
   skills: string[];
   officeAddress: string;
-  team?: Team;
   assignee?: ITeamMember;
 }
 

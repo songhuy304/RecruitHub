@@ -4,23 +4,37 @@ import PageContainer from "@/components/layout/page-container";
 import { ETEAM_ROLE } from "@/enums";
 import { CreateJobHeader } from "@/features/job/components";
 import { CreateJobForm } from "@/features/job/form";
-import { useCreateJob } from "@/features/job/hooks";
+import { useCreateJob, useGetJobDetails } from "@/features/job/hooks";
+import { mutationJobMapper } from "@/features/job/mappers";
 import { CreateJobFormValues } from "@/features/job/schemas";
 import { JobSubmitAction } from "@/features/job/types";
 import { useUser } from "@/hooks/useUser";
 import { useRef } from "react";
 
-export default function CreateJobPage() {
+interface CopyJobPageProps {
+  id: string;
+}
+export default function CopyJobPage({ id }: CopyJobPageProps) {
   const { hasCurrentTeamRole } = useUser();
-  const { isPending, createInitValues, handleCreateJob } = useCreateJob();
+  const { isPending: isGetJobDetailsPending, data } = useGetJobDetails({
+    id: parseInt(id),
+  });
+  const { isPending, handleCreateJob } = useCreateJob();
   const submitActionRef = useRef<JobSubmitAction>("publish");
 
   const handleSubmit = async (values: CreateJobFormValues) => {
     await handleCreateJob(values, submitActionRef.current);
   };
 
+  const defaultValues = data?.data
+    ? mutationJobMapper.toFormValues(data?.data)
+    : undefined;
+
   return (
-    <PageContainer access={hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])}>
+    <PageContainer
+      isLoading={isGetJobDetailsPending}
+      access={hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])}
+    >
       <div className="flex-1 space-y-4">
         <CreateJobHeader
           onSaveDraft={() => {
@@ -33,7 +47,7 @@ export default function CreateJobPage() {
           submittingAction={isPending ? submitActionRef.current : null}
         />
 
-        <CreateJobForm onSubmit={handleSubmit} defaultValues={createInitValues} />
+        <CreateJobForm onSubmit={handleSubmit} defaultValues={defaultValues} />
       </div>
     </PageContainer>
   );

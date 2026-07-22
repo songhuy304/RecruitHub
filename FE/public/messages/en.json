@@ -28,7 +28,8 @@
     "continue": "Continue",
     "save-changes": "Save changes",
     "reset": "Reset",
-    "search": "Search"
+    "search": "Search",
+    "copy": "Copy"
   },
 
   "Column": {

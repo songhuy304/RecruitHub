@@ -50,6 +50,10 @@ export function JobList({
     router.push(`/jobs/edit/${job.id}`);
   };
 
+  const handleCopy = (job: IJob) => {
+    router.push(`/jobs/copy/${job.id}`);
+  };
+
   const handleDelete = async (job: IJob) => {
     await handleDeleteJob(job.id);
   };
@@ -62,6 +66,10 @@ export function JobList({
   const canDelete = isCurrentTeamOwner() ? handleDelete : undefined;
   const canEdit = hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])
     ? handleEdit
+    : undefined;
+
+  const canCopy = hasCurrentTeamRole([ETEAM_ROLE.ADMIN, ETEAM_ROLE.OWNER])
+    ? handleCopy
     : undefined;
 
   const onDetail = (job: IJob) => {
@@ -120,6 +128,7 @@ export function JobList({
             onPinToggle={onPinToggle}
             onDelete={canDelete}
             onDetail={onDetail}
+            onCopy={canCopy}
           />
         ))}
       </div>
