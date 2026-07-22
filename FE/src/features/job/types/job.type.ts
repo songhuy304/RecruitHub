@@ -44,6 +44,7 @@ export interface IJob {
   skills: string[];
   officeAddress: string;
   team?: Team;
+  assignee?: ITeamMember;
 }
 
 export interface IDateRangeFilter {

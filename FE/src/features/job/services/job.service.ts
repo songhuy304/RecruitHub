@@ -28,7 +28,7 @@ export const jobService = {
   createJob: (payload: ICreateJobEntity): Promise<IResponse<void>> =>
     apiClient.post(PATH.CREATE, payload),
   updateJob: (payload: ICreateJobEntity, jobId: number): Promise<IResponse<void>> =>
-    apiClient.put(PATH.UPDATE(jobId), payload),
+    apiClient.patch(PATH.UPDATE(jobId), payload),
   getJobDetail: (jobId: number): Promise<IResponse<IJobDetail>> =>
     apiClient.get(PATH.DETAIL(jobId)),
   togglePinned: (jobId: number, pinned: boolean): Promise<IResponse<void>> =>

@@ -107,6 +107,18 @@ export const createJobSchema = (t: TFunction) =>
       benefits: z.string().optional(),
       published: z.boolean().default(false),
       pinned: z.boolean().default(false),
+      assigneeId: z
+        .string({
+          message: t("validation.required", {
+            field: t("Jobs.hiring-team-assign-to"),
+          }),
+        })
+        .min(
+          1,
+          t("validation.required", {
+            field: t("Jobs.hiring-team-assign-to"),
+          })
+        ),
     })
     .superRefine((data, ctx) => {
       // salary check

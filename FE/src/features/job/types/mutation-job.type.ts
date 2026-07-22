@@ -30,4 +30,5 @@ export interface ICreateJobEntity {
   skills: string[];
 
   workLocationType: EWorkLocationType;
+  assigneeId?: number;
 }

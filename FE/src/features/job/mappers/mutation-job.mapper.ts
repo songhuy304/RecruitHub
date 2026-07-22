@@ -42,10 +42,11 @@ export const mutationJobMapper = {
       skills: get(values, "skills", []),
 
       workLocationType: get(values, "workLocationType"),
+      assigneeId: Number(get(values, "assigneeId")),
     };
   },
 
-  toFormValues: (job: IJob): CreateJobFormValues => {
+  toFormValues: (job: IJob): Partial<CreateJobFormValues> => {
     return {
       title: job.title,
 
@@ -77,6 +78,8 @@ export const mutationJobMapper = {
 
       openedAt: job.openedAt ? new Date(job.openedAt) : undefined,
       expiresAt: job.expiresAt ? new Date(job.expiresAt) : undefined,
+
+      assigneeId: job.assignee?.id ? String(job.assignee.id) : undefined,
     };
   },
 };

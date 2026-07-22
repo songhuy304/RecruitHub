@@ -16,8 +16,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Typography } from "@/components/ui/typography";
-import { employmentTypeOptions } from "@/features/job/constants/job-options.constant";
+import { MetaItem } from "@/features/job/components/meta-item";
 import { IJob } from "@/features/job/types";
+import { getEmploymentTypeLabel, getNameLocation } from "@/features/job/utils";
 import {
   formatJobExpiresIn,
   formatJobUpdatedAt,
@@ -25,11 +26,8 @@ import {
 import { cn } from "@/lib/utils";
 import { ILocation } from "@/services/common/types";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { JobCardAvatarGroup } from "./job-card-avatar-group";
 import { JobCardStatusBadge } from "./job-card-status-badge";
-import { MetaItem } from "@/features/job/components/meta-item";
-import { getEmploymentTypeLabel, getNameLocation } from "@/features/job/utils";
 
 interface JobCardProps {
   job: IJob;
@@ -147,7 +145,7 @@ export function JobCard({
       </CardContent>
 
       <CardFooter className="justify-between px-4 pt-0 mt-auto">
-        <JobCardAvatarGroup members={job.team?.members || []} className="shrink-0" />
+        <JobCardAvatarGroup assignee={job.assignee} className="shrink-0" />
         <span className="text-muted-foreground/70 shrink-0 text-[11px]">
           {t("Jobs.card.updated", { time: formatJobUpdatedAt(job.updatedAt) })}
         </span>

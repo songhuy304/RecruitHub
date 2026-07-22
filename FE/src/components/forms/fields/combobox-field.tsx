@@ -28,6 +28,7 @@ import { Icons } from "@/components/icons";
 export type Option = {
   value: string;
   label: React.ReactNode;
+  searchValue?: string;
 };
 
 interface ComboboxFieldProps {
@@ -171,7 +172,7 @@ export function ComboboxField({
                     return (
                       <CommandItem
                         key={option.value}
-                        value={option.value}
+                        value={option.searchValue ?? option.value}
                         onSelect={() => handleSelect(option.value)}
                       >
                         <Icons.check

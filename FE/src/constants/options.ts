@@ -11,3 +11,14 @@ export const USER_ROLE_OPTIONS = [
   { value: "admin", label: "ADMIN" },
   { value: "member", label: "MEMBER" },
 ];
+
+export function getTeamRoleLabel(role: ETEAM_ROLE) {
+  switch (role) {
+    case ETEAM_ROLE.OWNER:
+      return "Owner";
+    case ETEAM_ROLE.MEMBER:
+      return "Member";
+    case ETEAM_ROLE.ADMIN:
+      return "Admin";
+  }
+}
